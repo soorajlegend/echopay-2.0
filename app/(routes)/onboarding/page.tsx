@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { InputWithIcon } from "@/components/ui/input-with-icon";
 import { Label } from "@/components/ui/label";
 import { Eye, Mail, Phone } from "lucide-react";
@@ -45,6 +46,7 @@ const OnboardingPage = () => {
           />
         </div>
         <div className="flex gap-2">
+          <Checkbox />
           <p>
             I agree to the <a href="#">Terms and Conditions</a> and{" "}
             <a href="#">Privacy Policy</a>
@@ -53,7 +55,7 @@ const OnboardingPage = () => {
       </div>
       <div className="w-full flex flex-col gap-8">
         <Button>Create Account</Button>
-        <p>
+        <p className="w-full text-center">
           Already have an account? <a href="#">Sign In</a>
         </p>
       </div>
