@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { InputWithIcon } from "@/components/ui/input-with-icon";
 import { Label } from "@/components/ui/label";
