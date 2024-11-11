@@ -8,7 +8,7 @@ import React from "react";
 
 const OnboardingPage = () => {
   return (
-    <div className="w-full h-full flex flex-col gap-10 pt-20 px-3 pb-10">
+    <div className="w-full h-full flex flex-col justify-end gap-10 pt-20 px-3 pb-10">
       <div className="flex flex-col gap-2">
         <h1 className="text-lg font-semibold">Join the Future of Finance</h1>
         <p className="text-base">
