@@ -90,7 +90,7 @@ const RegisterPage = () => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="w-full h-full flex flex-col justify-end gap-10 pt-20 px-3 pb-10"
+      className="w-full h-full flex flex-col justify-end gap-20 pt-40 px-3 pb-10"
     >
       <div className="flex flex-col gap-2">
         <h1 className="text-lg font-semibold">Join the Future of Finance</h1>
