@@ -148,7 +148,7 @@ const RegisterPage = () => {
             <span className="text-red-500 text-sm">{errors.password}</span>
           )}
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 items-center">
           <Checkbox
             checked={formData.agreeToTerms}
             onCheckedChange={(checked: boolean) =>
