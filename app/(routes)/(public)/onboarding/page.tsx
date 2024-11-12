@@ -60,10 +60,8 @@ const OnboardingPage = () => {
   }, []);
 
   const handleContinue = () => {
-    if (stage < 3) {
+    if (stage < 4) {
       setStage(stage + 1);
-    } else if (stage === 3) {
-      setStage(4);
     }
   };
 
@@ -127,10 +125,7 @@ const OnboardingPage = () => {
               {stage && stage < 3 ? (
                 <div className="flex justify-end mx-auto md:w-[84%]">
                   <Button
-                    onClick={() => {
-                      setStage(3);
-                      handleContinue();
-                    }}
+                    onClick={() => setStage(4)}
                     className="p-0"
                     variant="link"
                   >
