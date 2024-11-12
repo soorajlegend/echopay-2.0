@@ -10,6 +10,7 @@ import OTPVerification from "./_components/otp-verification";
 import { Loader2 } from "lucide-react";
 import UpsetPassword from "@/components/ui/upset-password";
 import SlideContainer from "@/components/slide-container";
+import LanguageSelector from "@/components/language-selector";
 
 const OnboardingPage = () => {
   const [stage, setStage] = useState(0);
@@ -35,7 +36,7 @@ const OnboardingPage = () => {
   }, []);
 
   const handleContinue = () => {
-    if (stage < 5) {
+    if (stage < 7) {
       setStage(stage + 1);
     }
 
@@ -55,6 +56,10 @@ const OnboardingPage = () => {
   };
 
   const handlePasswordVerification = (password: string) => {
+    //if user is existing user then redirect to dashboard
+
+    // move to language selection stage
+    setStage(7);
     console.log(password);
   };
   return (
@@ -105,16 +110,23 @@ const OnboardingPage = () => {
       </div>
 
       {/* if verified and is new user */}
-      {newUser && isVerified && (
+      {stage === 6 && newUser && isVerified && (
         <SlideContainer custom={stage}>
           <UpsetPassword onFinish={handlePasswordVerification} />
         </SlideContainer>
       )}
 
       {/* if verified and is existing user */}
-      {!newUser && isVerified && (
+      {stage === 6 && !newUser && isVerified && (
         <SlideContainer custom={stage}>
           <UpsetPassword onFinish={handlePasswordVerification} />
+        </SlideContainer>
+      )}
+
+      {/* after password creation for new users Language selection*/}
+      {stage === 7 && !newUser && isVerified && (
+        <SlideContainer custom={stage}>
+          <LanguageSelector />
         </SlideContainer>
       )}
 
