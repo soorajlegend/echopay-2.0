@@ -64,7 +64,7 @@ const OTPVerification = ({
         </InputOTP>
       </div>
 
-      <div className="absolute bottom-0 mb-32 w-full">
+      <div className="absolute bottom-0 mb-32 w-full flex justify-center">
         <Button
           className={` ${
             !value.length

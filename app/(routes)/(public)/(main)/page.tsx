@@ -8,6 +8,7 @@ import MobileInput from "./_components/mobile-input";
 import SplashSlides from "./_components/splash-slides";
 import OTPVerification from "./_components/otp-verification";
 import { Loader2 } from "lucide-react";
+import UpsetPassword from "@/components/ui/upset-password";
 
 const OnboardingPage = () => {
   const [stage, setStage] = useState(0);
@@ -16,8 +17,9 @@ const OnboardingPage = () => {
   const [mobile, setMobile] = useState("");
   const [isVerifying, setIsVerifying] = useState(false);
   const [isVerified, setIsVerified] = useState(false);
+  const [password, setPassword] = useState("");
 
-  // const newUser = true;
+  const newUser = true;
 
   useEffect(() => {
     const timer1 = setTimeout(() => setZoomLogo(true), 2000);
@@ -40,7 +42,7 @@ const OnboardingPage = () => {
     console.log(isVerifying, isVerified);
   };
 
-  const handleVerification = async (otp: string) => {
+  const handleOTPVerification = async (otp: string) => {
     setIsVerifying(true);
 
     setTimeout(() => {
@@ -52,6 +54,9 @@ const OnboardingPage = () => {
     }, 3000);
   };
 
+  const handlePasswordVerification = () => {
+    console.log(password);
+  };
   return (
     <div className="w-full h-full flex flex-col px-3 gap-10 relative">
       <div className="min-h-screen w-full flex flex-col items-center justify-center">
@@ -90,11 +95,20 @@ const OnboardingPage = () => {
           <OTPVerification
             mobile={mobile}
             setStage={setStage}
-            onVerify={handleVerification}
+            onVerify={handleOTPVerification}
           />
         )}
       </div>
 
+      {/* if verified and is new user */}
+      {newUser && isVerified && <UpsetPassword setPassword={setPassword} />}
+
+      {/* if verified and is existing user */}
+      {!newUser && isVerified && <UpsetPassword setPassword={setPassword} />}
+
+      {/*
+       loader 
+       */}
       {isVerifying && (
         <div className="fixed z-50 max-w-lg mx-auto w-full h-full bg-black/70 flex items-center justify-center">
           <Loader2 className="w-12 h-12 text-white/90 animate-spin" />
