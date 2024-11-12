@@ -9,23 +9,25 @@ import { Button } from "@/components/ui/button";
 interface MobileInputProps {
   mobile: string;
   setMobile: (value: string) => void;
+  onProceed: () => void;
 }
 
-const MobileInput = ({ mobile, setMobile }: MobileInputProps) => {
+const MobileInput = ({ mobile, setMobile, onProceed }: MobileInputProps) => {
   return (
     <div className="text-center relative w-full h-screen">
-      <div className="mt-[77px] mb-[88px]">
+      <div className="w-full mt-[77px] mb-[88px]">
         <h2 className="text-2xl font-medium text-center text-[#1A1A1A]">
           Enter your mobile number
         </h2>
       </div>
-      <div className="w-full flex flex-col gap-3 items-start">
-        <Label htmlFor="terms" className="w-full text-left text-xl">
+      <div className="w-full bg-gray-500 flex flex-col gap-3 items-start">
+        <Label htmlFor="mobile" className="w-full text-left text-xl">
           Mobile
         </Label>
         <InputWithIcon
           icon={PhoneCall}
           type="tel"
+          id="mobile"
           placeholder="Enter your mobile number"
           className="w-full"
           onChange={(e) => setMobile(e.target.value)}
@@ -39,7 +41,7 @@ const MobileInput = ({ mobile, setMobile }: MobileInputProps) => {
               ? "opacity-80 cursor-not-allowed hover:bg-none"
               : "bg-theme-primary hover:bg-[#0c2941]"
           } mt-[48px] bottom-0 text-[18px] font-medium text-white w-full py-[24px]`}
-          onClick={() => {}}
+          onClick={onProceed}
           disabled={!mobile.length}
         >
           Proceed
