@@ -30,7 +30,7 @@ const PasswordInput = ({
   }, [value, onComplete]);
 
   return (
-    <div className="relative text-center w-full h-screen">
+    <div className="relative text-center w-full">
       <div className="w-full items-center flex flex-col gap-3">
         <Label htmlFor={label} className="w-full text-center ">
           {label}

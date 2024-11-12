@@ -51,7 +51,7 @@ const SplashSlides = ({
             x: { type: "spring", stiffness: 300, damping: 30 },
             opacity: { duration: 0.2 },
           }}
-          className="text-center w-full absolute"
+          className="text-center w-full h-full absolute p-3"
         >
           {stage && stage < 3 ? (
             <div className="flex justify-end mx-auto">
