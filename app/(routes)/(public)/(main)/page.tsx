@@ -40,6 +40,18 @@ const OnboardingPage = () => {
     console.log(isVerifying, isVerified);
   };
 
+  const handleVerification = async (otp: string) => {
+    setIsVerifying(true);
+
+    setTimeout(() => {
+      setIsVerifying(false);
+      setIsVerified(true);
+
+      console.log(otp);
+      setStage(6);
+    }, 3000);
+  };
+
   return (
     <div className="w-full h-full flex flex-col px-3 gap-10 relative">
       <div className="min-h-screen w-full flex flex-col items-center justify-center">
@@ -78,14 +90,13 @@ const OnboardingPage = () => {
           <OTPVerification
             mobile={mobile}
             setStage={setStage}
-            setIsVerifying={setIsVerifying}
-            setIsVerified={setIsVerified}
+            onVerify={handleVerification}
           />
         )}
       </div>
 
       {isVerifying && (
-        <div className="fixed max-w-lg mx-auto w-full h-full bg-gray-900/50 flex items-center justify-center">
+        <div className="fixed z-50 max-w-lg mx-auto w-full h-full bg-black/70 flex items-center justify-center">
           <Loader2 className="w-12 h-12 text-white/90 animate-spin" />
         </div>
       )}

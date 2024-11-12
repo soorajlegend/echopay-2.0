@@ -13,28 +13,15 @@ import { Edit } from "lucide-react";
 interface OTPVerificationProps {
   mobile: string;
   setStage: (value: number) => void;
-  setIsVerifying: (value: boolean) => void;
-  setIsVerified: (value: boolean) => void;
+  onVerify: (value: string) => void;
 }
 
 const OTPVerification = ({
   mobile,
   setStage,
-  setIsVerifying,
-  setIsVerified,
+  onVerify,
 }: OTPVerificationProps) => {
   const [value, setValue] = useState("");
-
-  console.log(setStage, setIsVerified, setIsVerifying);
-
-  const handleVerify = async () => {
-    setIsVerifying(true);
-
-    setTimeout(() => {
-      setIsVerifying(false);
-      setIsVerified(true);
-    }, 3000);
-  };
 
   return (
     <div className="relative text-center w-full h-screen">
@@ -45,7 +32,7 @@ const OTPVerification = ({
       </div>
       <div className="w-full items-center flex flex-col gap-3">
         <Label htmlFor="terms" className="w-full text-center ">
-          We&apos;ve sent an OTP to {mobile} -{" "}
+          We&apos;ve sent an OTP to {mobile} -
           <Button onClick={() => setStage(4)} variant="link">
             Edit <Edit />
           </Button>
@@ -84,7 +71,7 @@ const OTPVerification = ({
               ? "opacity-80 cursor-not-allowed hover:bg-none"
               : "bg-theme-primary hover:bg-[#0c2941]"
           } mt-[48px] bottom-0 text-[18px] font-medium text-white w-full py-[24px]`}
-          onClick={handleVerify}
+          onClick={() => onVerify(value)}
           disabled={!value.length}
         >
           Verify
