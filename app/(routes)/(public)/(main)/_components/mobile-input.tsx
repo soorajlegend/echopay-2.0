@@ -19,8 +19,16 @@ const MobileInput = () => {
           Select your preferred language to continue
         </p>
       </div>
-
-      <InputWithIcon icon={PhoneCall} placeholder="Enter your mobile number" />
+      <div className="flex flex-col gap-3">
+        <Label htmlFor="terms" className=" text-xl">
+          Language
+        </Label>
+        <InputWithIcon
+          icon={PhoneCall}
+          placeholder="Enter your mobile number"
+          onChange={(e) => setMobile(e.target.value)}
+        />
+      </div>
 
       <div className="absolute bottom-0 mb-32 w-full">
         <Button
