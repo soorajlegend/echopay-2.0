@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/input-otp";
 import { Button } from "@/components/ui/button";
 import { Edit } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface OTPVerificationProps {
   mobile: string;
@@ -66,11 +67,12 @@ const OTPVerification = ({
 
       <div className="absolute bottom-0 mb-32 w-full flex justify-center">
         <Button
-          className={` ${
+          className={cn(
+            "mt-[48px] bottom-0 text-[18px] mx-auto font-medium text-white w-full py-[24px]",
             !value.length
               ? "opacity-80 cursor-not-allowed hover:bg-none"
               : "bg-theme-primary hover:bg-[#0c2941]"
-          } mt-[48px] bottom-0 text-[18px] font-medium text-white w-full py-[24px]`}
+          )}
           onClick={() => onVerify(value)}
           disabled={!value.length}
         >
