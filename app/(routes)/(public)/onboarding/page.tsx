@@ -15,8 +15,8 @@ import {
   SelectTrigger,
   SelectValue
 } from "@/components/ui/select";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { Label } from "@/components/ui/label";
+// import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+// import { Label } from "@/components/ui/label";
 const OnboardingPage = () => {
   const [stage, setStage] = useState(0)
   const [showLogo, setShowLogo] = useState(true)
