@@ -37,7 +37,7 @@ const LanguageSelector = ({
   };
 
   return (
-    <div className="text-center relative w-[85%] h-screen">
+    <div className="text-center relative w-full h-screen">
       <div className="mt-[77px] mb-[88px]">
         <h2 className="text-2xl font-medium text-center text-[#1A1A1A]">
           Choose your language
