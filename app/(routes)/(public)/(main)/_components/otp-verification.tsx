@@ -27,8 +27,17 @@ const OTPVerification = ({
 
   console.log(setStage, setIsVerified, setIsVerifying);
 
+  const handleVerify = async () => {
+    setIsVerifying(true);
+
+    setTimeout(() => {
+      setIsVerifying(false);
+      setIsVerified(true);
+    }, 3000);
+  };
+
   return (
-    <div className="text-center relative w-[85%] h-screen">
+    <div className="relative text-center w-full h-screen">
       <div className="mt-[77px] mb-[88px]">
         <h2 className="text-2xl font-medium text-center text-[#1A1A1A]">
           Verify your mobile number
@@ -47,22 +56,22 @@ const OTPVerification = ({
           value={value}
           onChange={(value) => setValue(value)}
         >
-          <InputOTPGroup>
+          <InputOTPGroup className="gap-3">
             <InputOTPSlot index={0} />
           </InputOTPGroup>
-          <InputOTPGroup>
+          <InputOTPGroup className="gap-3">
             <InputOTPSlot index={1} />
           </InputOTPGroup>
-          <InputOTPGroup>
+          <InputOTPGroup className="gap-3">
             <InputOTPSlot index={2} />
           </InputOTPGroup>
-          <InputOTPGroup>
+          <InputOTPGroup className="gap-3">
             <InputOTPSlot index={3} />
           </InputOTPGroup>
-          <InputOTPGroup>
+          <InputOTPGroup className="gap-3">
             <InputOTPSlot index={4} />
           </InputOTPGroup>
-          <InputOTPGroup>
+          <InputOTPGroup className="gap-3">
             <InputOTPSlot index={5} />
           </InputOTPGroup>
         </InputOTP>
@@ -75,7 +84,7 @@ const OTPVerification = ({
               ? "opacity-80 cursor-not-allowed hover:bg-none"
               : "bg-theme-primary hover:bg-[#0c2941]"
           } mt-[48px] bottom-0 text-[18px] font-medium text-white w-full py-[24px]`}
-          onClick={() => {}}
+          onClick={handleVerify}
           disabled={!value.length}
         >
           Verify

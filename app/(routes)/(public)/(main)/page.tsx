@@ -7,6 +7,7 @@ import Image from "next/image";
 import MobileInput from "./_components/mobile-input";
 import SplashSlides from "./_components/splash-slides";
 import OTPVerification from "./_components/otp-verification";
+import { Loader2 } from "lucide-react";
 
 const OnboardingPage = () => {
   const [stage, setStage] = useState(0);
@@ -15,6 +16,8 @@ const OnboardingPage = () => {
   const [mobile, setMobile] = useState("");
   const [isVerifying, setIsVerifying] = useState(false);
   const [isVerified, setIsVerified] = useState(false);
+
+  const newUser = true;
 
   useEffect(() => {
     const timer1 = setTimeout(() => setZoomLogo(true), 2000);
@@ -62,7 +65,13 @@ const OnboardingPage = () => {
 
         {/* mobile input stage */}
 
-        {stage === 4 && <MobileInput mobile={mobile} setMobile={setMobile} onProceed={handleContinue} />}
+        {stage === 4 && (
+          <MobileInput
+            mobile={mobile}
+            setMobile={setMobile}
+            onProceed={handleContinue}
+          />
+        )}
 
         {/* verification stage */}
         {stage === 5 && (
@@ -73,9 +82,13 @@ const OnboardingPage = () => {
             setIsVerified={setIsVerified}
           />
         )}
-
-
       </div>
+
+      {isVerifying && (
+        <div className="fixed max-w-lg mx-auto w-full h-full bg-gray-900/50 flex items-center justify-center">
+          <Loader2 className="w-12 h-12 text-white/90 animate-spin" />
+        </div>
+      )}
     </div>
   );
 };
