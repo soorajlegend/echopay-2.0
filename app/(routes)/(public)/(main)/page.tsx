@@ -4,29 +4,16 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
+import LanguageSelector from "@/components/language-selector";
+
 const OnboardingPage = () => {
   const [stage, setStage] = useState(0);
   const [showLogo, setShowLogo] = useState(true);
   const [zoomLogo, setZoomLogo] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState("");
-
-  const languages = {
-    en: "English",
-    pg: "Pidgin",
-    hr: "Hausa",
-    yr: "Yoruba",
-    ig: "Igbo",
-  };
 
   const stages = [
     {
@@ -189,79 +176,7 @@ const OnboardingPage = () => {
           )}
         </AnimatePresence>
 
-        {stage === 4 && (
-          <div className="text-center relative w-[85%] h-screen">
-            <div className="mt-[77px] mb-[88px]">
-              <h2 className="text-2xl font-medium text-center text-[#1A1A1A]">
-                Choose your language
-              </h2>
-              <p className="text-[18px] font-medium text-[#434343]">
-                Select your preferred language to continue
-              </p>
-            </div>
-
-            <Select
-              open={isOpen}
-              onOpenChange={setIsOpen}
-              value={selectedLanguage}
-            >
-              <div className="mt-6 flex justify-start">
-                <Label htmlFor="terms" className=" text-xl">
-                  Language
-                </Label>
-              </div>
-              {/* <SelectLabel>Languages</SelectLabel> */}
-              <SelectTrigger id="terms" className="w-full mt-[8px]">
-                <SelectValue placeholder="Select a language">
-                  {selectedLanguage
-                    ? languages[selectedLanguage as keyof typeof languages]
-                    : "Select a language"}
-                </SelectValue>
-              </SelectTrigger>
-              <SelectContent className="w-[92%] p-5">
-                <SelectGroup>
-                  <div className="w-[89%]">
-                    <RadioGroup
-                      className=""
-                      value={selectedLanguage}
-                      onValueChange={handleLanguageSelect}
-                    >
-                      {Object.entries(languages).map(([value, label]) => (
-                        <div
-                          key={value}
-                          className="flex items-center space-x-4 py-2"
-                        >
-                          <RadioGroupItem
-                            className="text-[40px]"
-                            value={value}
-                            id={value}
-                          />
-                          <Label className="text-[18px]" htmlFor={value}>
-                            {label}
-                          </Label>
-                        </div>
-                      ))}
-                    </RadioGroup>
-                  </div>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-
-            <div className="absolute bottom-0 mb-32 w-full">
-              <Button
-                className={` ${
-                  !selectedLanguage
-                    ? "bg-[#737373] cursor-not-allowed hover:bg-none"
-                    : "bg-[#003056] hover:bg-[#0c2941]"
-                } mt-[48px] bottom-0 text-[18px] font-medium text-[#FAFAFA] w-full py-[24px]`}
-                onClick={handleContinue}
-                disabled={!selectedLanguage}
-              >
-                Get Started
-              </Button>
-            </div>
-          </div>
-        )}
+        {stage === 4 && <LanguageSelector />}
       </div>
     </div>
   );
