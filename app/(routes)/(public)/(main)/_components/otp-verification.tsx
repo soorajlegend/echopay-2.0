@@ -33,11 +33,12 @@ const OTPVerification = ({
           Enter your mobile number
         </h2>
       </div>
-      <div className="flex flex-col gap-3 items-start">
+      <div className="w-full items-center flex flex-col gap-3">
         <Label htmlFor="terms" className="w-full text-left ">
           We&apos;ve sent an OTP to {mobile}
         </Label>
         <InputOTP
+          type="password"
           maxLength={6}
           value={value}
           onChange={(value) => setValue(value)}
