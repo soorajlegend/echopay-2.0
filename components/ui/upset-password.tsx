@@ -25,7 +25,7 @@ const UpsetPassword = ({ onFinish }: UpsetPasswordProps) => {
   };
 
   return (
-    <div className="relative text-center w-full flex flex-col justify-center h-screen">
+    <div className="relative text-center w-full flex flex-col justify-center h-full gap-5">
       {/* TODO: create back button */}
       <h2 className="text-2xl font-medium text-center space-y-5 text-[#1A1A1A]">
         Create your 6-digit password
