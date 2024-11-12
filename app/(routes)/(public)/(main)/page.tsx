@@ -17,7 +17,6 @@ const OnboardingPage = () => {
   const [mobile, setMobile] = useState("");
   const [isVerifying, setIsVerifying] = useState(false);
   const [isVerified, setIsVerified] = useState(false);
-  const [password, setPassword] = useState("");
 
   const newUser = true;
 
@@ -54,7 +53,7 @@ const OnboardingPage = () => {
     }, 3000);
   };
 
-  const handlePasswordVerification = () => {
+  const handlePasswordVerification = (password: string) => {
     console.log(password);
   };
   return (
@@ -101,10 +100,14 @@ const OnboardingPage = () => {
       </div>
 
       {/* if verified and is new user */}
-      {newUser && isVerified && <UpsetPassword setPassword={setPassword} />}
+      {newUser && isVerified && (
+        <UpsetPassword onFinish={handlePasswordVerification} />
+      )}
 
       {/* if verified and is existing user */}
-      {!newUser && isVerified && <UpsetPassword setPassword={setPassword} />}
+      {!newUser && isVerified && (
+        <UpsetPassword onFinish={handlePasswordVerification} />
+      )}
 
       {/*
        loader 
