@@ -6,11 +6,15 @@ import Image from "next/image";
 
 import MobileInput from "./_components/mobile-input";
 import SplashSlides from "./_components/splash-slides";
+import OTPVerification from "./_components/otp-verification";
 
 const OnboardingPage = () => {
   const [stage, setStage] = useState(0);
   const [showLogo, setShowLogo] = useState(true);
   const [zoomLogo, setZoomLogo] = useState(false);
+  const [mobile, setMobile] = useState("");
+  const [isVerifying, setIsVerifying] = useState(false)
+  const [isVerified, setIsVerified] = useState(false)
 
   useEffect(() => {
     const timer1 = setTimeout(() => setZoomLogo(true), 2000);
@@ -26,7 +30,7 @@ const OnboardingPage = () => {
   }, []);
 
   const handleContinue = () => {
-    if (stage < 4) {
+    if (stage < 5) {
       setStage(stage + 1);
     }
   };
@@ -54,7 +58,18 @@ const OnboardingPage = () => {
           onContinue={handleContinue}
         />
 
-        {stage === 4 && <MobileInput />}
+        {/* mobile input stage */}
+
+        {stage === 4 && <MobileInput mobile={mobile} setMobile={setMobile} />}
+
+        {/* verification stage */}
+        {stage === 5 && <OTPVerification
+        mobile={mobile}
+          setStage={setStage}
+          setIsVerifying={setIsVerifying}
+          setIsVerified={setIsVerified}
+        />}
+
       </div>
     </div>
   );
