@@ -11,17 +11,29 @@ import stage3 from "@/assets/stage3.png"
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
+  SelectLabel,
   SelectTrigger,
-  SelectValue
-} from "@/components/ui/select";
-// import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-// import { Label } from "@/components/ui/label";
+  SelectValue,
+} from "@/components/ui/select"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { Label } from "@/components/ui/label";
 const OnboardingPage = () => {
   const [stage, setStage] = useState(0)
   const [showLogo, setShowLogo] = useState(true)
   const [zoomLogo, setZoomLogo] = useState(false)
+  const [isOpen, setIsOpen] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState("");
+
+  const languages = {
+    en: "English",
+    pg: "Pidgin",
+    hr: "Hausa",
+    yr: "Yoruba",
+    ig: "Igbo"
+  };
+
   const stages = [
     { image: stage1, text: 'Your Future, Your Finance, Your Way', subText: "Join the future of payments, effortlessly" },
     { image: stage2, text: 'Simple. Secure. Smart', subText: "Experience the power of voice and chat for your finances" },
@@ -51,6 +63,7 @@ const OnboardingPage = () => {
 
   const handleLanguageSelect = (value: string) => {
     setSelectedLanguage(value)
+    setIsOpen(false)  // Close the Select popover
   }
 
 
@@ -76,7 +89,7 @@ const OnboardingPage = () => {
   };
 
   return (
-    <div className="w-full h-full flex flex-col border-2 gap-10 relative">
+    <div className="w-full h-full flex flex-col gap-10 relative">
       <div className="min-h-screen flex flex-col items-center justify-center">
         {showLogo && (
           <motion.div
@@ -109,17 +122,16 @@ const OnboardingPage = () => {
                 <div className="flex justify-center ">
                   <Image src={stages[stage - 1].image} alt={`Stage ${stage}`} width={382} height={400} className="mb-[80px] text-center" />
                 </div>
-                <div>
+                <div className="">
                   <p className="text-[20px] font-semibold text-[#1A1A1A]">{stages[stage - 1].text}</p>
-                  <p className="text-[#434343] mt-[6px] w-[70%] mx-auto font-medium text-[18px]">{stages[stage - 1].subText}</p>
+                  <p className="text-[#434343] mt-[6px] mx-auto font-medium text-[18px]">{stages[stage - 1].subText}</p>
 
                   <div className="flex justify-center items-center mt-6 mb-8">
                     {[1, 2, 3].map((dot) => (
                       <motion.div
                         key={dot}
-                        className={`mx-1 rounded-full ${
-                          dot === stage ? 'bg-[#003056]' : 'bg-gray-300'
-                        }`}
+                        className={`mx-1 rounded-full ${dot === stage ? 'bg-[#003056]' : 'bg-gray-300'
+                          }`}
                         initial={false}
                         animate={{
                           width: dot === stage ? 30 : 15,
@@ -132,7 +144,7 @@ const OnboardingPage = () => {
                   </div>
 
                   <div className="w-[90%] mx-auto">
-                    <Button className="border lg:mt-[20px] mt-[40px] text-[18px] font-medium bg-[#003056] hover:bg-[#0c2941] text-[#FAFAFA] w-full py-[24px]" onClick={handleContinue}>
+                    <Button className="lg:mt-[20px] mt-[40px] text-[18px] font-medium bg-[#003056] hover:bg-[#0c2941] text-[#FAFAFA] w-full py-[24px]" onClick={handleContinue}>
                       {stage === 3 ? 'Get Started' : 'Continue'}
                     </Button>
                   </div>
@@ -143,27 +155,43 @@ const OnboardingPage = () => {
         </AnimatePresence>
 
         {stage === 4 && (
-          <div className="text-center relative w-[85%] border-2 border-red-500 h-screen">
+          <div className="text-center relative w-[85%] h-screen">
             <div className="mt-[77px] mb-[88px]">
               <h2 className="text-2xl font-medium text-center text-[#1A1A1A]">Choose your language</h2>
               <p className="text-[18px] font-medium text-[#434343]">Select your preferred language to continue</p>
             </div>
-            <Select onValueChange={handleLanguageSelect}>
-              <SelectTrigger className="w-full mt-6">
-                <SelectValue placeholder="Select a language" />
-              </SelectTrigger>
 
-              <SelectContent className="border-2 w-full mt-[16px] px-0">
-                <SelectItem className="my-[20px]" value="en">English</SelectItem>
-                <SelectItem className="my-[20px]" value="es">Español</SelectItem>
-                <SelectItem className="my-[20px]" value="fr">Français</SelectItem>
-                <SelectItem className="my-[20px]" value="de">Deutsch</SelectItem>
+            <Select open={isOpen} onOpenChange={setIsOpen} value={selectedLanguage}>
+              <div className="mt-6 flex justify-start">
+                <Label htmlFor="terms" className=" text-xl">Language</Label>
+              </div>
+              {/* <SelectLabel>Languages</SelectLabel> */}
+              <SelectTrigger id="terms" className="w-full mt-[8px]">
+                <SelectValue placeholder="Select a language">
+                  {selectedLanguage ? languages[selectedLanguage as keyof typeof languages] : "Select a language"}
+                </SelectValue>
+              </SelectTrigger>
+              <SelectContent className="w-[92%] p-5">
+                <SelectGroup>
+
+                  <div className="w-[89%]">
+                    <RadioGroup className="" value={selectedLanguage} onValueChange={handleLanguageSelect}>
+                      {Object.entries(languages).map(([value, label]) => (
+                        <div key={value} className="flex items-center space-x-4 py-2">
+                          <RadioGroupItem className="text-[40px]" value={value} id={value} />
+                          <Label className="text-[18px]" htmlFor={value}>{label}</Label>
+                        </div>
+                      ))}
+                    </RadioGroup>
+
+                  </div>
+                </SelectGroup>
               </SelectContent>
             </Select>
 
             <div className="absolute bottom-0 w-full">
-              <Button 
-                className="border mt-[48px] bottom-0 text-[18px] font-medium bg-[#003056] hover:bg-[#0c2941] text-[#FAFAFA] w-full py-[24px]" 
+              <Button
+                className={` ${!selectedLanguage ? "bg-[#737373] cursor-not-allowed hover:bg-none" : "bg-[#003056] hover:bg-[#0c2941]"} mt-[48px] bottom-0 text-[18px] font-medium text-[#FAFAFA] w-full py-[24px]`}
                 onClick={handleContinue}
                 disabled={!selectedLanguage}
               >
