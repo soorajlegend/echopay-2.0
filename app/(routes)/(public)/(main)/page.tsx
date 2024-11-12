@@ -17,7 +17,7 @@ const OnboardingPage = () => {
   const [isVerifying, setIsVerifying] = useState(false);
   const [isVerified, setIsVerified] = useState(false);
 
-  const newUser = true;
+  // const newUser = true;
 
   useEffect(() => {
     const timer1 = setTimeout(() => setZoomLogo(true), 2000);
