@@ -1,59 +1,42 @@
-"use client"
+"use client";
 
-import React from 'react'
+import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Button } from '@/components/ui/button';
-import Image from 'next/image';
+import { Button } from "@/components/ui/button";
+import Image from "next/image";
+import { slideVariants } from "@/components/slide-container";
 
 interface SplashslidesProps {
   show: boolean;
   stage: number;
   setStage: (value: number) => void;
-  onContinue: () => void
+  onContinue: () => void;
 }
 
-const SplashSlides = ({ show, stage, setStage, onContinue  }: SplashslidesProps) => {
+const SplashSlides = ({
+  show,
+  stage,
+  setStage,
+  onContinue,
+}: SplashslidesProps) => {
+  const stages = [
+    {
+      image: "stage1.png",
+      text: "Your Future, Your Finance, Your Way",
+      subText: "Join the future of payments, effortlessly",
+    },
+    {
+      image: "stage2.png",
+      text: "Simple. Secure. Smart",
+      subText: "Experience the power of voice and chat for your finances",
+    },
+    {
+      image: "stage3.png",
+      text: "Your Money, Your Control",
+      subText: "Manage your finances anytime, anywhere, anyhow",
+    },
+  ];
 
-      const stages = [
-        {
-          image: "stage1.png",
-          text: "Your Future, Your Finance, Your Way",
-          subText: "Join the future of payments, effortlessly",
-        },
-        {
-          image: "stage2.png",
-          text: "Simple. Secure. Smart",
-          subText: "Experience the power of voice and chat for your finances",
-        },
-        {
-          image: "stage3.png",
-          text: "Your Money, Your Control",
-          subText: "Manage your finances anytime, anywhere, anyhow",
-        },
-    ];
-    
-
-      const slideVariants = {
-        enter: (direction: number) => {
-          return {
-            x: direction > 0 ? 900 : -900,
-            opacity: 0,
-          };
-        },
-        center: {
-          zIndex: 1,
-          x: 0,
-          opacity: 1,
-        },
-        exit: (direction: number) => {
-          return {
-            zIndex: 0,
-            x: direction < 0 ? 900 : -900,
-            opacity: 0,
-          };
-        },
-    };
-    
   return (
     <AnimatePresence initial={false} custom={stage}>
       {!show && stage >= 1 && stage <= 3 && (
@@ -68,10 +51,10 @@ const SplashSlides = ({ show, stage, setStage, onContinue  }: SplashslidesProps)
             x: { type: "spring", stiffness: 300, damping: 30 },
             opacity: { duration: 0.2 },
           }}
-          className="text-center w-[90%] absolute"
+          className="text-center w-full absolute"
         >
           {stage && stage < 3 ? (
-            <div className="flex justify-end mx-auto md:w-[84%]">
+            <div className="flex justify-end mx-auto">
               <Button
                 onClick={() => setStage(4)}
                 className="p-0"
@@ -135,6 +118,6 @@ const SplashSlides = ({ show, stage, setStage, onContinue  }: SplashslidesProps)
       )}
     </AnimatePresence>
   );
-}
+};
 
-export default SplashSlides
+export default SplashSlides;

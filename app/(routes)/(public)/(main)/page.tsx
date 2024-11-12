@@ -9,6 +9,7 @@ import SplashSlides from "./_components/splash-slides";
 import OTPVerification from "./_components/otp-verification";
 import { Loader2 } from "lucide-react";
 import UpsetPassword from "@/components/ui/upset-password";
+import SlideContainer from "@/components/slide-container";
 
 const OnboardingPage = () => {
   const [stage, setStage] = useState(0);
@@ -58,7 +59,7 @@ const OnboardingPage = () => {
   };
   return (
     <div className="w-full h-full flex flex-col px-3 gap-10 relative">
-      <div className="min-h-screen w-full flex flex-col items-center justify-center">
+      <div className="h-screen w-full flex flex-col items-center justify-center">
         {showLogo && (
           <motion.div
             className={`transition-transform duration-1000 ${
@@ -82,31 +83,39 @@ const OnboardingPage = () => {
         {/* mobile input stage */}
 
         {stage === 4 && (
-          <MobileInput
-            mobile={mobile}
-            setMobile={setMobile}
-            onProceed={handleContinue}
-          />
+          <SlideContainer custom={stage}>
+            <MobileInput
+              mobile={mobile}
+              setMobile={setMobile}
+              onProceed={handleContinue}
+            />
+          </SlideContainer>
         )}
 
         {/* verification stage */}
         {stage === 5 && (
-          <OTPVerification
-            mobile={mobile}
-            setStage={setStage}
-            onVerify={handleOTPVerification}
-          />
+          <SlideContainer custom={stage}>
+            <OTPVerification
+              mobile={mobile}
+              setStage={setStage}
+              onVerify={handleOTPVerification}
+            />
+          </SlideContainer>
         )}
       </div>
 
       {/* if verified and is new user */}
       {newUser && isVerified && (
-        <UpsetPassword onFinish={handlePasswordVerification} />
+        <SlideContainer custom={stage}>
+          <UpsetPassword onFinish={handlePasswordVerification} />
+        </SlideContainer>
       )}
 
       {/* if verified and is existing user */}
       {!newUser && isVerified && (
-        <UpsetPassword onFinish={handlePasswordVerification} />
+        <SlideContainer custom={stage}>
+          <UpsetPassword onFinish={handlePasswordVerification} />
+        </SlideContainer>
       )}
 
       {/*
