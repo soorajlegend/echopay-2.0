@@ -29,6 +29,7 @@ const MobileInput = ({ mobile, setMobile, onProceed }: MobileInputProps) => {
           type="tel"
           id="mobile"
           placeholder="Enter your mobile number"
+          value={mobile}
           onChange={(e) => setMobile(e.target.value)}
         />
       </div>
