@@ -1,19 +1,16 @@
 "use client";
-import React from "react";
-import { useState, useEffect } from "react";
+
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
-import { Button } from "@/components/ui/button";
 
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Button } from "@/components/ui/button";
 import LanguageSelector from "@/components/language-selector";
 
 const OnboardingPage = () => {
   const [stage, setStage] = useState(0);
   const [showLogo, setShowLogo] = useState(true);
   const [zoomLogo, setZoomLogo] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
-  const [selectedLanguage, setSelectedLanguage] = useState("");
 
   const stages = [
     {
@@ -50,11 +47,6 @@ const OnboardingPage = () => {
     if (stage < 4) {
       setStage(stage + 1);
     }
-  };
-
-  const handleLanguageSelect = (value: string) => {
-    setSelectedLanguage(value);
-    setIsOpen(false); // Close the Select popover
   };
 
   const slideVariants = {
