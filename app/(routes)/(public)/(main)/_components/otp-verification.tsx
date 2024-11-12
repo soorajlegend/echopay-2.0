@@ -24,6 +24,8 @@ const OTPVerification = ({
 }: OTPVerificationProps) => {
   const [value, setValue] = useState("");
 
+  console.log(setStage, setIsVerified, setIsVerifying);
+
   return (
     <div className="text-center relative w-[85%] h-screen">
       <div className="mt-[77px] mb-[88px]">
@@ -33,7 +35,7 @@ const OTPVerification = ({
       </div>
       <div className="flex flex-col gap-3 items-start">
         <Label htmlFor="terms" className="w-full text-left text-xl">
-          We've sent an OTP to {mobile}
+          We&apos;ve sent an OTP to {mobile}
         </Label>
         <InputOTP
           maxLength={6}

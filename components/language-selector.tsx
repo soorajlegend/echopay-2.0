@@ -84,8 +84,8 @@ const LanguageSelector = () => {
         <Button
           className={` ${
             !selectedLanguage
-              ? "bg-[#737373] cursor-not-allowed hover:bg-none"
-              : "bg-[#003056] hover:bg-[#0c2941]"
+              ? "opacity-80 cursor-not-allowed hover:bg-none"
+              : "bg-theme-primary hover:bg-[#0c2941]"
           } mt-[48px] bottom-0 text-[18px] font-medium text-[#FAFAFA] w-full py-[24px]`}
           onClick={() => {}}
           disabled={!selectedLanguage}
