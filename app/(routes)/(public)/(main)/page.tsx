@@ -62,7 +62,7 @@ const OnboardingPage = () => {
 
         {/* mobile input stage */}
 
-        {stage === 4 && <MobileInput mobile={mobile} setMobile={setMobile} />}
+        {stage === 4 && <MobileInput mobile={mobile} setMobile={setMobile} onProceed={handleContinue} />}
 
         {/* verification stage */}
         {stage === 5 && (
@@ -74,7 +74,7 @@ const OnboardingPage = () => {
           />
         )}
 
-        
+
       </div>
     </div>
   );
