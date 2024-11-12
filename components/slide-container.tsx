@@ -47,7 +47,7 @@ const SlideContainer = ({
           x: { type: "spring", stiffness: 300, damping: 30 },
           opacity: { duration: 0.2 },
         }}
-        className={cn("text-center w-full absolute", className)}
+        className={cn("text-center w-full h-full absolute px-3", className)}
       >
         {children}
       </motion.div>

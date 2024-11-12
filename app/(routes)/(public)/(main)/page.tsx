@@ -58,8 +58,8 @@ const OnboardingPage = () => {
     console.log(password);
   };
   return (
-    <div className="w-full h-full flex flex-col px-3 gap-10 relative">
-      <div className="h-screen w-full flex flex-col items-center justify-center">
+    <div className="w-full h-full flex flex-col gap-10 relative">
+      <div className="h-screen w-full flex flex-col p-3 items-center justify-center">
         {showLogo && (
           <motion.div
             className={`transition-transform duration-1000 ${
@@ -122,7 +122,7 @@ const OnboardingPage = () => {
        loader 
        */}
       {isVerifying && (
-        <div className="fixed z-50 max-w-lg mx-auto w-full h-full bg-black/70 flex items-center justify-center">
+        <div className="fixed z-50 inset-0 w-full h-full bg-black/70 flex items-center justify-center">
           <Loader2 className="w-12 h-12 text-white/90 animate-spin" />
         </div>
       )}
