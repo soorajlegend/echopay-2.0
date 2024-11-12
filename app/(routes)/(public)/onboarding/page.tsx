@@ -12,8 +12,8 @@ import {
   Select,
   SelectContent,
   SelectGroup,
-  SelectItem,
-  SelectLabel,
+  // SelectItem,
+  // SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
