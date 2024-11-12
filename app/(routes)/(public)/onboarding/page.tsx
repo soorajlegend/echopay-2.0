@@ -24,8 +24,8 @@ const OnboardingPage = () => {
   const [selectedLanguage, setSelectedLanguage] = useState("");
   const stages = [
     { image: stage1, text: 'Your Future, Your Finance, Your Way', subText: "Join the future of payments, effortlessly" },
-    { image: stage3, text: 'Simple. Secure. Smart', subText: "Experience the power of voice and chat for your finances" },
-    { image: stage1, text: 'Your Money, Your Control', subText: "Manage your finances anytime, anywhere, anyhow" },
+    { image: stage2, text: 'Simple. Secure. Smart', subText: "Experience the power of voice and chat for your finances" },
+    { image: stage3, text: 'Your Money, Your Control', subText: "Manage your finances anytime, anywhere, anyhow" },
   ]
 
   useEffect(() => {
