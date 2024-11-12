@@ -6,6 +6,7 @@ import Image from "next/image";
 
 import MobileInput from "./_components/mobile-input";
 import SplashSlides from "./_components/splash-slides";
+import OTPVerification from "./_components/otp-verification";
 
 const OnboardingPage = () => {
   const [stage, setStage] = useState(0);
@@ -26,7 +27,7 @@ const OnboardingPage = () => {
   }, []);
 
   const handleContinue = () => {
-    if (stage < 4) {
+    if (stage < 5) {
       setStage(stage + 1);
     }
   };
@@ -54,7 +55,13 @@ const OnboardingPage = () => {
           onContinue={handleContinue}
         />
 
+        {/* mobile input stage */}
+
         {stage === 4 && <MobileInput />}
+
+        {/* verification stage */}
+        {stage === 5 && <OTPVerification />}
+
       </div>
     </div>
   );
