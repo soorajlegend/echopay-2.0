@@ -27,7 +27,7 @@ const PasswordInput = ({
     if (value.length === 6) {
       onComplete();
     }
-  }, [value]);
+  }, [value, onComplete]);
 
   return (
     <div className="relative text-center w-full h-screen">
