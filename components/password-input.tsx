@@ -31,8 +31,8 @@ const PasswordInput = ({
 
   return (
     <div className="relative text-center w-full">
-      <div className="w-full items-center flex flex-col gap-3">
-        <Label htmlFor={label} className="w-full text-center ">
+      <div className="w-full items-center flex flex-col gap-5">
+        <Label htmlFor={label} className="w-full text-center">
           {label}
         </Label>
         <InputOTP

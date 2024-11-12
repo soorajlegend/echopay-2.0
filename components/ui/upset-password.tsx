@@ -17,8 +17,9 @@ const UpsetPassword = ({ onFinish }: UpsetPasswordProps) => {
     if (pass1.length !== 6) {
       return setError("Password must be 6-digits");
     }
-    if (pass1 !== pass1) {
-      return setError("Password did not match");
+
+    if (pass1 !== pass2) {
+      return setError("Passwords did not match");
     }
 
     onFinish(pass1);
