@@ -3,7 +3,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import React from "react";
 
 interface SlideContainerProps {
-  custom: any;
+  custom: string | number;
   children: React.ReactNode;
   className?: string;
 }
