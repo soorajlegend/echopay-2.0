@@ -19,6 +19,7 @@ const OnboardingPage = () => {
   const [mobile, setMobile] = useState("");
   const [isVerifying, setIsVerifying] = useState(false);
   const [isVerified, setIsVerified] = useState(false);
+  const [selectedLanguage, setSelectedLanguage] = useState("");
 
   const newUser = true;
 
@@ -52,7 +53,7 @@ const OnboardingPage = () => {
 
       console.log(otp);
       setStage(6);
-    }, 3000);
+    }, 1000);
   };
 
   const handlePasswordVerification = (password: string) => {
@@ -124,9 +125,12 @@ const OnboardingPage = () => {
       )}
 
       {/* after password creation for new users Language selection*/}
-      {stage === 7 && !newUser && isVerified && (
+      {stage === 7 && newUser && isVerified && (
         <SlideContainer custom={stage}>
-          <LanguageSelector />
+          <LanguageSelector
+            selectedLanguage={selectedLanguage}
+            setSelectedLanguage={setSelectedLanguage}
+          />
         </SlideContainer>
       )}
 

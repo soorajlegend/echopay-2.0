@@ -12,9 +12,16 @@ import {
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 import { Button } from "./ui/button";
 
-const LanguageSelector = () => {
+interface LanguageSelectorProps {
+  selectedLanguage: string;
+  setSelectedLanguage: (value: string) => void;
+}
+
+const LanguageSelector = ({
+  selectedLanguage,
+  setSelectedLanguage,
+}: LanguageSelectorProps) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedLanguage, setSelectedLanguage] = useState("");
 
   const languages = {
     en: "English",
