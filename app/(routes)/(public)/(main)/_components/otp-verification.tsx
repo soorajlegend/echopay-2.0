@@ -34,7 +34,7 @@ const OTPVerification = ({
         </h2>
       </div>
       <div className="flex flex-col gap-3 items-start">
-        <Label htmlFor="terms" className="w-full text-left text-xl">
+        <Label htmlFor="terms" className="w-full text-left ">
           We&apos;ve sent an OTP to {mobile}
         </Label>
         <InputOTP
