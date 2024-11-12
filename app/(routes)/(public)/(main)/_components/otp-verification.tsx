@@ -8,6 +8,7 @@ import {
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 import { Button } from "@/components/ui/button";
+import { Edit } from "lucide-react";
 
 interface OTPVerificationProps {
   mobile: string;
@@ -30,12 +31,15 @@ const OTPVerification = ({
     <div className="text-center relative w-[85%] h-screen">
       <div className="mt-[77px] mb-[88px]">
         <h2 className="text-2xl font-medium text-center text-[#1A1A1A]">
-          Enter your mobile number
+          Verify your mobile number
         </h2>
       </div>
       <div className="w-full items-center flex flex-col gap-3">
         <Label htmlFor="terms" className="w-full text-left ">
-          We&apos;ve sent an OTP to {mobile}
+          We&apos;ve sent an OTP to {mobile} -{" "}
+          <Button onClick={() => setStage(4)} variant="link">
+            Edit <Edit />
+          </Button>
         </Label>
         <InputOTP
           type="password"
