@@ -27,30 +27,28 @@ const UpsetPassword = ({ onFinish }: UpsetPasswordProps) => {
   return (
     <div className="relative text-center w-full flex flex-col justify-center h-screen">
       {/* TODO: create back button */}
-      <div className="mt-[50px] mb-[40px] flex flex-col gap-5">
-        <h2 className="text-2xl font-medium text-center text-[#1A1A1A]">
-          Create your 6-digit password
-        </h2>
-        {/* create password */}
-        {passStage === 1 && (
-          <PasswordInput
-            label="Create password"
-            onComplete={() => setPassStage(2)}
-            setValue={setPass1}
-            value={pass1}
-          />
-        )}
-        {/* confirm password */}
-        {passStage === 2 && (
-          <PasswordInput
-            label="Confirm password"
-            onComplete={handleMatch}
-            setValue={setPass2}
-            value={pass2}
-            error={error}
-          />
-        )}
-      </div>
+      <h2 className="text-2xl font-medium text-center space-y-5 text-[#1A1A1A]">
+        Create your 6-digit password
+      </h2>
+      {/* create password */}
+      {passStage === 1 && (
+        <PasswordInput
+          label="Create password"
+          onComplete={() => setPassStage(2)}
+          setValue={setPass1}
+          value={pass1}
+        />
+      )}
+      {/* confirm password */}
+      {passStage === 2 && (
+        <PasswordInput
+          label="Confirm password"
+          onComplete={handleMatch}
+          setValue={setPass2}
+          value={pass2}
+          error={error}
+        />
+      )}
     </div>
   );
 };
