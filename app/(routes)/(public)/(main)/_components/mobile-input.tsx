@@ -6,9 +6,12 @@ import { InputWithIcon } from "@/components/ui/input-with-icon";
 import { PhoneCall } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-const MobileInput = () => {
-  const [mobile, setMobile] = useState("");
+interface MobileInputProps {
+  mobile: string;
+  setMobile: (value: string) => void;
+}
 
+const MobileInput = ({ mobile, setMobile }: MobileInputProps) => {
   return (
     <div className="text-center relative w-[85%] h-screen">
       <div className="mt-[77px] mb-[88px]">

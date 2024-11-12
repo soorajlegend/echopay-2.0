@@ -5,7 +5,6 @@ import { Label } from "@/components/ui/label";
 import {
   InputOTP,
   InputOTPGroup,
-  InputOTPSeparator,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 import { Button } from "@/components/ui/button";
@@ -14,14 +13,14 @@ interface OTPVerificationProps {
   mobile: string;
   setStage: (value: number) => void;
   setIsVerifying: (value: boolean) => void;
-  setVerified: (value: boolean) => void;
+  setIsVerified: (value: boolean) => void;
 }
 
 const OTPVerification = ({
   mobile,
   setStage,
   setIsVerifying,
-  setVerified,
+  setIsVerified,
 }: OTPVerificationProps) => {
   const [value, setValue] = useState("");
 
