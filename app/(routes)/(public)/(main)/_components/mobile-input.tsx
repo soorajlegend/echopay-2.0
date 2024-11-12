@@ -20,7 +20,7 @@ const MobileInput = ({ mobile, setMobile, onProceed }: MobileInputProps) => {
           Enter your mobile number
         </h2>
       </div>
-      <div className="w-full bg-gray-500 flex flex-col gap-3 items-start">
+      <div className="w-full flex flex-col gap-3 items-start">
         <Label htmlFor="mobile" className="w-full text-left text-xl">
           Mobile
         </Label>
@@ -29,7 +29,6 @@ const MobileInput = ({ mobile, setMobile, onProceed }: MobileInputProps) => {
           type="tel"
           id="mobile"
           placeholder="Enter your mobile number"
-          className="w-full"
           onChange={(e) => setMobile(e.target.value)}
         />
       </div>
