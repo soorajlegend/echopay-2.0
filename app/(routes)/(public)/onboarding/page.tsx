@@ -4,10 +4,6 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import logo from "@/assets/e.svg";
-import stage1 from "@/assets/stage1.png";
-import stage2 from "@/assets/stage2.png";
-import stage3 from "@/assets/stage3.png";
 import {
   Select,
   SelectContent,
@@ -36,17 +32,17 @@ const OnboardingPage = () => {
 
   const stages = [
     {
-      image: stage1,
+      image: "stage1.png",
       text: "Your Future, Your Finance, Your Way",
       subText: "Join the future of payments, effortlessly",
     },
     {
-      image: stage2,
+      image: "stage2.png",
       text: "Simple. Secure. Smart",
       subText: "Experience the power of voice and chat for your finances",
     },
     {
-      image: stage3,
+      image: "stage3.png",
       text: "Your Money, Your Control",
       subText: "Manage your finances anytime, anywhere, anyhow",
     },
@@ -111,7 +107,7 @@ const OnboardingPage = () => {
             animate={{ scale: 1 }}
             transition={{ duration: 1 }}
           >
-            <Image src={logo} alt="Logo" width={200} height={200} />
+            <Image src="/e.svg" alt="Logo" width={200} height={200} />
           </motion.div>
         )}
 
