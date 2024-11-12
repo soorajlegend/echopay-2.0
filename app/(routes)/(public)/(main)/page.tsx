@@ -11,6 +11,7 @@ import { Loader2 } from "lucide-react";
 import UpsetPassword from "@/components/ui/upset-password";
 import SlideContainer from "@/components/slide-container";
 import LanguageSelector from "@/components/language-selector";
+import { useRouter } from "next/navigation";
 
 const OnboardingPage = () => {
   const [stage, setStage] = useState(0);
@@ -22,6 +23,8 @@ const OnboardingPage = () => {
   const [selectedLanguage, setSelectedLanguage] = useState("");
 
   const newUser = true;
+
+  const router = useRouter();
 
   useEffect(() => {
     const timer1 = setTimeout(() => setZoomLogo(true), 2000);
@@ -63,6 +66,13 @@ const OnboardingPage = () => {
     setStage(7);
     console.log(password);
   };
+
+  const onLanguageSelection = () => {
+    // TODO: save info to database
+    // redirect to dashboard
+    router.push("/dashboard");
+  };
+
   return (
     <div className="w-full h-full flex flex-col gap-10 relative">
       <div className="h-screen w-full flex flex-col p-3 items-center justify-center">
@@ -130,6 +140,7 @@ const OnboardingPage = () => {
           <LanguageSelector
             selectedLanguage={selectedLanguage}
             setSelectedLanguage={setSelectedLanguage}
+            onContinue={onLanguageSelection}
           />
         </SlideContainer>
       )}
