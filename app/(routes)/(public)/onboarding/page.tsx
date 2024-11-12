@@ -8,8 +8,6 @@ import {
   Select,
   SelectContent,
   SelectGroup,
-  // SelectItem,
-  // SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
@@ -128,7 +126,14 @@ const OnboardingPage = () => {
             >
               {stage && stage < 3 ? (
                 <div className="flex justify-end mx-auto md:w-[84%]">
-                  <Button className="p-0" variant="link">
+                  <Button
+                    onClick={() => {
+                      setStage(3);
+                      handleContinue();
+                    }}
+                    className="p-0"
+                    variant="link"
+                  >
                     Skip
                   </Button>
                 </div>
