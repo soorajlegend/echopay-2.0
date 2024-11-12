@@ -13,7 +13,7 @@ interface MobileInputProps {
 
 const MobileInput = ({ mobile, setMobile }: MobileInputProps) => {
   return (
-    <div className="text-center relative w-full px-3 h-screen">
+    <div className="text-center relative w-full h-screen">
       <div className="mt-[77px] mb-[88px]">
         <h2 className="text-2xl font-medium text-center text-[#1A1A1A]">
           Enter your mobile number

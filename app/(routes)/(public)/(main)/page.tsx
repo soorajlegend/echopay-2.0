@@ -38,8 +38,8 @@ const OnboardingPage = () => {
   };
 
   return (
-    <div className="w-full h-full flex flex-col gap-10 relative">
-      <div className="min-h-screen flex flex-col items-center justify-center">
+    <div className="w-full h-full flex flex-col px-3 gap-10 relative">
+      <div className="min-h-screen w-full flex flex-col items-center justify-center">
         {showLogo && (
           <motion.div
             className={`transition-transform duration-1000 ${
@@ -73,6 +73,8 @@ const OnboardingPage = () => {
             setIsVerified={setIsVerified}
           />
         )}
+
+        
       </div>
     </div>
   );
