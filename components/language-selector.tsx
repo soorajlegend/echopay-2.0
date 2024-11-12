@@ -15,11 +15,13 @@ import { Button } from "./ui/button";
 interface LanguageSelectorProps {
   selectedLanguage: string;
   setSelectedLanguage: (value: string) => void;
+  onContinue: () => void;
 }
 
 const LanguageSelector = ({
   selectedLanguage,
   setSelectedLanguage,
+  onContinue,
 }: LanguageSelectorProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -94,7 +96,7 @@ const LanguageSelector = ({
               ? "opacity-80 cursor-not-allowed hover:bg-none"
               : "bg-theme-primary hover:bg-[#0c2941]"
           } mt-[48px] bottom-0 text-[18px] font-medium text-[#FAFAFA] w-full py-[24px]`}
-          onClick={() => {}}
+          onClick={onContinue}
           disabled={!selectedLanguage}
         >
           Get Started
