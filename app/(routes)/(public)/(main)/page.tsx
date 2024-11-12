@@ -13,8 +13,8 @@ const OnboardingPage = () => {
   const [showLogo, setShowLogo] = useState(true);
   const [zoomLogo, setZoomLogo] = useState(false);
   const [mobile, setMobile] = useState("");
-  const [isVerifying, setIsVerifying] = useState(false)
-  const [isVerified, setIsVerified] = useState(false)
+  const [isVerifying, setIsVerifying] = useState(false);
+  const [isVerified, setIsVerified] = useState(false);
 
   useEffect(() => {
     const timer1 = setTimeout(() => setZoomLogo(true), 2000);
@@ -33,6 +33,8 @@ const OnboardingPage = () => {
     if (stage < 5) {
       setStage(stage + 1);
     }
+
+    console.log(isVerifying, isVerified);
   };
 
   return (
@@ -63,13 +65,14 @@ const OnboardingPage = () => {
         {stage === 4 && <MobileInput mobile={mobile} setMobile={setMobile} />}
 
         {/* verification stage */}
-        {stage === 5 && <OTPVerification
-        mobile={mobile}
-          setStage={setStage}
-          setIsVerifying={setIsVerifying}
-          setIsVerified={setIsVerified}
-        />}
-
+        {stage === 5 && (
+          <OTPVerification
+            mobile={mobile}
+            setStage={setStage}
+            setIsVerifying={setIsVerifying}
+            setIsVerified={setIsVerified}
+          />
+        )}
       </div>
     </div>
   );
