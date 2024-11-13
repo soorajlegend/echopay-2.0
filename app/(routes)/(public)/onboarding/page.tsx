@@ -189,9 +189,9 @@ const OnboardingPage = () => {
               </SelectContent>
             </Select>
 
-            <div className="absolute bottom-0 w-full">
+            <div className="absolute bottom-10 w-full">
               <Button
-                className={` ${!selectedLanguage ? "bg-[#737373] cursor-not-allowed hover:bg-none" : "bg-[#003056] hover:bg-[#0c2941]"} mt-[48px] bottom-0 text-[18px] font-medium text-[#FAFAFA] w-full py-[24px]`}
+                className={` ${!selectedLanguage ? "bg-[#737373] cursor-not-allowed hover:bg-none" : "bg-[#003056] hover:bg-[#0c2941]"} mt-[48px] bottom-10 text-[18px] font-medium text-[#FAFAFA] w-full py-[24px]`}
                 onClick={handleContinue}
                 disabled={!selectedLanguage}
               >
