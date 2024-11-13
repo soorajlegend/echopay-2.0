@@ -73,19 +73,18 @@ const SplashSlides = ({
                 alt={`Stage ${stage}`}
                 width={382}
                 height={400}
-                className="mb-20 text-center"
+                className="mb-10 text-center"
               />
             </div>
             <div className="pb-10 flex flex-col gap-5 justify-between w-full h-full">
-              <div className="flex flex-col gap-3">
+              <div className="flex w-full marker:flex-col gap-3">
                 <p className="text-[20px] font-semibold text-[#1A1A1A]">
                   {stages[stage - 1].text}
                 </p>
-                <p className="text-[#434343] mt-[6px] mx-auto font-medium text-[18px]">
+                <p className="text-[#020202] mx-auto font-medium text-[18px]">
                   {stages[stage - 1].subText}
                 </p>
-
-                <div className="flex justify-center items-center mt-6 mb-8">
+                <div className="flex justify-center items-center  mb-3">
                   {[1, 2, 3].map((dot) => (
                     <motion.div
                       key={dot}
@@ -105,15 +104,12 @@ const SplashSlides = ({
                   ))}
                 </div>
               </div>
-
-              <div className="w-full">
-                <Button
-                  className=" text-[18px] font-medium bg-[#003056] hover:bg-[#0c2941] text-[#FAFAFA] w-full"
-                  onClick={onContinue}
-                >
-                  {stage === 3 ? "Get Started" : "Continue"}
-                </Button>
-              </div>
+              <Button
+                className=" text-[18px] font-medium bg-[#003056] hover:bg-[#0c2941] text-[#FAFAFA] w-full"
+                onClick={onContinue}
+              >
+                {stage === 3 ? "Get Started" : "Continue"}
+              </Button>
             </div>
           </div>
         </motion.div>
