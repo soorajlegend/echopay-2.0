@@ -51,13 +51,13 @@ const SplashSlides = ({
             x: { type: "spring", stiffness: 300, damping: 30 },
             opacity: { duration: 0.2 },
           }}
-          className="text-center w-full h-full flex flex-col overflow-hidden absolute p-3"
+          className="text-center w-full h-full flex flex-col absolute p-3"
         >
           {stage && stage < 3 ? (
-            <div className="flex justify-end mx-auto">
+            <div className="flex justify-end">
               <Button
                 onClick={() => setStage(4)}
-                className="p-0"
+                className="p-0 ml-auto"
                 variant="link"
               >
                 Skip
@@ -76,15 +76,15 @@ const SplashSlides = ({
                 className="text-center"
               />
             </div>
-            <div className="flex flex-col gap-5 justify-between w-full h-full">
-              <div className="flex flex-col w-full marker:flex-col gap-3">
+            <div className="flex flex-col gap-3 justify-between w-full h-full">
+              <div className="flex flex-col w-full gap-3">
                 <p className="text-[20px] font-semibold text-[#1A1A1A]">
                   {stages[stage - 1].text}
                 </p>
                 <p className="text-[#020202] mx-auto font-medium text-[18px]">
                   {stages[stage - 1].subText}
                 </p>
-                <div className="flex justify-center items-center  mb-3">
+                <div className="flex justify-center items-center ">
                   {[1, 2, 3].map((dot) => (
                     <motion.div
                       key={dot}
@@ -105,7 +105,7 @@ const SplashSlides = ({
                 </div>
               </div>
               <Button
-                className="text-[18px] font-medium bg-[#003056] hover:bg-[#0c2941] text-[#FAFAFA] w-full"
+                className="text-[18px] my-0 font-medium bg-[#003056] hover:bg-[#0c2941] text-[#FAFAFA] w-full"
                 onClick={onContinue}
               >
                 {stage === 3 ? "Get Started" : "Continue"}
