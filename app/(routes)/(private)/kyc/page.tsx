@@ -114,7 +114,7 @@ export default function KYCProcess() {
                 >
                     {currentStage === 0 && (
                         <div className="text-center mt-[60px]">
-                            <Image className='mb-[80px]' src=""  alt="KYC" width={382} height={400} />
+                            <Image className='mb-[80px]' src="/kycimg.png"  alt="KYC" width={382} height={400} />
                             <h2 className="text-2xl font-semibold text-[#1A1A1A] mb-2">{stages[0].title}</h2>
                             <p className="text-[#434343] mb-8">{stages[0].description}</p>
 
