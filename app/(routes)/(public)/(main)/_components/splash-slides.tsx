@@ -21,17 +21,17 @@ const SplashSlides = ({
 }: SplashslidesProps) => {
   const stages = [
     {
-      image: "stage1.png",
+      image: "/stage1.png",
       text: "Your Future, Your Finance, Your Way",
       subText: "Join the future of payments, effortlessly",
     },
     {
-      image: "stage2.png",
+      image: "/stage2.png",
       text: "Simple. Secure. Smart",
       subText: "Experience the power of voice and chat for your finances",
     },
     {
-      image: "stage3.png",
+      image: "/stage3.png",
       text: "Your Money, Your Control",
       subText: "Manage your finances anytime, anywhere, anyhow",
     },
@@ -66,7 +66,7 @@ const SplashSlides = ({
           ) : (
             ""
           )}
-          <div className="">
+          <div className="w-full h-full">
             <div className="flex justify-center ">
               <Image
                 src={stages[stage - 1].image}
@@ -106,7 +106,7 @@ const SplashSlides = ({
 
               <div className="w-full pb-10">
                 <Button
-                  className="lg:mt-[20px] mt-[40px] text-[18px] font-medium bg-[#003056] hover:bg-[#0c2941] text-[#FAFAFA] w-full py-[24px]"
+                  className="mt-[20px] text-[18px] font-medium bg-[#003056] hover:bg-[#0c2941] text-[#FAFAFA] w-full py-[24px]"
                   onClick={onContinue}
                 >
                   {stage === 3 ? "Get Started" : "Continue"}
