@@ -106,7 +106,7 @@ const SplashSlides = ({
 
               <div className="w-full pb-10">
                 <Button
-                  className="mt-[20px] text-[18px] font-medium bg-[#003056] hover:bg-[#0c2941] text-[#FAFAFA] w-full py-[24px]"
+                  className="mt-[30px] text-[18px] font-medium bg-[#003056] hover:bg-[#0c2941] text-[#FAFAFA] w-full py-[24px]"
                   onClick={onContinue}
                 >
                   {stage === 3 ? "Get Started" : "Continue"}
