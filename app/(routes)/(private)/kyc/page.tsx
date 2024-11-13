@@ -13,6 +13,7 @@ import Webcam from "react-webcam";
 function FileIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
+    {...props}
       width="24"
       height="24"
       viewBox="0 0 24 24"
@@ -120,7 +121,7 @@ export default function KYCProcess() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleFileUpload = (e: any) => {
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       const reader = new FileReader();
