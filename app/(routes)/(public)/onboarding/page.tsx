@@ -4,10 +4,6 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import logo from "@/assets/e.svg"
-import stage1 from "@/assets/stage1.png"
-import stage2 from "@/assets/stage2.png"
-import stage3 from "@/assets/stage3.png"
 import {
   Select,
   SelectContent,
