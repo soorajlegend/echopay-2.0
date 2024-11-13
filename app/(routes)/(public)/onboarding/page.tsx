@@ -31,9 +31,9 @@ const OnboardingPage = () => {
   };
 
   const stages = [
-    { image: stage1, text: 'Your Future, Your Finance, Your Way', subText: "Join the future of payments, effortlessly" },
-    { image: stage2, text: 'Simple. Secure. Smart', subText: "Experience the power of voice and chat for your finances" },
-    { image: stage3, text: 'Your Money, Your Control', subText: "Manage your finances anytime, anywhere, anyhow" },
+    { image: "/stage1.png", text: 'Your Future, Your Finance, Your Way', subText: "Join the future of payments, effortlessly" },
+    { image: "/stage2.png", text: 'Simple. Secure. Smart', subText: "Experience the power of voice and chat for your finances" },
+    { image: "/stage3.png", text: 'Your Money, Your Control', subText: "Manage your finances anytime, anywhere, anyhow" },
   ]
 
   useEffect(() => {
@@ -94,7 +94,7 @@ const OnboardingPage = () => {
             animate={{ scale: 1 }}
             transition={{ duration: 1 }}
           >
-            <Image src={logo} alt="Logo" width={200} height={200} />
+            <Image src="/e.svg" alt="Logo" width={200} height={200} />
           </motion.div>
         )}
 
