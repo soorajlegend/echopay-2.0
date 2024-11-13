@@ -2,15 +2,15 @@
 
 import React, { useState, useRef, useCallback, ChangeEventHandler } from 'react'
 import Image from 'next/image'
-import anonymous from "@/assets/anonymous.svg"
-import user from "@/assets/user.svg"
+import anonymous from "@/public/anonymous.svg"
+import user from '@/public/user.svg'
 import { ArrowLeft } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent } from '@/components/ui/card'
 import { Label } from "@/components/ui/label"
-import kycimg from '@/assets/kycimg.png'
+import kycimg from '@/public/kycimg.png'
 import Webcam from "react-webcam";
 
 function FileIcon(props: React.SVGProps<SVGSVGElement>) {
@@ -28,7 +28,7 @@ const stages = [
     {
         title: "Your Security, Our Priority",
         description: "We value your trust. This 3-step process helps ensure the safety of your financial information.",
-        image: kycimg,
+        image: "kycimg.png",
     },
     {
         title: "Personal Information",
@@ -114,7 +114,7 @@ export default function KYCProcess() {
                 >
                     {currentStage === 0 && (
                         <div className="text-center mt-[60px]">
-                            <Image className='mb-[80px]' src={kycimg} alt="KYC" width={382} height={400} />
+                            <Image className='mb-[80px]' src=""  alt="KYC" width={382} height={400} />
                             <h2 className="text-2xl font-semibold text-[#1A1A1A] mb-2">{stages[0].title}</h2>
                             <p className="text-[#434343] mb-8">{stages[0].description}</p>
 
@@ -210,11 +210,11 @@ export default function KYCProcess() {
                             {!showCamera && (
                                 <div>
                                     <div className='flex mt-[24px] md:mt-[10px] items-center gap-[16px]'>
-                                        <Image className='mb-6' src={user} alt='anonymous' height={24} width={24} />
+                                        <Image className='mb-6' src="user.svg" alt='anonymous' height={24} width={24} />
                                     <p className="text-[#434343] mb-6">Face forward and make sure your face is clearly visible</p>
                                     </div>
                                     <div className='flex items-center gap-[16px]'>
-                                        <Image className='mb-6' src={anonymous} alt='anonymous' height={24} width={24} />
+                                        <Image className='mb-6' src="anonymous.svg" alt='anonymous' height={24} width={24} />
                                     <p className="text-[#434343] mb-6">Remove anything covering your face, eyeglasses are allowed</p>
                                     </div>
                                     <Button className="w-full mt-[200px] py-6 bg-[#003056]" onClick={handleCameraOpen}>
