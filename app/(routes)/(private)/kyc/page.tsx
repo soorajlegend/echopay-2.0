@@ -10,7 +10,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import Webcam from "react-webcam";
 
-function FileIcon(props: React.SVGProps<SVGSVGElement>) {
+function FileIcon() {
   return (
     <svg
       width="24"
