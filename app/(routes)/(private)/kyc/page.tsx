@@ -286,30 +286,49 @@ export default function KYCProcess() {
                           <div className="flex flex-col items-center justify-center h-64">
                             <p className="text-2xl font-semibold text-[#1A1A1A]">Verification</p>
 
-                            <p className='text-[#434343]'>Please wait while we process your verification details. This may take a few minutes. Thank you for your patience</p>
+                            <p className='text-[#434343] text-center'>Please wait while we process your verification details. This may take a few minutes. Thank you for your patience</p>
                             <Loader2 className="w-16 h-16 text-[#003056] animate-spin" />
                           </div>
                         )}
             
                         {verificationStatus && (
-                          <div className="flex flex-col items-center justify-center h-64">
-                             <p className="text-2xl font-semibold text-[#1A1A1A]">Verification</p>
+                          <div className="flex flex-col h-screen border-2 items-center justify-center">
+                             <p className="text-2xl font-semibold mb[60px] text-[#1A1A1A]">Verification</p>
                             {verificationStatus === 'success' ? (
                               <>
-                                <Check className="w-24 h-24 text-green-500" />
+                                
+                                    
+                                <div className='flex justify-center'>
+                                <div className='flex justify-center h-[145px] w-[145px] items-center my-[64px] rounded-full text-center bg-[#1B9C12] text-white'>
+                                <Check className="w-24 h-24 text-white" />
+
+                                </div>
+                                </div>
+                                
+
                                 <div className='text-center'>
-                                <p className="mt-4 text-2xl text-[#1A1A1A]">Verification Successful!</p>
+                                <p className="my-4 text-2xl text-[#1A1A1A]">Verification Successful!</p>
                                 <p>Your information has been verified successfully. You can now enjoy full access to all EchoPay features. Thank you for your patience</p>
                                 </div>
                                 <Button className="mt-8 w-full py-4 bg-[#003056]" onClick={handleHome}>
-                                  <Home className="mr-2 h-4 w-4" /> Go to Home
+                                  <Home className="mr-2 h-4 w-4" /> Home
                                 </Button>
                               </>
                             ) : (
-                              <>
-                                <X className="w-24 h-24 text-red-500" />
-                                <p className="mt-4 text-lg text-[#434343]">Verification Failed</p>
-                                <div className="flex gap-4 mt-8 w-full">
+                              <div >
+
+                                <div className='flex justify-center'>
+                                <div className='flex justify-center h-[145px] w-[145px] items-center my-[64px] rounded-full text-center bg-[#FB3748] text-white'>
+                                <X className="w-24 h-24 mx-auto text-white" />
+                                </div>
+                                </div>
+                                
+
+                                <div className='text-center'>
+                                <p className="mt-4 text-2xl font-semibold text-[#1A1A1A]">Verification Failed</p>
+                                <p className='mt-[16px]'>Your information has been verified successfully. You can now enjoy full access to all EchoPay features. Thank you for your patience</p>
+                                </div>
+                                <div className="flex flex-col gap-4 mt-[100px] w-full">
                                   <Button className="flex-1 py-4 bg-[#003056]" onClick={handleRetake}>
                                     Try Again
                                   </Button>
@@ -317,7 +336,7 @@ export default function KYCProcess() {
                                     <Home className="mr-2 h-4 w-4" /> Home
                                   </Button>
                                 </div>
-                              </>
+                              </div>
                             )}
                           </div>
                         )}
