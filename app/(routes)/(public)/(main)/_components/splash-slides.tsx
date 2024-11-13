@@ -76,32 +76,34 @@ const SplashSlides = ({
                 className="mb-20 text-center"
               />
             </div>
-            <div className="pb-10 flex flex-col justify-between w-full h-full">
-              <p className="text-[20px] font-semibold text-[#1A1A1A]">
-                {stages[stage - 1].text}
-              </p>
-              <p className="text-[#434343] mt-[6px] mx-auto font-medium text-[18px]">
-                {stages[stage - 1].subText}
-              </p>
+            <div className="pb-10 flex flex-col gap-5 justify-between w-full h-full">
+              <div className="flex flex-col gap-3">
+                <p className="text-[20px] font-semibold text-[#1A1A1A]">
+                  {stages[stage - 1].text}
+                </p>
+                <p className="text-[#434343] mt-[6px] mx-auto font-medium text-[18px]">
+                  {stages[stage - 1].subText}
+                </p>
 
-              <div className="flex justify-center items-center mt-6 mb-8">
-                {[1, 2, 3].map((dot) => (
-                  <motion.div
-                    key={dot}
-                    className={`mx-1 rounded-full ${
-                      dot === stage ? "bg-[#003056]" : "bg-gray-300"
-                    }`}
-                    initial={false}
-                    animate={{
-                      width: dot === stage ? 30 : 15,
-                      height: 9,
-                    }}
-                    transition={{ duration: 0.3 }}
-                    aria-label={
-                      dot === stage ? `Current stage ${dot}` : `Stage ${dot}`
-                    }
-                  />
-                ))}
+                <div className="flex justify-center items-center mt-6 mb-8">
+                  {[1, 2, 3].map((dot) => (
+                    <motion.div
+                      key={dot}
+                      className={`mx-1 rounded-full ${
+                        dot === stage ? "bg-[#003056]" : "bg-gray-300"
+                      }`}
+                      initial={false}
+                      animate={{
+                        width: dot === stage ? 30 : 15,
+                        height: 9,
+                      }}
+                      transition={{ duration: 0.3 }}
+                      aria-label={
+                        dot === stage ? `Current stage ${dot}` : `Stage ${dot}`
+                      }
+                    />
+                  ))}
+                </div>
               </div>
 
               <div className="w-full">
