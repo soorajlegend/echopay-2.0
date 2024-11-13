@@ -57,7 +57,7 @@ const SplashSlides = ({
             <div className="flex justify-end">
               <Button
                 onClick={() => setStage(4)}
-                className="p-0 ml-auto"
+                className="p-0 ml-auto w-auto"
                 variant="link"
               >
                 Skip
