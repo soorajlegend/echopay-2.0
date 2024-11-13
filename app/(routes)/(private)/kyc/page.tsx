@@ -10,7 +10,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import Webcam from "react-webcam";
 
-function FileIcon() {
+function FileIcon({ ...props }) {
   return (
     <svg
       width="24"
@@ -18,31 +18,32 @@ function FileIcon() {
       viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
+      {...props}
     >
       <path
         d="M13 3.00231C12.5299 3 12.0307 3 11.5 3C7.02166 3 4.78249 3 3.39124 4.39124C2 5.78249 2 8.02166 2 12.5C2 16.9783 2 19.2175 3.39124 20.6088C4.78249 22 7.02166 22 11.5 22C15.9783 22 18.2175 22 19.6088 20.6088C20.9472 19.2703 20.998 17.147 20.9999 13"
         stroke="#141B34"
-        stroke-width="1.5"
-        stroke-linecap="round"
+        strokeWidth="1.5"
+        strokeLinecap="round"
       />
       <path
         d="M2 14.1354C2.61902 14.0455 3.24484 14.0011 3.87171 14.0027C6.52365 13.9466 9.11064 14.7729 11.1711 16.3342C13.082 17.7821 14.4247 19.7749 15 22"
         stroke="#141B34"
-        stroke-width="1.5"
-        stroke-linejoin="round"
+        strokeWidth="1.5"
+        strokeLinejoin="round"
       />
       <path
         d="M21 16.8962C19.8246 16.3009 18.6088 15.9988 17.3862 16.0001C15.5345 15.9928 13.7015 16.6733 12 18"
         stroke="#141B34"
-        stroke-width="1.5"
-        stroke-linejoin="round"
+        strokeWidth="1.5"
+        strokeLinejoin="round"
       />
       <path
         d="M17 4.5C17.4915 3.9943 18.7998 2 19.5 2M19.5 2C20.2002 2 21.5085 3.9943 22 4.5M19.5 2V10"
         stroke="#141B34"
-        stroke-width="1.5"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </svg>
   );
@@ -120,7 +121,7 @@ export default function KYCProcess() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleFileUpload = (e: any) => {
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       const reader = new FileReader();
@@ -262,9 +263,11 @@ export default function KYCProcess() {
               >
                 <CardContent className="h-full w-full p-0 text-center flex items-center justify-center flex-col space-y-2">
                   {uploadedImage ? (
-                    <img
+                    <Image
                       src={uploadedImage}
                       alt="Uploaded Preview"
+                      width={400}
+                      height={180}
                       className="w-full h-full object-cover rounded-md"
                     />
                   ) : (
@@ -379,8 +382,8 @@ export default function KYCProcess() {
                     <Image
                       src={capturedImage}
                       alt="Captured selfie"
-                      width={0}
-                      height={0}
+                      width={160}
+                      height={210}
                       className="rounded-full object-cover w-40 h-[210px]"
                     />
                   </div>
