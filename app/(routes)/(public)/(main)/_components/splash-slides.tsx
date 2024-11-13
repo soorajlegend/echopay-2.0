@@ -51,7 +51,7 @@ const SplashSlides = ({
             x: { type: "spring", stiffness: 300, damping: 30 },
             opacity: { duration: 0.2 },
           }}
-          className="text-center w-full h-full absolute p-3"
+          className="text-center w-full h-full overflow-hidden absolute p-3"
         >
           {stage && stage < 3 ? (
             <div className="flex justify-end mx-auto">
@@ -73,10 +73,10 @@ const SplashSlides = ({
                 alt={`Stage ${stage}`}
                 width={382}
                 height={400}
-                className="mb-[80px] text-center"
+                className="mb-20 text-center"
               />
             </div>
-            <div className="">
+            <div className="pb-10 flex flex-col justify-between w-full h-full">
               <p className="text-[20px] font-semibold text-[#1A1A1A]">
                 {stages[stage - 1].text}
               </p>
@@ -104,9 +104,9 @@ const SplashSlides = ({
                 ))}
               </div>
 
-              <div className="w-full pb-10">
+              <div className="w-full">
                 <Button
-                  className="mt-[30px] text-[18px] font-medium bg-[#003056] hover:bg-[#0c2941] text-[#FAFAFA] w-full py-[24px]"
+                  className=" text-[18px] font-medium bg-[#003056] hover:bg-[#0c2941] text-[#FAFAFA] w-full"
                   onClick={onContinue}
                 >
                   {stage === 3 ? "Get Started" : "Continue"}
