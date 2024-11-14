@@ -125,7 +125,7 @@ Response: {
     model: "llama-3.1-70b-versatile",
     temperature: 0.9,
     stream: true,
-    response_format: { type: "json_object" },
+    // response_format: { type: "json_object" },
     max_tokens: 256,
   });
 

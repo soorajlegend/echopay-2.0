@@ -105,6 +105,7 @@ const SplashSlides = ({
                 </div>
               </div>
               <Button
+                size="lg"
                 className="text-[18px] py-2 my-0 mb-10 font-medium bg-[#003056] hover:bg-[#0c2941] text-[#FAFAFA] w-full"
                 onClick={onContinue}
               >
