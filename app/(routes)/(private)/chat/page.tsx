@@ -86,22 +86,14 @@ const ChatPage = () => {
 
     const filteredPrompt = newMessage;
 
-    setAllChats((state) => [
-      ...state,
-      {
-        id: nanoid(),
-        role: "user",
-        content: filteredPrompt,
-        createdAt: new Date(),
-      },
-      {
-        id: nanoid(),
-        role: "model",
-        content: "",
-        createdAt: new Date(),
-      },
-    ]);
+    const userMessage: Chat = {
+      id: nanoid(),
+      role: "user",
+      content: filteredPrompt,
+      createdAt: new Date(),
+    };
 
+    setAllChats((state) => [...state, userMessage]);
     setUnSavedPrompt(filteredPrompt);
     setNewMessage("");
 
@@ -142,24 +134,30 @@ const ChatPage = () => {
       };
 
       const response = await axios.request(config);
-
       const jsonData = response.data;
 
       if (jsonData.newTransaction) {
         setNewTransaction(jsonData.newTransaction);
       }
 
-      // Update the last message with the response
-      setAllChats((currentChats) => {
-        const updatedChats = [...currentChats];
-        updatedChats[updatedChats.length - 1] = {
-          ...updatedChats[updatedChats.length - 1],
-          content: jsonData.message,
-        };
-        return updatedChats;
-      });
+      if (jsonData.message) {
+        // Update the last message with the response
+        setAllChats((currentChats) => {
+          const updatedChats = [...currentChats];
+          const lastIndex = updatedChats.length - 1;
+          if (lastIndex >= 0) {
+            updatedChats[lastIndex] = {
+              ...updatedChats[lastIndex],
+              content: jsonData.message,
+            };
+          }
+          return updatedChats;
+        });
+      }
     } catch (error) {
       console.error("API request failed:", error);
+      // Remove the empty model message if request fails
+      setAllChats((currentChats) => currentChats.slice(0, -1));
     } finally {
       setIsLoading(false);
     }
@@ -175,6 +173,15 @@ const ChatPage = () => {
             isLast={index === allChats.length - 1}
           />
         ))}
+
+        {isLoading && (
+          <div className="flex items-center gap-2 px-4">
+            <div className="w-2 h-2 rounded-full bg-gray-500 animate-bounce [animation-delay:-0.3s]"></div>
+            <div className="w-2 h-2 rounded-full bg-gray-500 animate-bounce [animation-delay:-0.15s]"></div>
+            <div className="w-2 h-2 rounded-full bg-gray-500 animate-bounce"></div>
+          </div>
+        )}
+
         <div ref={messagesEndRef} />
       </div>
       <CustomTextareaForm
