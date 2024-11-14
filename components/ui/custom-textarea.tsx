@@ -79,7 +79,7 @@ const CustomTextareaForm: React.FC<
           onKeyDown={handleKeyDown}
           rows={1}
           className={cn(
-            "w-full py-1 px-2 bg-transparent outline-none focus-visible:ring-0 resize-none hidden-scrollbar placeholder:text-gray-400  rounded-2xl max-h-52 hide-scrollbar text-sm",
+            "w-full py-1 px-2 bg-transparent outline-none focus-visible:ring-0 resize-none hidden-scrollbar placeholder:text-gray-400  rounded-2xl max-h-52 hide-scrollbar text-sm caret-theme-primary",
             className
           )}
           {...rest}
