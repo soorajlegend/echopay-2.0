@@ -131,21 +131,21 @@ Response: {
   //     max_tokens: 256,
   //   });
 
-  const chatCompletion = await getGroqChatCompletion();
-  NextResponse.json(chatCompletion.choices[0]?.message?.content || "");
+  //   const chatCompletion = await getGroqChatCompletion();
+  NextResponse.json("is working");
 
-  async function getGroqChatCompletion() {
-    return groq.chat.completions.create({
-      messages: [{ role: "system", content: role }, ...messages],
-      model: "llama-3.1-70b-versatile",
-      temperature: 1,
-      max_tokens: 256,
-      top_p: 1,
-      stream: false,
-      response_format: {
-        type: "json_object",
-      },
-      stop: null,
-    });
-  }
+  //   async function getGroqChatCompletion() {
+  //     return groq.chat.completions.create({
+  //       messages: [{ role: "system", content: role }, ...messages],
+  //       model: "llama-3.1-70b-versatile",
+  //       temperature: 1,
+  //       max_tokens: 256,
+  //       top_p: 1,
+  //       stream: false,
+  //       response_format: {
+  //         type: "json_object",
+  //       },
+  //       stop: null,
+  //     });
+  //   }
 }
