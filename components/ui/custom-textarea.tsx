@@ -84,10 +84,10 @@ const CustomTextareaForm: React.FC<
           )}
           {...rest}
         />
+        <Button type="submit" size="icon" disabled={value.length === 0}>
+          <SendHorizonal className="w-10 h-10" />
+        </Button>
       </div>
-      <Button type="submit" size="icon" disabled={value.length === 0}>
-        <SendHorizonal className="w-10 h-10" />
-      </Button>
     </form>
   );
 };
