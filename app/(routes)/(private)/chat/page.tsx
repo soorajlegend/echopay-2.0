@@ -1,11 +1,13 @@
 "use client";
 
 import CustomTextareaForm from "@/components/ui/custom-textarea";
-import { Chat, NewTransactionType } from "@/type";
+import { Chat, NewTransactionType } from "@/types";
 import React, { useEffect, useState, useRef } from "react";
 import { nanoid } from "nanoid";
 import ChatItem from "@/components/chat-item";
 import axios from "axios";
+import useChat from "@/hooks/use-chat";
+import ConfirmTransaction from "@/components/confirm-transaction";
 
 const name = "Suraj Muhammad";
 const balance = 10000;
@@ -37,26 +39,46 @@ const transactions = [
 const beneficiaries = [
   {
     id: 1,
-    name: "John Doe",
+    userid: "user1",
+    acc_name: "John Doe",
+    acc_num: "1234567890",
+    bank_name: "Bank of America",
+    bank_code: "BOA001",
+    status: 1,
+    createdAt: "2024-01-01T00:00:00Z",
+    updatedAt: "2024-01-01T00:00:00Z",
   },
   {
     id: 2,
-    name: "James Bond",
+    userid: "user2",
+    acc_name: "James Bond",
+    acc_num: "0987654321",
+    bank_name: "Chase Bank",
+    bank_code: "CHASE001",
+    status: 1,
+    createdAt: "2024-01-01T00:00:00Z",
+    updatedAt: "2024-01-01T00:00:00Z",
   },
   {
     id: 3,
-    name: "Muhammad Ali",
+    userid: "user3",
+    acc_name: "Muhammad Ali",
+    acc_num: "5555555555",
+    bank_name: "Wells Fargo",
+    bank_code: "WF001",
+    status: 1,
+    createdAt: "2024-01-01T00:00:00Z",
+    updatedAt: "2024-01-01T00:00:00Z",
   },
 ];
 
 const ChatPage = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [newMessage, setNewMessage] = useState("");
-  //  const { verified, info } = useUserInfo();
 
-  const [unSavedPrompt, setUnSavedPrompt] = useState("");
+  const { chats, addChat } = useChat();
+
   const [isLoading, setIsLoading] = useState(false);
-  const [allChats, setAllChats] = useState<Chat[]>([]);
   const [newTransaction, setNewTransaction] =
     useState<NewTransactionType | null>(null);
 
@@ -66,13 +88,10 @@ const ChatPage = () => {
 
   useEffect(() => {
     scrollToBottom();
-  }, [allChats]);
+  }, [chats]);
 
   useEffect(() => {
     if (newTransaction) {
-      // Could integrate with a toast notification system here
-      console.log("New transaction detected:", newTransaction, unSavedPrompt);
-
       // Reset transaction after handling
       setNewTransaction(null);
     }
@@ -81,7 +100,7 @@ const ChatPage = () => {
   const handleSubmit = async () => {
     if (!newMessage) return;
 
-    const history = [...allChats];
+    const history = [...chats];
     setIsLoading(true);
 
     const filteredPrompt = newMessage;
@@ -93,8 +112,7 @@ const ChatPage = () => {
       createdAt: new Date(),
     };
 
-    setAllChats((state) => [...state, userMessage]);
-    setUnSavedPrompt(filteredPrompt);
+    addChat(userMessage);
     setNewMessage("");
 
     const messages = [
@@ -112,7 +130,7 @@ const ChatPage = () => {
       const data = JSON.stringify({
         messages,
         beneficiaries: JSON.stringify(
-          beneficiaries.map((b) => `${b.name} - ${b.id} |`)
+          beneficiaries.map((b) => `${b.acc_name} - ${b.id} |`)
         ),
         transactions: JSON.stringify(
           transactions.map(
@@ -141,21 +159,16 @@ const ChatPage = () => {
       }
 
       if (jsonData.message) {
-        // Update the last message with the response
-        setAllChats((currentChats) => [
-          ...currentChats,
-          {
-            id: nanoid(),
-            role: "model",
-            content: jsonData.message,
-            createdAt: new Date(),
-          },
-        ]);
+        const modelMessage: Chat = {
+          id: nanoid(),
+          role: "model",
+          content: jsonData.message,
+          createdAt: new Date(),
+        };
+        addChat(modelMessage);
       }
     } catch (error) {
       console.error("API request failed:", error);
-      // Remove the empty model message if request fails
-      setAllChats((currentChats) => currentChats.slice(0, -1));
     } finally {
       setIsLoading(false);
     }
@@ -164,11 +177,11 @@ const ChatPage = () => {
   return (
     <div className="flex flex-col w-full h-screen p-4">
       <div className="flex-1 overflow-y-auto mb-4 space-y-4">
-        {allChats.map((chat, index) => (
+        {chats.map((chat, index) => (
           <ChatItem
             key={chat.id}
             data={chat}
-            isLast={index === allChats.length - 1}
+            isLast={index === chats.length - 1}
           />
         ))}
 
@@ -189,6 +202,10 @@ const ChatPage = () => {
         className="flex-1 border-none rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
         onSubmit={handleSubmit}
         disabled={isLoading}
+      />
+      <ConfirmTransaction
+        data={newTransaction}
+        setNewTransaction={setNewTransaction}
       />
     </div>
   );
