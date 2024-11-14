@@ -117,28 +117,31 @@ const ChatPage = () => {
     ];
 
     try {
-      const response = await axios.post(
-        "https://raj-assistant-api.vercel.app/api/echopay-models/chat/",
-        {
-          messages,
-          beneficiaries: JSON.stringify(
-            beneficiaries.map((b) => `${b.name} - ${b.id} |`)
-          ),
-          transactions: JSON.stringify(
-            transactions.map(
-              (t) => `${t.name} - ${t.type} - NGN${t.amount} - ${t.date} |`
-            )
-          ),
-          name,
-          balance,
+      const data = JSON.stringify({
+        messages,
+        beneficiaries: JSON.stringify(
+          beneficiaries.map((b) => `${b.name} - ${b.id} |`)
+        ),
+        transactions: JSON.stringify(
+          transactions.map(
+            (t) => `${t.name} - ${t.type} - NGN${t.amount} - ${t.date} |`
+          )
+        ),
+        name,
+        balance
+      });
+
+      const config = {
+        method: 'post',
+        maxBodyLength: Infinity,
+        url: 'https://raj-assistant-api.vercel.app/api/echopay-models/chat/',
+        headers: {
+          'Content-Type': 'application/json'
         },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*'
-          }
-        }
-      );
+        data: data
+      };
+
+      const response = await axios.request(config);
 
       const jsonData = response.data;
 
