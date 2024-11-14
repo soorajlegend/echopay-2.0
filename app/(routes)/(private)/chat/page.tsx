@@ -134,7 +134,9 @@ const ChatPage = () => {
       };
 
       const response = await axios.request(config);
-      const jsonData = response.data;
+      const jsonData = JSON.parse(response.data);
+
+      console.log(jsonData);
 
       if (jsonData.newTransaction) {
         setNewTransaction(jsonData.newTransaction);
