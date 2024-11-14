@@ -10,7 +10,7 @@ import React, {
 
 interface CustomTextareaFormProps {
   value: string;
-  setValue: (newValue: string) => void;
+  onChange: (newValue: string) => void;
   onSubmit: () => Promise<void>;
   isVisible?: boolean;
   className?: string;
@@ -21,7 +21,7 @@ const CustomTextareaForm: React.FC<
   CustomTextareaFormProps & TextareaHTMLAttributes<HTMLTextAreaElement>
 > = ({
   value,
-  setValue,
+  onChange,
   onSubmit,
   isVisible,
   className,
@@ -44,7 +44,7 @@ const CustomTextareaForm: React.FC<
         const { selectionStart, selectionEnd } = event.currentTarget;
         const newValue =
           value.slice(0, selectionStart) + "\n" + value.slice(selectionEnd);
-        setValue(newValue);
+        onChange(newValue);
         if (textareaRef.current) {
           textareaRef.current.style.height = "auto";
           textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
@@ -80,7 +80,7 @@ const CustomTextareaForm: React.FC<
           value={value}
           disabled={disabled}
           ref={textareaRef}
-          onChange={(e) => setValue(e.target.value)}
+          onChange={(e) => onChange(e.target.value)}
           onKeyDown={handleKeyDown}
           rows={1}
           className={cn(
