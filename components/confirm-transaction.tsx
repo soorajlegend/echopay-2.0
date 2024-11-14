@@ -13,7 +13,7 @@ import { useRef, useState } from "react";
 import { toast } from "sonner";
 // import { cleanPhoneNumber } from "@/lib/utils";
 // import axios from "axios";
-// import useBeneficiary from "@/hooks/use-beneficiary";
+import useBeneficiary from "@/hooks/use-beneficiary";
 import { NewTransactionType } from "@/types";
 // import useTransaction from "@/hooks/use-transaction";
 // import useUserInfo from "@/hooks/use-userinfo";
@@ -30,7 +30,7 @@ const ConfirmTransaction = ({
   data,
   setNewTransaction,
 }: ConfirmTransactionProps) => {
-  //   const { beneficiaries } = useBeneficiary();
+  const { beneficiaries } = useBeneficiary();
   //   const { addTransaction } = useTransaction();
   //   const { verified, password, info, setInfo } = useUserInfo();
 
@@ -38,20 +38,20 @@ const ConfirmTransaction = ({
 
   const closeRef = useRef<HTMLButtonElement>(null);
 
-  //   if (!data) {
-  //     // || !verified
-  //     return null;
-  //   }
-  //   console.log("not null");
+  if (!data) {
+    // || !verified
+    return null;
+  }
+  console.log("not null");
 
-  //   const beneficiary = beneficiaries.find(
-  //     (beneficiary) => beneficiary.id === Number(data.beneficiaryId)
-  //   );
+  const beneficiary = beneficiaries.find(
+    (beneficiary) => beneficiary.id === Number(data.beneficiaryId)
+  );
 
-  //   if (!beneficiary) {
-  //     console.log("no beneficiary");
-  //     return toast.error("No beneficiary found");
-  //   }
+  if (!beneficiary) {
+    console.log("no beneficiary");
+    return toast.error("No beneficiary found");
+  }
 
   const createTransaction = async () => {
     setIsLoading(true);
@@ -108,12 +108,12 @@ const ConfirmTransaction = ({
             </Avatar>
             <div className="flex flex-1 flex-col gap-1">
               <div className="text-sm font-bold text-gray-900">
-                {/* {beneficiary?.acc_name} */}sss
+                {beneficiary?.acc_name}
               </div>
               <div className="text-sm">{data?.description}</div>
             </div>
             <div className="text-base font-semibold px-2 text-rose-500">
-              {/* ₦{data?.amount} */}200
+              ₦{data?.amount}
             </div>
           </Card>
         </div>
