@@ -186,7 +186,7 @@ export default function KYCProcess() {
           transition={{ duration: 0.3 }}
         >
           {currentStage === 0 && (
-            <div className="text-center mt-[60px]">
+            <div className="text-center mt[60px]">
               <Image
                 className="mb-[80px]"
                 src="/kycimg.png"
