@@ -93,7 +93,14 @@ const ChatPage = () => {
       createdAt: new Date(),
     };
 
-    setAllChats((state) => [...state, userMessage]);
+    const modelMessage: Chat = {
+      id: nanoid(),
+      role: "model",
+      content: "",
+      createdAt: new Date(),
+    };
+
+    setAllChats((state) => [...state, userMessage, modelMessage]);
     setUnSavedPrompt(filteredPrompt);
     setNewMessage("");
 
@@ -135,8 +142,6 @@ const ChatPage = () => {
 
       const response = await axios.request(config);
       const jsonData = JSON.parse(response.data);
-
-      console.log(jsonData);
 
       if (jsonData.newTransaction) {
         setNewTransaction(jsonData.newTransaction);
