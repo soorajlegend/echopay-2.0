@@ -10,7 +10,7 @@ import ChatItem from "@/components/chat-item";
 const name = "Suraj Muhammad";
 const balance = 10000;
 // dummu data
-const transactions = `[
+const transactions = [
   {
     id: 1,
     name: "John Doe",
@@ -32,9 +32,9 @@ const transactions = `[
     date: "2024-10-13",
     type: "send",
   },
-]`;
+];
 
-const beneficiaries = `[
+const beneficiaries = [
   {
     id: 1,
     name: "John Doe",
@@ -47,7 +47,7 @@ const beneficiaries = `[
     id: 3,
     name: "Muhammad Ali",
   },
-]`;
+];
 
 const ChatPage = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -149,8 +149,14 @@ const ChatPage = () => {
       },
       body: JSON.stringify({
         messages,
-        beneficiaries,
-        transactions,
+        beneficiaries: JSON.stringify(
+          beneficiaries.map((b) => `${b.name} - ${b.id} |`)
+        ),
+        transactions: JSON.stringify(
+          transactions.map(
+            (t) => `${t.name} - ${t.type} - NGN${t.amount} - ${t.date} |`
+          )
+        ),
         name,
         balance,
       }),
