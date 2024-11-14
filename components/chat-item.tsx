@@ -71,8 +71,8 @@ const ChatItem = ({ data, isLast }: Chatcontent) => {
             <Avatar
               className={cn("w-9 h-9 aspect-square dark:bg-gray-900/40 ")}
             >
-              <AvatarImage src="/icon-gradient.png" />
-              <AvatarFallback>U</AvatarFallback>
+              <AvatarImage src="/apple-touch-icon.png" />
+              <AvatarFallback>E</AvatarFallback>
             </Avatar>
           )}
 
