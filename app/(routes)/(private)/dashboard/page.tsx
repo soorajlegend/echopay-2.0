@@ -3,14 +3,8 @@ import React from "react";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import { Home, Wallet, X, MessageSquare, User, Menu } from "lucide-react";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input";
+
 
 const features = [
   {
@@ -114,10 +108,28 @@ const TransactionView = () => (
 );
 
 const AiView = () => (
-  <div className="space-y-6 m-4 mb-10">
-    <h2 className="text-2xl font-semibold">AI Assistant</h2>
-    <div className="bg-[#F5F5F5] p-4 rounded-lg">
-      <p>How can I assist you today?</p>
+  <div className="space-y-6 m-4 relative mb-10 flex flex-col justify-between">
+    <div className=" flex justify-between items-center gap-4">
+      <Image src="/ai.svg" alt="icon" className="w-[62px] h-[63px]" width={62} height={62} />
+      <p className="text-[32px] font-medium text-[#1A1A1A]">What can i do for you?</p>
+    </div>
+    <div>
+      <div className="my-5">
+        <div className="flex justify-end items-center">
+        <Image className="h-[40px] float-right w-[40px] bg-[#003056] rounded-full" src="/avater.png" alt="avater" width={12} height={12}/>
+        </div>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequuntur, maiores.</p>
+      </div>
+      <div className="my-5">
+        <div className="flex justify-start items-center">
+        <Image className="h-[40px] float-right w-[40px] bg-[#003056] rounded-full" src="/ai.svg" alt="avater" width={12} height={12}/>
+        </div>
+        <p className=" text-right">Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequuntur, maiores.</p>
+      </div>
+      
+    </div>
+    <div className="  bottom-0 mt-28">
+      <Input type="text" placeholder="Type here"/>
     </div>
   </div>
 );
