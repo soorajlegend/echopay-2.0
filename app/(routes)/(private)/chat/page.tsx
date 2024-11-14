@@ -56,7 +56,6 @@ const ChatPage = () => {
   const [newMessage, setNewMessage] = useState("");
   //  const { verified, info } = useUserInfo();
 
-  const [prompt, setPrompt] = useState("");
   const [unSavedPrompt, setUnSavedPrompt] = useState("");
   const [stream, setStream] = useState("");
   const [isStreaming, setIsStreaming] = useState(false);
@@ -122,7 +121,6 @@ const ChatPage = () => {
     setIsStreaming(true);
 
     const filteredPrompt = newMessage;
-    setNewMessage("");
 
     setAllChats((state) => [
       ...state,
@@ -141,7 +139,7 @@ const ChatPage = () => {
     ]);
 
     setUnSavedPrompt(filteredPrompt);
-    setPrompt("");
+    setNewMessage("");
     setStream("");
 
     const messages = [
