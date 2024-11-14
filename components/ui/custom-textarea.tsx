@@ -1,12 +1,14 @@
 "use client";
 
 import { cn } from "@/lib/utils";
+import { SendHorizonal } from "lucide-react";
 import React, {
   KeyboardEvent,
   TextareaHTMLAttributes,
   useEffect,
   useRef,
 } from "react";
+import { Button } from "./button";
 
 interface CustomTextareaFormProps {
   value: string;
@@ -83,6 +85,9 @@ const CustomTextareaForm: React.FC<
           {...rest}
         />
       </div>
+      <Button type="submit" size="icon" disabled={value.length === 0}>
+        <SendHorizonal className="w-10 h-10" />
+      </Button>
     </form>
   );
 };
