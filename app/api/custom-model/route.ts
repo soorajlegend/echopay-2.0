@@ -1,9 +1,9 @@
 // import OpenAI from "openai";
 // import { OpenAIStream, StreamingTextResponse } from "ai";
-import Groq from "groq-sdk";
+// import Groq from "groq-sdk";
 import { NextResponse } from "next/server";
 
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+// const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
 // const openai = new OpenAI({
 //   apiKey: process.env.GROQ_API_KEY,
