@@ -88,9 +88,9 @@ const CustomTextareaForm: React.FC<
           type="submit"
           size="icon"
           disabled={value.length === 0}
-          className="w-9 h-9"
+          className="w-8 h-8"
         >
-          <SendHorizonal className="w-8 h-8" />
+          <SendHorizonal />
         </Button>
       </div>
     </form>
