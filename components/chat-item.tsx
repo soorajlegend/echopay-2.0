@@ -8,7 +8,7 @@ import rehypePrism from "rehype-prism";
 import { cn } from "@/lib/utils";
 import ReactMarkdown from "react-markdown";
 import { Skeleton } from "./ui/skeleton";
-import { Chat } from "@/type";
+import { Chat } from "@/types";
 
 interface Chatcontent {
   data: Chat;
