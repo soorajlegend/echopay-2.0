@@ -1,11 +1,11 @@
 "use client";
 
 import CustomTextareaForm from "@/components/ui/custom-textarea";
-import { completeJsonStructure, isValidJson } from "@/lib/utils";
 import { Chat, NewTransactionType } from "@/type";
 import React, { useEffect, useState, useRef } from "react";
 import { nanoid } from "nanoid";
 import ChatItem from "@/components/chat-item";
+import axios from "axios";
 
 const name = "Suraj Muhammad";
 const balance = 10000;
@@ -55,8 +55,7 @@ const ChatPage = () => {
   //  const { verified, info } = useUserInfo();
 
   const [unSavedPrompt, setUnSavedPrompt] = useState("");
-  const [stream, setStream] = useState("");
-  const [isStreaming, setIsStreaming] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [allChats, setAllChats] = useState<Chat[]>([]);
   const [newTransaction, setNewTransaction] =
     useState<NewTransactionType | null>(null);
@@ -70,44 +69,20 @@ const ChatPage = () => {
   }, [allChats]);
 
   useEffect(() => {
-    if (stream === "") return;
+    if (newTransaction) {
+      // Could integrate with a toast notification system here
+      console.log("New transaction detected:", newTransaction, unSavedPrompt);
 
-    console.log(newTransaction, unSavedPrompt);
-
-    const jsonStream = completeJsonStructure(stream);
-    if (!isValidJson(jsonStream)) {
-      return;
+      // Reset transaction after handling
+      setNewTransaction(null);
     }
-
-    const jsonData = JSON.parse(jsonStream);
-
-    if (!isStreaming) {
-      if (jsonData.newTransaction) {
-        setNewTransaction(jsonData.newTransaction);
-      }
-    }
-
-    const updateLastObject = () => {
-      const lastChat = allChats[allChats.length - 1];
-      const updatedArray = [...allChats];
-      updatedArray[allChats.length - 1] = {
-        ...updatedArray[allChats.length - 1],
-        ...{
-          ...lastChat,
-          content: jsonData.message,
-        },
-      };
-      setAllChats(updatedArray);
-    };
-
-    updateLastObject();
-  }, [stream, isStreaming]);
+  }, [newTransaction]);
 
   const handleSubmit = async () => {
     if (!newMessage) return;
 
     const history = [...allChats];
-    setIsStreaming(true);
+    setIsLoading(true);
 
     const filteredPrompt = newMessage;
 
@@ -129,7 +104,6 @@ const ChatPage = () => {
 
     setUnSavedPrompt(filteredPrompt);
     setNewMessage("");
-    setStream("");
 
     const messages = [
       ...history.map((chat) => ({
@@ -142,14 +116,10 @@ const ChatPage = () => {
       },
     ];
 
-    const response = await fetch(
-      "https://raj-assistant-api.vercel.app/api/echopay-models/chat/",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
+    try {
+      const response = await axios.post(
+        "https://raj-assistant-api.vercel.app/api/echopay-models/chat/",
+        {
           messages,
           beneficiaries: JSON.stringify(
             beneficiaries.map((b) => `${b.name} - ${b.id} |`)
@@ -161,29 +131,29 @@ const ChatPage = () => {
           ),
           name,
           balance,
-        }),
+        }
+      );
+
+      const jsonData = response.data;
+
+      if (jsonData.newTransaction) {
+        setNewTransaction(jsonData.newTransaction);
       }
-    );
 
-    // Check for successful response
-    if (!response.body || !response.ok) {
-      throw new Error(`API request failed with status: ${response.status}`);
+      // Update the last message with the response
+      setAllChats((currentChats) => {
+        const updatedChats = [...currentChats];
+        updatedChats[updatedChats.length - 1] = {
+          ...updatedChats[updatedChats.length - 1],
+          content: jsonData.message,
+        };
+        return updatedChats;
+      });
+    } catch (error) {
+      console.error("API request failed:", error);
+    } finally {
+      setIsLoading(false);
     }
-
-    const reader = response.body.getReader();
-
-    // Process data chunks in a loop
-    while (true) {
-      const { done, value } = await reader.read();
-
-      if (done) {
-        setIsStreaming(false);
-        break;
-      }
-      setStream((state) => state + new TextDecoder().decode(value));
-    }
-
-    reader.cancel();
   };
 
   return (
@@ -204,6 +174,7 @@ const ChatPage = () => {
         placeholder="Type your message..."
         className="flex-1 border-none rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
         onSubmit={handleSubmit}
+        disabled={isLoading}
       />
     </div>
   );
