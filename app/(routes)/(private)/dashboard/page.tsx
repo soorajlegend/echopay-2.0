@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useState, useEffect } from "react";
 import { Home, Wallet, X, MessageSquare, Menu } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import Link from "next/link";
 
 const features = [
   {
@@ -72,7 +73,7 @@ const DashboardView = () => {
             height={32}
           />
         </div>
-        <div className="flex justify-between items-center">
+        <Link href="/chat" className="flex justify-between items-center">
           <p className=" text-[18px] text-[#1A1A1A] font-medium">Echo Ai</p>
           <Image
             className="w-[6px] h-[12px]"
@@ -81,7 +82,7 @@ const DashboardView = () => {
             height={12}
             alt="icon"
           />
-        </div>
+        </Link>
       </div>
     </div>
   );
@@ -256,7 +257,7 @@ const DashboardPage = () => {
   };
 
   return (
-    <div className="w-full relative h-screen flex flex-col max-w-md mx-auto p-6">
+    <div className="w-full relative h-screen flex flex-col max-w-md mx-auto p-6 pb-10 md:pb-0">
       <div className="flex-1 overflow-y-auto">
         <div>
           <div className="flex justify-between items-center">
@@ -369,7 +370,7 @@ const DashboardPage = () => {
           </div>
         )}
 
-        <nav className="absolute bottom-0 left-0 right-0 bg-white border-t border-gray-200">
+        <nav className="absolute bottom-0 left-0 right-0 bg-white border-t border-gray-200 py-5">
           <div className="max-w-md mx-auto flex justify-around items-center h-16">
             {/* <div className="w-[60px] h-[60px] absolute -top-10 rounded-full bg-[#003056]">
 

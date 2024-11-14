@@ -128,17 +128,17 @@ const ChatPage = () => {
           )
         ),
         name,
-        balance
+        balance,
       });
 
       const config = {
-        method: 'post',
+        method: "post",
         maxBodyLength: Infinity,
-        url: 'https://raj-assistant-api.vercel.app/api/echopay-models/chat/',
+        url: "https://raj-assistant-api.vercel.app/api/echopay-models/chat",
         headers: {
-          'Content-Type': 'application/json'
+          "Content-Type": "application/json",
         },
-        data: data
+        data: data,
       };
 
       const response = await axios.request(config);
