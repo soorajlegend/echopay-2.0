@@ -1,4 +1,4 @@
-import { Toast } from "@/components/ui/toast";
+import { Toaster } from "@/components/ui/toaster";
 
 export default function RoutesLayout({
   children,
@@ -8,8 +8,8 @@ export default function RoutesLayout({
   return (
     <div className="bg-white dark:bg-gray-900 w-full h-full flex">
       <main className="w-full h-full max-w-lg mx-auto flex flex-col justify-end">
-        <Toast />
         {children}
+        <Toaster />
       </main>
     </div>
   );
