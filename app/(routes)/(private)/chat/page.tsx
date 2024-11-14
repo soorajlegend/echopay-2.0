@@ -5,6 +5,7 @@ import { completeJsonStructure, isValidJson } from "@/lib/utils";
 import { Chat, NewTransactionType } from "@/type";
 import React, { useEffect, useState, useRef } from "react";
 import { nanoid } from "nanoid";
+import ChatItem from "@/components/chat-item";
 
 const name = "Suraj Muhammad";
 const balance = 10000;
@@ -50,9 +51,6 @@ const beneficiaries = [
 
 const ChatPage = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const [messages, setMessages] = useState<
-    Array<{ text: string; sender: string }>
-  >([]);
   const [newMessage, setNewMessage] = useState("");
   //  const { verified, info } = useUserInfo();
 
@@ -69,7 +67,7 @@ const ChatPage = () => {
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages]);
+  }, [allChats]);
 
   useEffect(() => {
     if (stream === "") return;
@@ -89,12 +87,6 @@ const ChatPage = () => {
       }
     }
 
-    // Add the message to messages state
-    setMessages((prev) => [
-      ...prev,
-      { text: jsonData.message, sender: "assistant" },
-    ]);
-
     const updateLastObject = () => {
       const lastChat = allChats[allChats.length - 1];
       const updatedArray = [...allChats];
@@ -113,9 +105,6 @@ const ChatPage = () => {
 
   const handleSubmit = async () => {
     if (!newMessage) return;
-
-    // Add user message to messages state
-    setMessages((prev) => [...prev, { text: newMessage, sender: "user" }]);
 
     const history = [...allChats];
     setIsStreaming(true);
@@ -191,17 +180,12 @@ const ChatPage = () => {
   return (
     <div className="flex flex-col w-full h-screen p-4">
       <div className="flex-1 overflow-y-auto mb-4 space-y-4">
-        {messages.map((message, index) => (
-          <div
-            key={index}
-            className={`p-3 rounded-lg max-w-[70%] ${
-              message.sender === "user"
-                ? "bg-blue-500 text-white ml-auto"
-                : "bg-gray-200 text-gray-800"
-            }`}
-          >
-            {message.text}
-          </div>
+        {allChats.map((chat, index) => (
+          <ChatItem
+            key={chat.id}
+            data={chat}
+            isLast={index === allChats.length - 1}
+          />
         ))}
         <div ref={messagesEndRef} />
       </div>
