@@ -4,7 +4,7 @@ import CustomTextareaForm from "@/components/ui/custom-textarea";
 import { completeJsonStructure, isValidJson } from "@/lib/utils";
 import { Chat, NewTransactionType } from "@/type";
 import React, { useEffect, useState, useRef } from "react";
-import { v4 as uuidv4 } from "uuid";
+import { nanoid } from "nanoid";
 
 const name = "Suraj Muhammad";
 const balance = 10000;
@@ -127,13 +127,13 @@ const ChatPage = () => {
     setAllChats((state) => [
       ...state,
       {
-        id: uuidv4(),
+        id: nanoid(),
         role: "user",
         content: filteredPrompt,
         createdAt: new Date(),
       },
       {
-        id: uuidv4(),
+        id: nanoid(),
         role: "model",
         content: "",
         createdAt: new Date(),
