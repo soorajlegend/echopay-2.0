@@ -12,7 +12,7 @@ import { Loader } from "lucide-react";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
 // import { cleanPhoneNumber } from "@/lib/utils";
-import axios from "axios";
+// import axios from "axios";
 import useBeneficiary from "@/hooks/use-beneficiary";
 import { NewTransactionType } from "@/types";
 // import useTransaction from "@/hooks/use-transaction";
