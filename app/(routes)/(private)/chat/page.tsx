@@ -11,7 +11,7 @@ import ConfirmTransaction from "@/components/confirm-transaction";
 import useBeneficiary from "@/hooks/use-beneficiary";
 
 const name = "Suraj Muhammad";
-const balance = 10000;
+const balance = 100000;
 // dummu data
 const transactions = [
   {
