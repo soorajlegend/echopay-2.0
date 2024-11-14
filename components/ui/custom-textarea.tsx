@@ -70,7 +70,7 @@ const CustomTextareaForm: React.FC<
       className="flex items-center justify-between h-auto w-full "
       onSubmit={handleSubmit}
     >
-      <div className="w-full lg:max-w-4xl mx-auto flex items-end  dark:ring-arsenic p-1 rounded-full gap-2">
+      <div className="w-full lg:max-w-4xl mx-auto flex items-end dark:ring-arsenic rounded-lg gap-2 focus-visible:ring-0 ring-1 ring-gray-200/60 bg-gray-200/50 focus-visible:border-none p-2.5">
         <textarea
           value={value}
           disabled={disabled}
@@ -79,7 +79,7 @@ const CustomTextareaForm: React.FC<
           onKeyDown={handleKeyDown}
           rows={1}
           className={cn(
-            "w-full p-2 outline-none focus-visible:ring-0 ring-1 ring-gray-200/60 bg-gray-200/50 focus-visible:border-none resize-none hidden-scrollbar placeholder:text-gray-400  rounded-2xl max-h-52 hide-scrollbar pl-4 text-sm",
+            "w-full px-5 py-2.5 bg-transparent outline-none  resize-none hidden-scrollbar placeholder:text-gray-400  rounded-2xl max-h-52 hide-scrollbar pl-4 text-sm",
             className
           )}
           {...rest}
