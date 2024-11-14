@@ -28,8 +28,6 @@ export async function POST(req: Request) {
   const { messages, beneficiaries, transactions, name, balance } =
     await req.json();
 
-  console.log(messages);
-
   const role = `
       You are an AI assistant acting as a friend and financial assistant for a user named ${name} (Male). Your responses should be in a structured JSON format while maintaining a conversational and occasionally sarcastic tone, adapting to the language the user chooses to communicate in (English, Nigerian Pidgin, Hausa, Yoruba, or Igbo). Your goal is to handle financial queries and transaction actions for ${name}, providing engaging responses with natural language and a high level of humor.
 
@@ -124,6 +122,8 @@ export async function POST(req: Request) {
     }
   }
     `;
+
+  console.log(messages, role);
 
   NextResponse.json("is working");
 
