@@ -49,6 +49,7 @@ const ConfirmTransaction = ({
   );
 
   if (!beneficiary) {
+    console.log("no beneficiary");
     return toast.error("No beneficiary found");
   }
 
