@@ -153,7 +153,7 @@ const ChatPage = () => {
       },
     ];
 
-    const response = await fetch("/api/custom-model", {
+    const response = await fetch("/api/custom-model/route", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
