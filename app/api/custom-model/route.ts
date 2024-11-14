@@ -138,9 +138,14 @@ Response: {
     return groq.chat.completions.create({
       messages: [{ role: "system", content: role }, ...messages],
       model: "llama-3.1-70b-versatile",
-      temperature: 0.9,
-      response_format: { type: "json_object" },
+      temperature: 1,
       max_tokens: 256,
+      top_p: 1,
+      stream: false,
+      response_format: {
+        type: "json_object",
+      },
+      stop: null,
     });
   }
 }
