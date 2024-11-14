@@ -146,7 +146,7 @@ const ChatPage = () => {
           ...currentChats,
           {
             id: nanoid(),
-            role: "user",
+            role: "model",
             content: jsonData.message,
             createdAt: new Date(),
           },

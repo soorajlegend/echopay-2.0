@@ -107,7 +107,7 @@ const TransactionView = () => (
           height={32}
         />
       </div>
-      <div className="flex justify-between items-center">
+      <Link href="/chat" className="flex justify-between items-center">
         <p className=" text-[18px] text-[#1A1A1A] font-medium">Echo Ai</p>
         <Image
           className="w-[6px] h-[12px]"
@@ -116,7 +116,7 @@ const TransactionView = () => (
           height={12}
           alt="icon"
         />
-      </div>
+      </Link>
     </div>
     <div className="mt-[48px]">
       <div>
