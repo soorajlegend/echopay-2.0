@@ -10,24 +10,17 @@ import React, {
 
 interface CustomTextareaFormProps {
   value: string;
-  onChange: (newValue: string) => void;
-  onSubmit: () => Promise<void>;
-  isVisible?: boolean;
+  onChange: React.Dispatch<React.SetStateAction<string>>;
+  onSubmit: () => void;
+  placeholder?: string;
   className?: string;
   disabled?: boolean;
 }
 
 const CustomTextareaForm: React.FC<
-  CustomTextareaFormProps & TextareaHTMLAttributes<HTMLTextAreaElement>
-> = ({
-  value,
-  onChange,
-  onSubmit,
-  isVisible,
-  className,
-  disabled,
-  ...rest
-}) => {
+  Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, "onChange"> &
+    CustomTextareaFormProps
+> = ({ value, onChange, onSubmit, className, disabled, ...rest }) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const adjustHeight = () => {
@@ -68,28 +61,20 @@ const CustomTextareaForm: React.FC<
       textareaRef.current.focus();
     }
     adjustHeight();
-  }, [value, isVisible]);
+  }, [value]);
 
   return (
-    <form
-      className="flex items-center justify-between h-auto w-full "
-      onSubmit={handleSubmit}
-    >
-      <div className="w-full lg:max-w-4xl mx-auto flex items-end  dark:ring-arsenic p-1 rounded-full gap-2">
-        <textarea
-          value={value}
-          disabled={disabled}
-          ref={textareaRef}
-          onChange={(e) => onChange(e.target.value)}
-          onKeyDown={handleKeyDown}
-          rows={1}
-          className={cn(
-            "w-full p-2 outline-none focus-visible:ring-0 ring-1 ring-gray-200/60 bg-gray-200/50 focus-visible:border-none resize-none hidden-scrollbar placeholder:text-gray-400  rounded-2xl max-h-52 hide-scrollbar pl-4 text-sm",
-            className
-          )}
-          {...rest}
-        />
-      </div>
+    <form className="w-full" onSubmit={handleSubmit}>
+      <textarea
+        value={value}
+        disabled={disabled}
+        ref={textareaRef}
+        onChange={(e) => onChange(e.target.value)}
+        onKeyDown={handleKeyDown}
+        rows={1}
+        className={cn("w-full resize-none outline-none", className)}
+        {...rest}
+      />
     </form>
   );
 };
