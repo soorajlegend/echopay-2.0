@@ -1,11 +1,14 @@
-import OpenAI from "openai";
+// import OpenAI from "openai";
+// import { OpenAIStream, StreamingTextResponse } from "ai";
+import Groq from "groq-sdk";
+import { NextResponse } from "next/server";
 
-import { OpenAIStream, StreamingTextResponse } from "ai";
+const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
-const openai = new OpenAI({
-  apiKey: process.env.GROQ_API_KEY,
-  baseURL: "https://api.groq.com/openai/v1",
-});
+// const openai = new OpenAI({
+//   apiKey: process.env.GROQ_API_KEY,
+//   baseURL: "https://api.groq.com/openai/v1",
+// });
 
 export type NewChat = {
   prompt: string;
@@ -120,16 +123,24 @@ Response: {
 }
   `;
 
-  const completion = await openai.chat.completions.create({
-    messages: [{ role: "system", content: role }, ...messages],
-    model: "llama-3.1-70b-versatile",
-    temperature: 0.9,
-    stream: true,
-    // response_format: { type: "json_object" },
-    max_tokens: 256,
-  });
+  //   const completion = await openai.chat.completions.create({
+  //     messages: [{ role: "system", content: role }, ...messages],
+  //     model: "llama-3.1-70b-versatile",
+  //     temperature: 0.9,
+  //     response_format: { type: "json_object" },
+  //     max_tokens: 256,
+  //   });
 
-  const stream = OpenAIStream(completion);
+  const chatCompletion = await getGroqChatCompletion();
+  NextResponse.json(chatCompletion.choices[0]?.message?.content || "");
 
-  return new StreamingTextResponse(stream);
+  async function getGroqChatCompletion() {
+    return groq.chat.completions.create({
+      messages: [{ role: "system", content: role }, ...messages],
+      model: "llama-3.1-70b-versatile",
+      temperature: 0.9,
+      response_format: { type: "json_object" },
+      max_tokens: 256,
+    });
+  }
 }
