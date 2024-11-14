@@ -2,7 +2,7 @@
 import React from "react";
 import Image from "next/image";
 import { useState, useEffect } from "react";
-import { Home, Wallet, X, MessageSquare, User, Menu } from "lucide-react";
+import { Home, Wallet, X, MessageSquare, Menu } from "lucide-react";
 import { Input } from "@/components/ui/input";
 
 
