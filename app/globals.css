@@ -144,3 +144,27 @@ div::-webkit-scrollbar-thumb {
     @apply bg-background text-foreground;
   }
 }
+
+
+/* width */
+::-webkit-scrollbar {
+  width: 4px;
+  display: none;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #888;
+  border-radius: 5px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: gray;
+  border-radius: 5px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
