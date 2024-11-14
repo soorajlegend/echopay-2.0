@@ -51,7 +51,7 @@ export function isValidJson(text: string) {
   try {
     JSON.parse(text);
     return true;
-  } catch (error) {
+  } catch () {
     return false;
   }
 }
