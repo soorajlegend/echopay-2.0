@@ -42,6 +42,7 @@ const ConfirmTransaction = ({
     // || !verified
     return null;
   }
+  console.log("not null");
 
   const beneficiary = beneficiaries.find(
     (beneficiary) => beneficiary.id === Number(data.beneficiaryId)
