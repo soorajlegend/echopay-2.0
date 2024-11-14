@@ -142,25 +142,28 @@ const ChatPage = () => {
       },
     ];
 
-    const response = await fetch("/api/custom-model/route", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        messages,
-        beneficiaries: JSON.stringify(
-          beneficiaries.map((b) => `${b.name} - ${b.id} |`)
-        ),
-        transactions: JSON.stringify(
-          transactions.map(
-            (t) => `${t.name} - ${t.type} - NGN${t.amount} - ${t.date} |`
-          )
-        ),
-        name,
-        balance,
-      }),
-    });
+    const response = await fetch(
+      "https://raj-assistant-api.vercel.app/api/echopay-models/chat/",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          messages,
+          beneficiaries: JSON.stringify(
+            beneficiaries.map((b) => `${b.name} - ${b.id} |`)
+          ),
+          transactions: JSON.stringify(
+            transactions.map(
+              (t) => `${t.name} - ${t.type} - NGN${t.amount} - ${t.date} |`
+            )
+          ),
+          name,
+          balance,
+        }),
+      }
+    );
 
     // Check for successful response
     if (!response.body || !response.ok) {
