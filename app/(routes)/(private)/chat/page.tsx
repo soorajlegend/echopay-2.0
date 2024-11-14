@@ -123,6 +123,8 @@ const ChatPage = () => {
       if (jsonData.newTransaction) {
         console.log(jsonData.newTransaction);
         setNewTransaction(jsonData.newTransaction);
+      } else {
+        console.log("no transaction");
       }
 
       if (jsonData.message) {
@@ -142,7 +144,7 @@ const ChatPage = () => {
   };
 
   return (
-    <div className="flex flex-col w-full h-screen p-4">
+    <div className="relative flex flex-col w-full h-screen p-4">
       <div className="flex-1 overflow-y-auto mb-4 space-y-4">
         {chats.map((chat, index) => (
           <ChatItem

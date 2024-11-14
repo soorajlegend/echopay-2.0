@@ -48,9 +48,9 @@ const ConfirmTransaction = ({
     (beneficiary) => beneficiary.id === Number(data.beneficiaryId)
   );
 
-  //   if (!user || !beneficiary) {
-  //     return toast.error("No beneficiary found");
-  //   }
+  if (!beneficiary) {
+    return toast.error("No beneficiary found");
+  }
 
   const createTransaction = async () => {
     setIsLoading(true);
