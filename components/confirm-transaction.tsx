@@ -101,9 +101,9 @@ const ConfirmTransaction = ({
         <div className="p-10  px-3 lg:px-0">
           <Card className="p-3 border-gray-100/80 text-gray-800 w-full h-auto flex gap-3  max-w-md mx-auto">
             <Avatar className="w-10 h-10">
-              <AvatarImage src={"beneficiary?.avatar"} />
+              <AvatarImage src={beneficiary?.avatar} />
               <AvatarFallback className="font-bold">
-                {/* {beneficiary?.acc_name[0]} */}hi
+                {beneficiary?.acc_name[0]}
               </AvatarFallback>
             </Avatar>
             <div className="flex flex-1 flex-col gap-1">
