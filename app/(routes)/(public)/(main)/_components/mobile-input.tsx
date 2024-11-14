@@ -10,9 +10,10 @@ interface MobileInputProps {
   mobile: string;
   setMobile: (value: string) => void;
   onProceed: () => void;
+  isLoading: boolean;
 }
 
-const MobileInput = ({ mobile, setMobile, onProceed }: MobileInputProps) => {
+const MobileInput = ({ mobile, setMobile, onProceed, isLoading }: MobileInputProps) => {
   return (
     <div className="text-center relative w-full h-screen">
       <div className="w-full mt-[77px] mb-[88px]">
@@ -36,15 +37,14 @@ const MobileInput = ({ mobile, setMobile, onProceed }: MobileInputProps) => {
 
       <div className="absolute bottom-0 mb-32 w-full flex justify-center">
         <Button
-          className={` ${
-            !mobile.length
+          className={` ${!mobile.length
               ? "opacity-80 cursor-not-allowed hover:bg-none"
               : "bg-theme-primary hover:bg-[#0c2941]"
-          } mt-[48px] bottom-0 text-[18px] font-medium text-white w-full py-[24px]`}
+            } mt-[48px] bottom-0 text-[18px] font-medium text-white w-full py-[24px]`}
           onClick={onProceed}
           disabled={!mobile.length}
         >
-          Proceed
+          {isLoading ? "loading.." : "proceed"}
         </Button>
       </div>
     </div>
