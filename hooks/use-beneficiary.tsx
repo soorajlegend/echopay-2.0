@@ -14,7 +14,41 @@ interface BeneficiaryType {
 const useBeneficiary = create(
   persist<BeneficiaryType>(
     (set, get) => ({
-      beneficiaries: [],
+      beneficiaries: [
+        {
+          id: 1,
+          userid: "user1",
+          acc_name: "John Doe",
+          acc_num: "1234567890",
+          bank_name: "Bank of America",
+          bank_code: "BOA001",
+          status: 1,
+          createdAt: "2024-01-01T00:00:00Z",
+          updatedAt: "2024-01-01T00:00:00Z",
+        },
+        {
+          id: 2,
+          userid: "user2",
+          acc_name: "James Bond",
+          acc_num: "0987654321",
+          bank_name: "Chase Bank",
+          bank_code: "CHASE001",
+          status: 1,
+          createdAt: "2024-01-01T00:00:00Z",
+          updatedAt: "2024-01-01T00:00:00Z",
+        },
+        {
+          id: 3,
+          userid: "user3",
+          acc_name: "Muhammad Ali",
+          acc_num: "5555555555",
+          bank_name: "Wells Fargo",
+          bank_code: "WF001",
+          status: 1,
+          createdAt: "2024-01-01T00:00:00Z",
+          updatedAt: "2024-01-01T00:00:00Z",
+        },
+      ],
       setBeneficiaries: (beneficiaries: Beneficiary[]) => {
         set({ beneficiaries });
       },
