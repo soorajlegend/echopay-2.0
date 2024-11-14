@@ -3,7 +3,7 @@ import Image from "next/image";
 
 const features = [
   {
-    image: "/arrow-up-down.png",
+    image: "/arrow-up-down.svg",
     title: "Transfer"
   },
   {
@@ -50,11 +50,13 @@ const DashboardPage = () => {
       </div>
     </div>
 
-    <div className="w-full h-[90px] flex justify-evenly border-2 mt-[34px]">
+    <div className="w-full h-[90px] flex justify-evenly mt-[34px]">
       {features.map((feature, index) => 
         <div className="flex flex-col justify-between">
+          <div className="flex justify-center rounded-[8px] mb-[8px] items-center p-2 bg-[#FAFAFA] h-[64px]">
           <Image className=" h-[24px] w-[24px]" src={feature.image} alt={feature.title} width={12} height={12} />
-          <p>{feature.title}</p>
+          </div>
+          <p className="text-[14px] font-medium text-[#1A1A1A]">{feature.title}</p>
         </div>
       )}
     </div>
