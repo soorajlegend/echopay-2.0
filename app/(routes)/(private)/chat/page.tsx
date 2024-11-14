@@ -93,14 +93,7 @@ const ChatPage = () => {
       createdAt: new Date(),
     };
 
-    const modelMessage: Chat = {
-      id: nanoid(),
-      role: "model",
-      content: "",
-      createdAt: new Date(),
-    };
-
-    setAllChats((state) => [...state, userMessage, modelMessage]);
+    setAllChats((state) => [...state, userMessage]);
     setUnSavedPrompt(filteredPrompt);
     setNewMessage("");
 
@@ -149,17 +142,15 @@ const ChatPage = () => {
 
       if (jsonData.message) {
         // Update the last message with the response
-        setAllChats((currentChats) => {
-          const updatedChats = [...currentChats];
-          const lastIndex = updatedChats.length - 1;
-          if (lastIndex >= 0) {
-            updatedChats[lastIndex] = {
-              ...updatedChats[lastIndex],
-              content: jsonData.message,
-            };
-          }
-          return updatedChats;
-        });
+        setAllChats((currentChats) => [
+          ...currentChats,
+          {
+            id: nanoid(),
+            role: "user",
+            content: jsonData.message,
+            createdAt: new Date(),
+          },
+        ]);
       }
     } catch (error) {
       console.error("API request failed:", error);
