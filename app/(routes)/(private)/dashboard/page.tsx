@@ -52,12 +52,13 @@ const DashboardPage = () => {
 
     <div className="w-full h-[90px] flex justify-evenly mt-[34px]">
       {features.map((feature, index) => 
-        <div className="flex flex-col items-center justify-between">
-          <div className="bg-[#FAFAFA] rounded-[8px] w-[64px] h-[64px] flex items-center justify-center mb-[8px]">
 
+        <div className="flex flex-col justify-between">
+          <div className="flex justify-center rounded-[8px] mb-[8px] items-center p-2 bg-[#FAFAFA] h-[64px]">
           <Image className=" h-[24px] w-[24px]" src={feature.image} alt={feature.title} width={12} height={12} />
           </div>
-          <p>{feature.title}</p>
+          <p className="text-[14px] font-medium text-[#1A1A1A]">{feature.title}</p>
+
         </div>
       )}
     </div>
