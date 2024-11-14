@@ -14,7 +14,7 @@ import { cn } from "@/lib/utils";
 interface OTPVerificationProps {
   mobile: string;
   setStage: (value: number) => void;
-  onVerify: (value: string) => void;
+  onVerify: (value: string, phone: string) => void;
 }
 
 const OTPVerification = ({
@@ -23,6 +23,10 @@ const OTPVerification = ({
   onVerify,
 }: OTPVerificationProps) => {
   const [value, setValue] = useState("");
+
+  const handleVerify = () => {
+    onVerify(value, mobile);
+  };
 
   return (
     <div className="relative text-center w-full h-screen">
@@ -73,7 +77,7 @@ const OTPVerification = ({
               ? "opacity-80 cursor-not-allowed hover:bg-none"
               : "bg-theme-primary hover:bg-[#0c2941]"
           )}
-          onClick={() => onVerify(value)}
+          onClick={handleVerify}
           disabled={!value.length}
         >
           Verify

@@ -3,11 +3,12 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
+import axios from "axios";
 
 import MobileInput from "./_components/mobile-input";
 import SplashSlides from "./_components/splash-slides";
 import OTPVerification from "./_components/otp-verification";
-import { Loader2 } from "lucide-react";
+import { Loader2, Phone } from "lucide-react";
 import UpsetPassword from "@/components/ui/upset-password";
 import SlideContainer from "@/components/slide-container";
 import LanguageSelector from "@/components/language-selector";
@@ -21,6 +22,7 @@ const OnboardingPage = () => {
   const [isVerifying, setIsVerifying] = useState(false);
   const [isVerified, setIsVerified] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState("");
+  const [loading, setLoading] = useState(false)
 
   const newUser = true;
 
@@ -39,24 +41,64 @@ const OnboardingPage = () => {
     };
   }, []);
 
-  const handleContinue = () => {
-    if (stage < 7) {
+  const handleContinue = async () => {
+    console.log("handleContinue called", stage);
+    console.log(mobile)
+    setLoading(true) 
+    if (stage === 4) {
+      try {
+        const response = await axios.post("https://echo-pay.onrender.com/api/send-otp", {
+          phone: mobile,
+        });
+
+        console.log(response, " response")
+  
+        if (response.status === 200) {
+          // OTP sent successfully, move to OTP entry stage
+          console.log(response.data)
+          setLoading(false)
+          setStage(5);
+        } else {
+          console.error("Failed to send OTP");
+        }
+      } catch (error) {
+        console.error("Error sending OTP:", error);
+      }
+    } else {
       setStage(stage + 1);
+      setLoading(false) 
+    }
     }
 
-    console.log(isVerifying, isVerified);
-  };
 
-  const handleOTPVerification = async (otp: string) => {
+
+  const handleOTPVerification = async (otp: string, phone: string) => {
     setIsVerifying(true);
+    console.log("Verifying OTP:", otp, "for phone:", phone);
+    // setLoading(true)
+    try {
+      const response = await axios.post("https://echo-pay.onrender.com/api/verify-otp", {
+        otp,
+        phone
+        
+      })
 
-    setTimeout(() => {
-      setIsVerifying(false);
-      setIsVerified(true);
-
-      console.log(otp);
-      setStage(6);
-    }, 1000);
+      console.log(response.data, "fom otp")
+      if (response.status === 200) {
+        // Mark as verified and proceed to next stage
+        console.log(response.data)
+        setIsVerifying(false);
+        setIsVerified(true);
+        setStage(6); // Proceed to password setup or dashboard
+      } else {
+        // Handle OTP verification failure
+        console.error("OTP verification failed");
+        setIsVerifying(false);
+      }
+    } catch (error) {
+      console.error("Error during OTP verification:", error);
+    setIsVerifying(false);
+    }
   };
 
   const handlePasswordVerification = (password: string) => {
@@ -104,6 +146,7 @@ const OnboardingPage = () => {
               mobile={mobile}
               setMobile={setMobile}
               onProceed={handleContinue}
+              isLoading={loading}
             />
           </SlideContainer>
         )}
@@ -114,7 +157,7 @@ const OnboardingPage = () => {
             <OTPVerification
               mobile={mobile}
               setStage={setStage}
-              onVerify={handleOTPVerification}
+              onVerify={(otp, phone) =>handleOTPVerification(otp, phone)}
             />
           </SlideContainer>
         )}
