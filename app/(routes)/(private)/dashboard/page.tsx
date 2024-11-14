@@ -62,8 +62,27 @@ const DashboardPage = () => {
       )}
     </div>
 
-    <div>
-      
+    <div className="border mt-[48px] flex justify-between">
+
+      <div className=" h-[224px] flex flex-col justify-between border w-[49%] p-6 bg-[#D1DCE5] rounded-[8px]">
+        <div className="p-4 rounded-full w-[48px] h-[48px] bg-white">
+          <Image src="/mic-01.svg" className="h-[24px] w-[24px]" width={24} height={24} alt="mic icon" />
+        </div>
+        <div className="flex items-center justify-between mt-[16px]">
+          <p>Echo Ai</p>
+          <Image className="h-[24px] w-[24px]" src="/arrow-right.svg" width={24} height={24} alt="mic icon" />
+        </div>
+      </div>
+
+      <div className=" h-[224px]  w-[49%] border p-6 bg[#D1DCE5] rounded-[8px]">
+        <div className="">
+          <Image src="/mic-01.svg" width={32} height={32} alt="mic icon" />
+        </div>
+        <div className="flex items-center justify-between mt-[16px]">
+          <p>Echo Ai</p>
+          <Image src="/arrow-right.svg" width={24} height={24} alt="mic icon" />
+        </div>
+      </div>
     </div>
     </div>
   );
