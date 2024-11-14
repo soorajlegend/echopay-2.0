@@ -9,8 +9,7 @@ const ChatPage = () => {
   >([]);
   const [newMessage, setNewMessage] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
     if (newMessage.trim()) {
       setMessages([...messages, { text: newMessage, sender: "user" }]);
       setNewMessage("");
@@ -37,9 +36,10 @@ const ChatPage = () => {
       <form onSubmit={handleSubmit} className="flex gap-2">
         <CustomTextareaForm
           value={newMessage}
-          onChange={(e) => setNewMessage(e.target.value)}
+          onChange={setNewMessage}
           placeholder="Type your message..."
           className="flex-1 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          onSubmit={handleSubmit}
         />
         <button
           type="submit"
