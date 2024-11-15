@@ -42,7 +42,7 @@ const MobileInput = ({ mobile, setMobile, onProceed, isLoading }: MobileInputPro
               : "bg-theme-primary hover:bg-[#0c2941]"
             } mt-[48px] bottom-0 text-[18px] font-medium text-white w-full py-[24px]`}
           onClick={onProceed}
-          disabled={!mobile.length}
+          disabled={!mobile.length || isLoading}
         >
           {isLoading ? "loading.." : "proceed"}
         </Button>
