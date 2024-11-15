@@ -1,13 +1,17 @@
 "use client";
 
 import CustomTextareaForm from "@/components/ui/custom-textarea";
-import { completeJsonStructure, isValidJson } from "@/lib/utils";
-import { Chat, NewTransactionType } from "@/type";
+import { Chat, NewTransactionType } from "@/types";
 import React, { useEffect, useState, useRef } from "react";
 import { nanoid } from "nanoid";
+import ChatItem from "@/components/chat-item";
+import axios from "axios";
+import useChat from "@/hooks/use-chat";
+import ConfirmTransaction from "@/components/confirm-transaction";
+import useBeneficiary from "@/hooks/use-beneficiary";
 
 const name = "Suraj Muhammad";
-const balance = 10000;
+const balance = 100000;
 // dummu data
 const transactions = [
   {
@@ -33,33 +37,14 @@ const transactions = [
   },
 ];
 
-const beneficiaries = [
-  {
-    id: 1,
-    name: "John Doe",
-  },
-  {
-    id: 2,
-    name: "James Bond",
-  },
-  {
-    id: 3,
-    name: "Muhammad Ali",
-  },
-];
-
 const ChatPage = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const [messages, setMessages] = useState<
-    Array<{ text: string; sender: string }>
-  >([]);
   const [newMessage, setNewMessage] = useState("");
-  //  const { verified, info } = useUserInfo();
 
-  const [unSavedPrompt, setUnSavedPrompt] = useState("");
-  const [stream, setStream] = useState("");
-  const [isStreaming, setIsStreaming] = useState(false);
-  const [allChats, setAllChats] = useState<Chat[]>([]);
+  const { chats, addChat } = useChat();
+  const { beneficiaries } = useBeneficiary();
+
+  const [isLoading, setIsLoading] = useState(false);
   const [newTransaction, setNewTransaction] =
     useState<NewTransactionType | null>(null);
 
@@ -69,78 +54,32 @@ const ChatPage = () => {
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages]);
+  }, [chats]);
 
   useEffect(() => {
-    if (stream === "") return;
-
-    console.log(newTransaction, unSavedPrompt);
-
-    const jsonStream = completeJsonStructure(stream);
-    if (!isValidJson(jsonStream)) {
-      return;
+    if (newTransaction) {
+      // Reset transaction after handling
+      setNewTransaction(null);
     }
-
-    const jsonData = JSON.parse(jsonStream);
-
-    if (!isStreaming) {
-      if (jsonData.newTransaction) {
-        setNewTransaction(jsonData.newTransaction);
-      }
-    }
-
-    // Add the message to messages state
-    setMessages((prev) => [
-      ...prev,
-      { text: jsonData.message, sender: "assistant" },
-    ]);
-
-    const updateLastObject = () => {
-      const lastChat = allChats[allChats.length - 1];
-      const updatedArray = [...allChats];
-      updatedArray[allChats.length - 1] = {
-        ...updatedArray[allChats.length - 1],
-        ...{
-          ...lastChat,
-          content: jsonData.message,
-        },
-      };
-      setAllChats(updatedArray);
-    };
-
-    updateLastObject();
-  }, [stream, isStreaming]);
+  }, [newTransaction]);
 
   const handleSubmit = async () => {
     if (!newMessage) return;
 
-    // Add user message to messages state
-    setMessages((prev) => [...prev, { text: newMessage, sender: "user" }]);
-
-    const history = [...allChats];
-    setIsStreaming(true);
+    const history = [...chats];
+    setIsLoading(true);
 
     const filteredPrompt = newMessage;
 
-    setAllChats((state) => [
-      ...state,
-      {
-        id: nanoid(),
-        role: "user",
-        content: filteredPrompt,
-        createdAt: new Date(),
-      },
-      {
-        id: nanoid(),
-        role: "model",
-        content: "",
-        createdAt: new Date(),
-      },
-    ]);
+    const userMessage: Chat = {
+      id: nanoid(),
+      role: "user",
+      content: filteredPrompt,
+      createdAt: new Date(),
+    };
 
-    setUnSavedPrompt(filteredPrompt);
+    addChat(userMessage);
     setNewMessage("");
-    setStream("");
 
     const messages = [
       ...history.map((chat) => ({
@@ -153,56 +92,76 @@ const ChatPage = () => {
       },
     ];
 
-    const response = await fetch("/api/custom-model", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
+    try {
+      const data = JSON.stringify({
         messages,
-        beneficiaries,
-        transactions,
+        beneficiaries: JSON.stringify(
+          beneficiaries.map((b) => `${b.acc_name} - ${b.id} |`)
+        ),
+        transactions: JSON.stringify(
+          transactions.map(
+            (t) => `${t.name} - ${t.type} - NGN${t.amount} - ${t.date} |`
+          )
+        ),
         name,
         balance,
-      }),
-    });
+      });
 
-    // Check for successful response
-    if (!response.body || !response.ok) {
-      throw new Error(`API request failed with status: ${response.status}`);
-    }
+      const config = {
+        method: "post",
+        maxBodyLength: Infinity,
+        url: "https://raj-assistant-api.vercel.app/api/echopay-models/chat",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        data: data,
+      };
 
-    const reader = response.body.getReader();
+      const response = await axios.request(config);
+      const jsonData = JSON.parse(response.data);
 
-    // Process data chunks in a loop
-    while (true) {
-      const { done, value } = await reader.read();
-
-      if (done) {
-        setIsStreaming(false);
-        break;
+      if (jsonData.newTransaction) {
+        console.log(jsonData.newTransaction);
+        setNewTransaction(jsonData.newTransaction);
+      } else {
+        console.log("no transaction");
       }
-      setStream((state) => state + new TextDecoder().decode(value));
-    }
 
-    reader.cancel();
+      if (jsonData.message) {
+        const modelMessage: Chat = {
+          id: nanoid(),
+          role: "model",
+          content: jsonData.message,
+          createdAt: new Date(),
+        };
+        addChat(modelMessage);
+      }
+    } catch (error) {
+      console.error("API request failed:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
-    <div className="flex flex-col w-full h-screen p-4">
+    <div className="relative flex flex-col w-full h-screen p-4">
       <div className="flex-1 overflow-y-auto mb-4 space-y-4">
-        {messages.map((message, index) => (
-          <div
-            key={index}
-            className={`p-3 rounded-lg max-w-[70%] ${
-              message.sender === "user"
-                ? "bg-blue-500 text-white ml-auto"
-                : "bg-gray-200 text-gray-800"
-            }`}
-          >
-            {message.text}
-          </div>
+        {chats.map((chat, index) => (
+          <ChatItem
+            key={chat.id}
+            data={chat}
+            isLast={index === chats.length - 1}
+          />
         ))}
+
+        {isLoading && (
+          <div className="flex items-center gap-2 px-4">
+            <div className="w-2 h-2 rounded-full bg-gray-500 animate-bounce [animation-delay:-0.3s]"></div>
+            <div className="w-2 h-2 rounded-full bg-gray-500 animate-bounce [animation-delay:-0.15s]"></div>
+            <div className="w-2 h-2 rounded-full bg-gray-500 animate-bounce"></div>
+          </div>
+        )}
+
         <div ref={messagesEndRef} />
       </div>
       <CustomTextareaForm
@@ -211,6 +170,11 @@ const ChatPage = () => {
         placeholder="Type your message..."
         className="flex-1 border-none rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
         onSubmit={handleSubmit}
+        disabled={isLoading}
+      />
+      <ConfirmTransaction
+        data={newTransaction}
+        setNewTransaction={setNewTransaction}
       />
     </div>
   );
