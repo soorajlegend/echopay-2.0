@@ -21,6 +21,8 @@ const OnboardingPage = () => {
   const [showLogo, setShowLogo] = useState(true);
   const [zoomLogo, setZoomLogo] = useState(false);
   const [mobile, setMobile] = useState("");
+  const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
   const [isVerifying, setIsVerifying] = useState(false);
   const [isVerified, setIsVerified] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState("");
@@ -51,16 +53,18 @@ const OnboardingPage = () => {
     console.log("handleContinue called", stage);
     console.log(mobile)
     setLoading(true)
-    if (stage === 4) {
+    if (stage === 5) {
       try {
         const response = await axios.post("https://echo-pay.onrender.com/api/send-otp", {
           phone: mobile,
+          name: name,
+          email: email
         });
 
         if (response.status === 200) {
           // OTP sent successfully, move to OTP entry stage
           setLoading(false)
-          setStage(5);
+          setStage(6);
         } else {
           console.error("Failed to send OTP");
         }
@@ -92,10 +96,10 @@ const OnboardingPage = () => {
         setIsVerified(true);
         if (response.data.responseBody === null) {
           setIsNewUser(true);
-          setStage(6); //
+          setStage(7); //
         } else {
           setIsNewUser(false)
-          setStage(6)
+          setStage(7)
         }
       } else {
         // Handle OTP verification failure
@@ -110,19 +114,12 @@ const OnboardingPage = () => {
     }
   };
 
-
-  const handlePasswordAndProceed = (password: string) => {
-    setUserPassword(password); // Temporarily store the password
-    setStage(7); // Move to language selection
-  };
-  
-
-  const handleLanguageAndRegister  = async (language: string) => {
+  const handleRegister  = async () => {
     try {
       const response = await axios.post("https://echo-pay.onrender.com/api/register", {
         phone: mobile,
         password: userPassword,
-        language,
+        language: selectedLanguage,
       });
   
       if (response.status === 200) {
@@ -198,13 +195,27 @@ const OnboardingPage = () => {
           onContinue={handleContinue}
         />
 
+        {stage === 4 && (
+           <SlideContainer custom={stage}>
+           <LanguageSelector
+             selectedLanguage={selectedLanguage}
+             setSelectedLanguage={setSelectedLanguage}
+             onContinue={() => setStage(5)}
+           />
+         </SlideContainer>
+      )}
+
         {/* mobile input stage */}
 
-        {stage === 4 && (
+        {stage === 5 && (
           <SlideContainer custom={stage}>
             <MobileInput
               mobile={mobile}
               setMobile={setMobile}
+              name={name}
+              setName={setName}
+              email={email}
+              setEmail={setEmail}
               onProceed={handleContinue}
               isLoading={loading}
             />
@@ -212,7 +223,7 @@ const OnboardingPage = () => {
         )}
 
         {/* verification stage */}
-        {stage === 5 && (
+        {stage === 6 && (
           <SlideContainer custom={stage}>
             <OTPVerification
               mobile={mobile}
@@ -225,28 +236,23 @@ const OnboardingPage = () => {
       </div>
 
       {/* if verified and is new user */}
-      {stage === 6 && !isNewUser && isVerified && (
+      {stage === 7 && !isNewUser && isVerified && (
         <SlideContainer custom={stage}>
           <ExistingUserLogin mobile={mobile} isLoading={loading} onLogin={handleExistingUserLogin} />
         </SlideContainer>
       )}
 
       {/* if verified and is existing user */}
-      {stage === 6 && isNewUser && isVerified && (
+      {stage === 7 && isNewUser && isVerified && (
         <SlideContainer custom={stage}>
-          <UpsetPassword onFinish={(password) => handlePasswordAndProceed(password)} mobile={mobile} />
+          <UpsetPassword onFinish={(password) => {
+            setUserPassword(password); // Temporarily store the password
+            handleRegister();
+          }} mobile={mobile} />
         </SlideContainer>
       )}
 
-      {stage === 7 && (
-           <SlideContainer custom={stage}>
-           <LanguageSelector
-             selectedLanguage={selectedLanguage}
-             setSelectedLanguage={setSelectedLanguage}
-             onContinue={() => handleLanguageAndRegister(selectedLanguage)}
-           />
-         </SlideContainer>
-      )}
+      
 
       {/*
        loader 

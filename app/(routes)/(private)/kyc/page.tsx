@@ -177,7 +177,7 @@ export default function KYCProcess() {
   return (
     <div className="w-full max-w-md mx-auto p-6">
       <AnimatePresence mode="wait">
-        <motion.div
+        <motion.div className="m-0 p-0 inset-0"
           key={currentStage}
           variants={stageVariants}
           initial="hidden"
@@ -198,8 +198,7 @@ export default function KYCProcess() {
                 {stages[0].title}
               </h2>
               <p className="text-[#434343] mb-8">{stages[0].description}</p>
-
-              <div>
+              <div className="mt-auto">
                 <Button
                   className="mt-8 w-full py-6 bg-[#003056]"
                   onClick={handleContinue}
@@ -211,34 +210,36 @@ export default function KYCProcess() {
           )}
 
           {currentStage === 1 && (
-            <div className="mt-[32px]">
-              <ArrowLeft onClick={handleBack} className="cursor-pointer" />
-              <p className="text-center">
-                Step {currentStage + 1} of {stages.length}
-              </p>
-              <h2 className="text-2xl mt-6 font-semibold text-[#1A1A1A] mb-2">
-                {stages[1].title}
-              </h2>
-              <p className="text-[#434343] mb-6">{stages[1].description}</p>
-              <form className="space-y-4 mt-6">
-                {stages[1].fields?.map((field) => (
-                  <div key={field.name}>
-                    <Label htmlFor={field.name}>{field.label}</Label>
-                    <Input
-                      type={field.type}
-                      id={field.name}
-                      name={field.name}
-                      onChange={handleInputChange}
-                      required
-                      className="h-12"
-                      placeholder={field.placeholder}
-                    />
-                  </div>
-                ))}
-              </form>
-              <div>
+            <div className="absolute inset-0 w-full h-full p-4 flex flex-col justify-between">
+              <div className="flex-1 w-full h-full">
+                <ArrowLeft onClick={handleBack} className="cursor-pointer" />
+                <p className="text-center">
+                  Step {currentStage + 1} of {stages.length}
+                </p>
+                <h2 className="text-2xl mt-6 font-semibold text-[#1A1A1A] mb-2">
+                  {stages[1].title}
+                </h2>
+                <p className="text-[#434343] mb-6">{stages[1].description}</p>
+                <form className="space-y-4 mt-6">
+                  {stages[1].fields?.map((field) => (
+                    <div key={field.name}>
+                      <Label htmlFor={field.name}>{field.label}</Label>
+                      <Input
+                        type={field.type}
+                        id={field.name}
+                        name={field.name}
+                        onChange={handleInputChange}
+                        required
+                        className="h-12"
+                        placeholder={field.placeholder}
+                      />
+                    </div>
+                  ))}
+                </form>
+              </div>
+              <div className="mt-auto">
                 <Button
-                  className="mt-8 w-full py-6 bg-[#003056]"
+                  className="w-full py-6 bg-[#003056]"
                   onClick={handleContinue}
                 >
                   Continue
@@ -248,66 +249,69 @@ export default function KYCProcess() {
           )}
 
           {currentStage === 2 && (
-            <div className="mt-[32px]">
-              <ArrowLeft onClick={handleBack} className="cursor-pointer" />
-              <p className="text-center">
-                Step {currentStage + 1} of {stages.length}
-              </p>
-              <h2 className="text-2xl mt-6 font-semibold text-[#1A1A1A] mb-2">
-                {stages[2].title}
-              </h2>
-              <p className="text-[#434343] mb-6">{stages[2].description}</p>
+            <div className="absolute inset-0 w-full h-full p-4 flex flex-col justify-between">
+              <div className="flex-1 w-full h-full">
+                <ArrowLeft onClick={handleBack} className="cursor-pointer" />
+                <p className="text-center">
+                  Step {currentStage + 1} of {stages.length}
+                </p>
+                <h2 className="text-2xl mt-6 font-semibold text-[#1A1A1A] mb-2">
+                  {stages[2].title}
+                </h2>
+                <p className="text-[#434343] mb-6">{stages[2].description}</p>
 
-              <Card
-                className="h-[180px] p-0 mt-[88px]"
-                onClick={() => fileInputRef.current?.click()}
-              >
-                <CardContent className="h-full w-full p-0 text-center flex items-center justify-center flex-col space-y-2">
-                  {uploadedImage ? (
-                    <Image
-                      src={uploadedImage}
-                      alt="Uploaded Preview"
-                      width={400}
-                      height={180}
-                      className="w-full h-full object-cover rounded-md"
-                    />
-                  ) : (
-                    <>
-                      <FileIcon className="w-12 h-12 mx-auto" />
-                      <span className="text-[16px] font-medium text-gray-500">
-                        Upload image
-                      </span>
-                      <span className="text-sm text-gray-500">
-                        Click to upload image
-                      </span>
-                    </>
-                  )}
-
-                  {/* Hidden file input */}
-                  <input
-                    type="file"
-                    id="ninUpload"
-                    accept="image/*"
-                    ref={fileInputRef}
-                    onChange={handleFileUpload}
-                    className="hidden"
-                  />
-                </CardContent>
-              </Card>
-              <div>
-                <Button
-                  disabled={!uploadedImage}
-                  className="mt-8 w-full py-6 bg-[#003056]"
-                  onClick={handleContinue}
+                <Card
+                  className="h-[180px] p-0 mt-[88px]"
+                  onClick={() => fileInputRef.current?.click()}
                 >
-                  get Started
-                </Button>
+                  <CardContent className="h-full w-full p-0 text-center flex items-center justify-center flex-col space-y-2">
+                    {uploadedImage ? (
+                      <Image
+                        src={uploadedImage}
+                        alt="Uploaded Preview"
+                        width={400}
+                        height={180}
+                        className="w-full h-full object-cover rounded-md"
+                      />
+                    ) : (
+                      <>
+                        <FileIcon className="w-12 h-12 mx-auto" />
+                        <span className="text-[16px] font-medium text-gray-500">
+                          Upload image
+                        </span>
+                        <span className="text-sm text-gray-500">
+                          Click to upload image
+                        </span>
+                      </>
+                    )}
+
+                    {/* Hidden file input */}
+                    <input
+                      type="file"
+                      id="ninUpload"
+                      accept="image/*"
+                      ref={fileInputRef}
+                      onChange={handleFileUpload}
+                      className="hidden"
+                    />
+                  </CardContent>
+                </Card>
+                <div className="mt-auto">
+                  <Button
+                    disabled={!uploadedImage}
+                    className="mt-8 w-full py-6 bg-[#003056]"
+                    onClick={handleContinue}
+                  >
+                    get Started
+                  </Button>
+                </div>
               </div>
             </div>
           )}
 
           {currentStage === 3 && (
-            <div className="mt-[32px] md:mt-[10px]">
+            <div className="absolute inset-0 w-full h-full p-4 flex flex-col justify-between">
+              <div className="flex-1 w-full h-full">
               {!isProcessing && !verificationStatus && (
                 <div className="flex items-center justify-between mb-6">
                   <ArrowLeft onClick={handleBack} className="cursor-pointer" />
@@ -486,6 +490,7 @@ export default function KYCProcess() {
                 </div>
               )}
             </div>
+          </div>
           )}
         </motion.div>
       </AnimatePresence>

@@ -6,6 +6,8 @@ import { Home, Wallet, X, MessageSquare, Menu } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import useUserInfo from "@/hooks/use-userinfo";
+import { AlertCircle } from "lucide-react"
+import {Alert, AlertDescription, AlertTitle, } from "@/components/ui/alert"
 
 const features = [
   {
@@ -57,7 +59,20 @@ const transactions = [
 const DashboardView = () => {
   return (
     <div className="mt-[48px] h-auto  h[calc(100vh-100px)] overflow-y-auto">
-      <div className="h-[224px] border-2 rounded-[8px] bg-[#D1DCE5] p-4 flex flex-col justify-between">
+      {/* {showPopup &&  ( */}
+      <div className="mb-5">
+          <Link href="/kyc">
+            <Alert variant="destructive">
+              <AlertCircle className="h-4 w-4" />
+              <AlertTitle>Verify Account</AlertTitle>
+              <AlertDescription>
+              To ensure the security of your account and enable full access to EchoPay's features, please complete the verification process
+              </AlertDescription>
+            </Alert>
+          </Link>
+      </div>
+        {/* )} */}
+      <Link href="/chat"  className="h-[224px] border-2 rounded-[8px] bg-[#D1DCE5] p-4 flex flex-col justify-between">
         <div className=" h-[48px] rounded-full mt-[35px] flex justify-center items-center">
           <Image
             className="w-[68px] h-[68px] -rotate-[35deg]"
@@ -74,7 +89,7 @@ const DashboardView = () => {
             height={32}
           />
         </div>
-        <Link href="/chat" className="flex justify-between items-center">
+        <div className="flex justify-between items-center">
           <p className=" text-[18px] text-[#1A1A1A] font-medium">Echo Ai</p>
           <Image
             className="w-[6px] h-[12px]"
@@ -83,8 +98,8 @@ const DashboardView = () => {
             height={12}
             alt="icon"
           />
-        </Link>
-      </div>
+        </div>
+      </Link>
     </div>
   );
 };
@@ -241,7 +256,7 @@ const MoreView = () => (
 
 const DashboardPage = () => {
   const [activeView, setActiveView] = useState("home");
-  const [showPopup, setShowPopup] = useState(true);
+  // const [showPopup, setShowPopup] = useState(true);
   
   const { info } = useUserInfo();
   
@@ -249,17 +264,17 @@ const DashboardPage = () => {
   const isVerified = info?.isVerified
   console.log(info)
 
-  useEffect(() => {
-    // Simulating first visit check
-    if (info && isVerified === false) {
-      setShowPopup(true);
-    }
-  }, [info, isVerified]);
+  // useEffect(() => {
+  //   // Simulating first visit check
+  //   if (info && isVerified === false) {
+  //     setShowPopup(true);
+  //   }
+  // }, [info, isVerified]);
 
-  const handleVerify = () => {
-    // Handle verification logic here
-    setShowPopup(false);
-  };
+  // const handleVerify = () => {
+  //   // Handle verification logic here
+  //   setShowPopup(false);
+  // };
 
   return (
     <div className="w-full relative h-screen flex flex-col max-w-md mx-auto p-6 pb-10 md:pb-0">
@@ -343,37 +358,6 @@ const DashboardPage = () => {
         {activeView === "ai" && <AiView />}
         {activeView === "more" && <MoreView />}
 
-        {showPopup &&  (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full h-[282px]">
-              <div className="flex justify-between border-b relative items-center pb-2 mb-4">
-                <h2 className="text-xl font-semibold">Verify Your Account</h2>
-                <button
-                  onClick={() => setShowPopup(false)}
-                  className="text-white w-[32px] h-[32px] bg-red-500 flex justify-center items-center  rounded-full absolute -top-8 -right-8 "
-                >
-                  <X size={24} />
-                </button>
-              </div>
-
-              <div className="flex flex-col justify-between h-[80%]">
-                <div>
-                  <p className="mb-4">
-                    To ensure the security of your account and enable full
-                    access to EchoPay&apos;s features, please complete the
-                    verification process.
-                  </p>
-                </div>
-                <button
-                  onClick={handleVerify}
-                  className="w-full bg-[#003056] text-white py-2 px-4 rounded hover:bg-[#002040] transition duration-300"
-                >
-                  Verify Now
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
 
         <nav className="absolute bottom-0 left-0 right-0 bg-white border-t border-gray-200 py-5">
           <div className="max-w-md mx-auto flex justify-around items-center h-16">
