@@ -15,12 +15,14 @@ interface OTPVerificationProps {
   mobile: string;
   setStage: (value: number) => void;
   onVerify: (value: string, phone: string) => void;
+  otpError: string;
 }
 
 const OTPVerification = ({
   mobile,
   setStage,
   onVerify,
+  otpError,
 }: OTPVerificationProps) => {
   const [value, setValue] = useState("");
 
@@ -30,12 +32,13 @@ const OTPVerification = ({
 
   return (
     <div className="relative text-center w-full h-screen">
-      <div className="mt-[77px] mb-[88px]">
-        <h2 className="text-2xl font-medium text-center text-[#1A1A1A]">
+      <div className="mt-[77px] mb-[20px]">
+        <h2 className="text-2xl font-medium text-start text-[#1A1A1A]">
           Verify your mobile number
         </h2>
+        <p className="text-[#434343] text-start mt-[6px] fontmedium text-[16px]">Enter the verification code sent to your [Email/Phone Number] to complete your registration</p>
       </div>
-      <div className="w-full items-center flex flex-col gap-3">
+      <div className="w-full items-center mt-[48px] flex flex-col gap-3">
         <Label htmlFor="terms" className="w-full text-center ">
           We&apos;ve sent an OTP to {mobile} -
           <Button onClick={() => setStage(4)} variant="link">
@@ -48,26 +51,27 @@ const OTPVerification = ({
           value={value}
           onChange={(value) => setValue(value)}
         >
-          <InputOTPGroup className="gap-3">
+          <InputOTPGroup className="gap-4">
             <InputOTPSlot index={0} />
           </InputOTPGroup>
-          <InputOTPGroup className="gap-3">
+          <InputOTPGroup className="gap-4">
             <InputOTPSlot index={1} />
           </InputOTPGroup>
-          <InputOTPGroup className="gap-3">
+          <InputOTPGroup className="gap-4">
             <InputOTPSlot index={2} />
           </InputOTPGroup>
-          <InputOTPGroup className="gap-3">
+          <InputOTPGroup className="gap-4">
             <InputOTPSlot index={3} />
           </InputOTPGroup>
-          <InputOTPGroup className="gap-3">
+          <InputOTPGroup className="gap-4">
             <InputOTPSlot index={4} />
           </InputOTPGroup>
-          <InputOTPGroup className="gap-3">
+          <InputOTPGroup className="gap-4">
             <InputOTPSlot index={5} />
           </InputOTPGroup>
         </InputOTP>
       </div>
+      {otpError && <p className="error-message text-red-500 mt-6 text-start">{otpError}</p>}
 
       <div className="absolute bottom-0 mb-32 w-full flex justify-center">
         <Button
@@ -82,6 +86,7 @@ const OTPVerification = ({
         >
           Verify
         </Button>
+
       </div>
     </div>
   );

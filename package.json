@@ -18,11 +18,17 @@
     "@radix-ui/react-select": "^2.1.2",
     "@radix-ui/react-slot": "^1.1.0",
     "@radix-ui/react-toast": "^1.2.2",
+<<<<<<< HEAD
+    "axios": "^1.7.7",
+
+    "ai": "^3.0.7",
+=======
 
     "axios": "^1.7.7",
 
     "ai": "^3.0.7",
 
+>>>>>>> 9e4d92bab0e094fe9c0a5ecf5fe6256419cc4359
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",

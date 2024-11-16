@@ -4,10 +4,11 @@ import { useState } from "react";
 import PasswordInput from "../password-input";
 
 interface UpsetPasswordProps {
-  onFinish: (value: string) => void;
+  onFinish: (password: string) => void;
+  mobile: string;
 }
 
-const UpsetPassword = ({ onFinish }: UpsetPasswordProps) => {
+const UpsetPassword = ({ onFinish, mobile }: UpsetPasswordProps) => {
   const [passStage, setPassStage] = useState(1);
   const [pass1, setPass1] = useState("");
   const [pass2, setPass2] = useState("");
@@ -22,6 +23,7 @@ const UpsetPassword = ({ onFinish }: UpsetPasswordProps) => {
       return setError("Passwords did not match");
     }
 
+    console.log("Password verified:", pass1);
     onFinish(pass1);
   };
 
@@ -50,6 +52,7 @@ const UpsetPassword = ({ onFinish }: UpsetPasswordProps) => {
           error={error}
         />
       )}
+      {error && <p className="text-red-500 text-sm">{error}</p>}
     </div>
   );
 };
