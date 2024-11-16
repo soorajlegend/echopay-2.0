@@ -273,7 +273,7 @@ export default function KYCProcess() {
                     />
                   ) : (
                     <>
-                      <FileIcon className="w-12 h-12 mx-auto border-2 border-red-500" />
+                      <FileIcon className="w-12 h-12 mx-auto" />
                       <span className="text-[16px] font-medium text-gray-500">
                         Upload image
                       </span>
@@ -420,7 +420,7 @@ export default function KYCProcess() {
               )}
 
               {verificationStatus && (
-                <div className="flex flex-col h-screen border-2 items-center justify-center">
+                <div className="flex flex-col h-screen items-center justify-center">
                   <p className="text-2xl font-semibold mb[60px] text-[#1A1A1A]">
                     Verification
                   </p>
