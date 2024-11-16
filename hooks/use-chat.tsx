@@ -38,7 +38,7 @@ const useChat = create(
       },
     }),
     {
-      name: "fintech-gpt-chats-storage",
+      name: "echopay-chats-storage",
       storage: createJSONStorage(() => localStorage),
     }
   )
