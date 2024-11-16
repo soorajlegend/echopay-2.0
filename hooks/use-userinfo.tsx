@@ -19,8 +19,8 @@ const useUserInfo = create(
   persist<UserInfo>(
     (set, get) => ({
       info: null,
-      setInfo: (info: UserType) => {
-        set({ info });
+      setInfo: (data: UserType) => {
+        set({ info: data });
       },
       clearInfo: () => {
         set({

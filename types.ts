@@ -12,6 +12,8 @@ export interface UserType {
   email: string;
   phone: string;
   password: string;
+  language: string;
+  isVerified: boolean;
   balance: number;
   image: string;
   status: number;

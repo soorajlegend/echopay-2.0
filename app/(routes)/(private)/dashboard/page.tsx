@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { Home, Wallet, X, MessageSquare, Menu } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
+import useUserInfo from "@/hooks/use-userinfo";
 
 const features = [
   {
@@ -241,19 +242,23 @@ const MoreView = () => (
 const DashboardPage = () => {
   const [activeView, setActiveView] = useState("home");
   const [showPopup, setShowPopup] = useState(true);
-  const [isFirstVisit, setIsFirstVisit] = useState(true);
+  
+  const { info } = useUserInfo();
+  
+
+  const isVerified = info?.isVerified
+  console.log(info)
 
   useEffect(() => {
     // Simulating first visit check
-    if (isFirstVisit) {
+    if (info && isVerified === false) {
       setShowPopup(true);
     }
-  }, [isFirstVisit]);
+  }, [info, isVerified]);
 
   const handleVerify = () => {
     // Handle verification logic here
     setShowPopup(false);
-    setIsFirstVisit(false);
   };
 
   return (
@@ -271,7 +276,7 @@ const DashboardPage = () => {
               />
               <div>
                 <p className="text-[#434343]">Good morning</p>
-                <p className="text-[#1A1A1A] font-medium text-[20px]">Esther</p>
+                <p className="text-[#1A1A1A] font-medium text-[20px]">{info?.phone}</p>
               </div>
             </div>
             <div>
@@ -288,7 +293,7 @@ const DashboardPage = () => {
             <div className="flex flex-col justify-between">
               <p className="">Balance</p>
               <p className="text-[22px] md:text-[24px] font-semibold">
-                N 200,000.00
+                N {info?.balance}.00
               </p>
             </div>
             <div className="relative flex flex-col justify-end w-1/2">
@@ -338,7 +343,7 @@ const DashboardPage = () => {
         {activeView === "ai" && <AiView />}
         {activeView === "more" && <MoreView />}
 
-        {showPopup && isFirstVisit && (
+        {showPopup &&  (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
             <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full h-[282px]">
               <div className="flex justify-between border-b relative items-center pb-2 mb-4">
