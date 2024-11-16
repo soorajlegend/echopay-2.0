@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import axios from "axios";
-
+import useUserInfo from "@/hooks/use-userinfo";
 import MobileInput from "./_components/mobile-input";
 import SplashSlides from "./_components/splash-slides";
 import OTPVerification from "./_components/otp-verification";
@@ -32,6 +32,7 @@ const OnboardingPage = () => {
   // const newUser = true;
 
   const router = useRouter();
+  const {setInfo} = useUserInfo()
 
   useEffect(() => {
     const timer1 = setTimeout(() => setZoomLogo(true), 2000);
@@ -127,10 +128,25 @@ const OnboardingPage = () => {
       if (response.status === 200) {
        console.log("User registered successfully");
         console.log(response.data, "from register")
+        
+      // Store user info in Zustand
+      setInfo({
+        id: response.data.responseBody.id || "",
+        userid: response.data.responseBody.userid || "", 
+        fullname: response.data.responseBody.fullname || "",
+        email: response.data.responseBody.email || "",
+        phone: response.data.responseBody.phone,
+        password: response.data.responseBody.language,
+        image: response.data.responseBody.image || "",
+        language: response.data.responseBody.language,
+        balance: response.data.responseBody.balance,
+        isVerified: response.data.responseBody.isVerified,
+        createdAt: response.data.responseBody.createdAt || "",
+        updatedAt: response.data.responseBody.updatedAt || "",
+        status: response.data.responseBody.status || "",
+      });
         router.push("/dashboard"); // Redirect to dashboard
-        if (response.data.isVerified === false) {
-            
-        }
+
       } else {
         console.error("Registration failed");
       }
