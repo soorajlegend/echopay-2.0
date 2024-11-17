@@ -148,7 +148,7 @@ const VoicePage = () => {
 
       <div className="flex-1 flex flex-col items-center">
         <div className="flex-1 flex items-center justify-center w-full max-w-lg mx-auto">
-          <div className="flex gap-1 h-40 max-w-xs mx-auto items-center">
+          <div className="flex gap-1 h-40 max-w-xs mx-auto items-center justify-center">
             {visualizerData.map((value, index) => (
               <div
                 key={index}
@@ -167,14 +167,14 @@ const VoicePage = () => {
             <>
               <button
                 onClick={cancelRecording}
-                className="w-full p-4 rounded-full bg-red-100 hover:bg-red-200 flex items-center justify-center"
+                className="w-16 h-16 rounded-full bg-red-100 hover:bg-red-200 flex items-center justify-center"
               >
                 <X className="w-8 h-8 text-red-600" />
               </button>
 
               <button
                 onClick={isPaused ? resumeRecording : pauseRecording}
-                className="w-full p-4 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center"
+                className="w-16 h-16 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center"
               >
                 {isPaused ? (
                   <Play className="w-8 h-8 text-gray-600" />
@@ -185,7 +185,7 @@ const VoicePage = () => {
 
               <button
                 onClick={stopRecording}
-                className="w-full p-4 rounded-full bg-blue-500 hover:bg-blue-600 flex items-center justify-center"
+                className="w-16 h-16 rounded-full bg-blue-500 hover:bg-blue-600 flex items-center justify-center"
               >
                 <Mic className="w-8 h-8 text-white" />
               </button>
@@ -193,7 +193,7 @@ const VoicePage = () => {
           ) : (
             <button
               onClick={startRecording}
-              className="w-full p-4 rounded-full bg-blue-500 hover:bg-blue-600 flex items-center justify-center col-span-3"
+              className="w-16 h-16 rounded-full bg-blue-500 hover:bg-blue-600 flex items-center justify-center"
             >
               <Mic className="w-8 h-8 text-white" />
             </button>
