@@ -147,16 +147,16 @@ const ChatPage = () => {
 
   return (
     <div className="relative flex flex-col w-full h-screen p-4 pt-0">
-      <div className="flex items-center justify-between sticky top-0 bg-white">
-        <div className="flex items-center gap-2">
+      <div className="flex items-center justify-between sticky top-0 bg-white px-4 py-2">
+        <Link href="/dashboard" className="flex items-center gap-2">
           <Button variant="link" size="icon">
-            <ArrowLeft className="w-8 h-8" />
+            <ArrowLeft className="w-12 h-12" />
           </Button>
           <h2 className="text-xl font-medium">Chat</h2>
-        </div>
+        </Link>
         <Link href="/voice">
           <Button variant="link" size="icon">
-            <AudioLines className="w-8 h-8" />
+            <AudioLines className="w-12 h-12" />
           </Button>
         </Link>
       </div>
