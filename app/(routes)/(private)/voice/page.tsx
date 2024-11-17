@@ -36,6 +36,8 @@ const VoicePage = () => {
       const source = audioContextRef.current.createMediaStreamSource(stream);
       source.connect(analyserRef.current);
       
+      analyserRef.current.fftSize = 256;
+      
       mediaRecorderRef.current = new MediaRecorder(stream);
       const chunks: BlobPart[] = [];
 
@@ -64,7 +66,7 @@ const VoicePage = () => {
     const draw = () => {
       analyserRef.current!.getByteFrequencyData(dataArray);
       const normalizedData = Array.from(dataArray)
-        .slice(0, 20)
+        .slice(0, 50) // Increased number of bars
         .map(value => value / 255);
       setVisualizerData(normalizedData);
       animationFrameRef.current = requestAnimationFrame(draw);
@@ -134,56 +136,71 @@ const VoicePage = () => {
         </Link>
       </div>
 
-      <div className="flex-1 flex flex-col items-center justify-center">
-        <div className="flex gap-2 h-20 items-center">
-          {visualizerData.map((value, index) => (
-            <div
-              key={index}
-              className="w-2 bg-blue-500 rounded-full"
-              style={{
-                height: `${value * 100}%`,
-                transition: "height 0.1s ease",
-              }}
-            />
-          ))}
+      <div className="flex-1 flex flex-col items-center">
+        <div className="flex-1 flex items-center justify-center w-full max-w-lg mx-auto">
+          <div className="flex gap-1 h-40 items-center">
+            {visualizerData.map((value, index) => (
+              <div
+                key={index}
+                className="w-1.5 bg-blue-500 rounded-full"
+                style={{
+                  height: `${value * 100}%`,
+                  transition: "height 0.05s ease",
+                }}
+              />
+            ))}
+          </div>
         </div>
 
-        <div className="flex gap-4 mt-8">
-          {isRecording && (
-            <button
-              onClick={cancelRecording}
-              className="p-3 rounded-full bg-red-100 hover:bg-red-200"
-            >
-              <X className="w-6 h-6 text-red-600" />
-            </button>
-          )}
+        <div className="w-full grid grid-cols-3 gap-4 p-4 bg-white fixed bottom-0 left-0">
+          {isRecording ? (
+            <>
+              <button
+                onClick={cancelRecording}
+                className="w-full p-4 rounded-xl bg-red-100 hover:bg-red-200 flex items-center justify-center"
+              >
+                <X className="w-6 h-6 text-red-600" />
+              </button>
+              
+              <button
+                onClick={isPaused ? resumeRecording : pauseRecording}
+                className="w-full p-4 rounded-xl bg-gray-100 hover:bg-gray-200 flex items-center justify-center"
+              >
+                {isPaused ? (
+                  <Play className="w-6 h-6 text-gray-600" />
+                ) : (
+                  <Pause className="w-6 h-6 text-gray-600" />
+                )}
+              </button>
 
-          <button
-            onClick={isRecording ? stopRecording : startRecording}
-            className="p-4 rounded-full bg-blue-500 hover:bg-blue-600"
-          >
-            <Mic className="w-8 h-8 text-white" />
-          </button>
-
-          {isRecording && (
+              <button
+                onClick={stopRecording}
+                className="w-full p-4 rounded-xl bg-blue-500 hover:bg-blue-600 flex items-center justify-center"
+              >
+                <Mic className="w-6 h-6 text-white" />
+              </button>
+            </>
+          ) : audioData ? (
+            <>
+              <button
+                onClick={startRecording}
+                className="w-full p-4 rounded-xl bg-blue-500 hover:bg-blue-600 flex items-center justify-center col-span-2"
+              >
+                <Mic className="w-6 h-6 text-white" />
+              </button>
+              <button
+                onClick={sendAudio}
+                className="w-full p-4 rounded-xl bg-green-100 hover:bg-green-200 flex items-center justify-center"
+              >
+                <Send className="w-6 h-6 text-green-600" />
+              </button>
+            </>
+          ) : (
             <button
-              onClick={isPaused ? resumeRecording : pauseRecording}
-              className="p-3 rounded-full bg-gray-100 hover:bg-gray-200"
+              onClick={startRecording}
+              className="w-full p-4 rounded-xl bg-blue-500 hover:bg-blue-600 flex items-center justify-center col-span-3"
             >
-              {isPaused ? (
-                <Play className="w-6 h-6 text-gray-600" />
-              ) : (
-                <Pause className="w-6 h-6 text-gray-600" />
-              )}
-            </button>
-          )}
-
-          {audioData && !isRecording && (
-            <button
-              onClick={sendAudio}
-              className="p-3 rounded-full bg-green-100 hover:bg-green-200"
-            >
-              <Send className="w-6 h-6 text-green-600" />
+              <Mic className="w-6 h-6 text-white" />
             </button>
           )}
         </div>
