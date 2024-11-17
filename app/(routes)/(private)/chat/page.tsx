@@ -9,7 +9,6 @@ import axios from "axios";
 import useChat from "@/hooks/use-chat";
 import ConfirmTransaction from "@/components/confirm-transaction";
 import useBeneficiary from "@/hooks/use-beneficiary";
-import { Button } from "@/components/ui/button";
 import { AudioLines, ChevronLeft } from "lucide-react";
 import Link from "next/link";
 
