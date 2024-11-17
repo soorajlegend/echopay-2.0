@@ -72,6 +72,7 @@ const OnboardingPage = () => {
         }
       } catch (error) {
         console.error("Error sending OTP:", error);
+        setLoading(false);
       }
     } else {
       setStage(stage + 1);
@@ -149,11 +150,19 @@ const OnboardingPage = () => {
           status: response.data.responseBody.status || "",
         });
         router.push("/dashboard"); // Redirect to dashboard
+        setLoading(false);
+
+        console.log("User registered successfully");
+        console.log(response.data, "from register");
       } else {
         console.error("Registration failed");
+        setLoading(false);
       }
     } catch (error) {
       console.error("Error during registration:", error);
+      setLoading(false);
+    } finally {
+      setLoading(false);
     }
   };
 
