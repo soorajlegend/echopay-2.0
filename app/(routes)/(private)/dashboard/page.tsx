@@ -1,13 +1,13 @@
 "use client";
 import React from "react";
 import Image from "next/image";
-import { useState, useEffect } from "react";
-import { Home, Wallet, X, MessageSquare, Menu } from "lucide-react";
+import { useState } from "react";
+import { Home, Wallet, MessageSquare, Menu } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import useUserInfo from "@/hooks/use-userinfo";
-import { AlertCircle } from "lucide-react"
-import {Alert, AlertDescription, AlertTitle, } from "@/components/ui/alert"
+import { AlertCircle } from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 const features = [
   {
@@ -61,18 +61,22 @@ const DashboardView = () => {
     <div className="mt-[48px] h-auto  h[calc(100vh-100px)] overflow-y-auto">
       {/* {showPopup &&  ( */}
       <div className="mb-5">
-          <Link href="/kyc">
-            <Alert variant="destructive">
-              <AlertCircle className="h-4 w-4" />
-              <AlertTitle>Verify Account</AlertTitle>
-              <AlertDescription>
-              To ensure the security of your account and enable full access to EchoPay's features, please complete the verification process
-              </AlertDescription>
-            </Alert>
-          </Link>
+        <Link href="/kyc">
+          <Alert variant="destructive">
+            <AlertCircle className="h-4 w-4" />
+            <AlertTitle>Verify Account</AlertTitle>
+            <AlertDescription>
+              To ensure the security of your account and enable full access to
+              EchoPay&apos;s features, please complete the verification process
+            </AlertDescription>
+          </Alert>
+        </Link>
       </div>
-        {/* )} */}
-      <Link href="/chat"  className="h-[224px] border-2 rounded-[8px] bg-[#D1DCE5] p-4 flex flex-col justify-between">
+      {/* )} */}
+      <Link
+        href="/chat"
+        className="h-[224px] border-2 rounded-[8px] bg-[#D1DCE5] p-4 flex flex-col justify-between"
+      >
         <div className=" h-[48px] rounded-full mt-[35px] flex justify-center items-center">
           <Image
             className="w-[68px] h-[68px] -rotate-[35deg]"
@@ -257,12 +261,11 @@ const MoreView = () => (
 const DashboardPage = () => {
   const [activeView, setActiveView] = useState("home");
   // const [showPopup, setShowPopup] = useState(true);
-  
-  const { info } = useUserInfo();
-  
 
-  const isVerified = info?.isVerified
-  console.log(info)
+  const { info } = useUserInfo();
+
+  // const isVerified = info?.isVerified;
+  // console.log(info);
 
   // useEffect(() => {
   //   // Simulating first visit check
@@ -291,7 +294,9 @@ const DashboardPage = () => {
               />
               <div>
                 <p className="text-[#434343]">Good morning</p>
-                <p className="text-[#1A1A1A] font-medium text-[20px]">{info?.phone}</p>
+                <p className="text-[#1A1A1A] font-medium text-[20px]">
+                  {info?.phone}
+                </p>
               </div>
             </div>
             <div>
@@ -357,7 +362,6 @@ const DashboardPage = () => {
         {activeView === "transaction" && <TransactionView />}
         {activeView === "ai" && <AiView />}
         {activeView === "more" && <MoreView />}
-
 
         <nav className="absolute bottom-0 left-0 right-0 bg-white border-t border-gray-200 py-5">
           <div className="max-w-md mx-auto flex justify-around items-center h-16">
