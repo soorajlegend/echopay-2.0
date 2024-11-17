@@ -150,13 +150,13 @@ const ChatPage = () => {
       <div className="flex items-center justify-between sticky top-0 bg-white">
         <div className="flex items-center gap-2">
           <Button variant="link" size="icon">
-            <ArrowLeft className="w-4 h-4" />
+            <ArrowLeft className="w-8 h-8" />
           </Button>
-          <h2 className="text-2xl font-medium">Chat</h2>
+          <h2 className="text-xl font-medium">Chat</h2>
         </div>
         <Link href="/voice">
           <Button variant="link" size="icon">
-            <AudioLines className="w-4 h-4" />
+            <AudioLines className="w-8 h-8" />
           </Button>
         </Link>
       </div>
