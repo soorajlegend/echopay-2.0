@@ -245,8 +245,7 @@ const OnboardingPage = () => {
               mobile={mobile}
               otpError={otpError}
               setStage={setStage}
-              onVerify={(otp, mobile) => handleOTPVerification(otp, mobile)}
-
+              onVerify={(otp: string) => handleOTPVerification(otp)}
             />
           </SlideContainer>
         )}
