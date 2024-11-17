@@ -17,8 +17,6 @@ import useTransaction from "@/hooks/use-transaction";
 const name = "Suraj Muhammad";
 const balance = 100000;
 
-
-
 const ChatPage = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [newMessage, setNewMessage] = useState("");
@@ -121,6 +119,9 @@ const ChatPage = () => {
           createdAt: new Date(),
         };
         addChat(modelMessage);
+      }
+
+      if (jsonData.transactionChart) {
         setChartType("TRANSACTIONS");
       }
     } catch (error) {
