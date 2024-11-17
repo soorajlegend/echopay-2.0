@@ -11,27 +11,13 @@ import ConfirmTransaction from "@/components/confirm-transaction";
 import useBeneficiary from "@/hooks/use-beneficiary";
 import { AudioLines, ChevronLeft } from "lucide-react";
 import Link from "next/link";
-import { transactions } from "@/store";
 import Chart, { ChartType } from "./_components/chart";
+import useTransaction from "@/hooks/use-transaction";
 
 const name = "Suraj Muhammad";
 const balance = 100000;
 
-// const info = {
-//   id: 2,
-//   fullname: "suraj muhammad",
-//   email: "soorajwizard01@gmail.com",
-//   phone: "08082905659",
-//   password: "$2a$10$rQyXwCUS2wbconQiY0DFvOmsCjfCr8hU8Rquj9zy/74Br2OWi95A.",
-//   pin: null,
-//   balance: "0.00",
-//   image: null,
-//   status: null,
-//   language: "PG",
-//   isVerified: false,
-//   createdAt: "2024-11-17T14:41:46.000Z",
-//   updatedAt: "2024-11-17T14:41:46.000Z",
-// };
+
 
 const ChatPage = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -39,6 +25,7 @@ const ChatPage = () => {
 
   const { chats, addChat } = useChat();
   const { beneficiaries } = useBeneficiary();
+  const { transactions } = useTransaction();
 
   const [isLoading, setIsLoading] = useState(false);
   const [newTransaction, setNewTransaction] =
