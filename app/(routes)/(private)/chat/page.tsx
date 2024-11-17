@@ -173,7 +173,12 @@ const ChatPage = () => {
         disabled={isLoading}
       />
       <ConfirmTransaction
-        data={newTransaction}
+        data={{
+          beneficiaryId: "3",
+          name: "Muhammed Ali",
+          amount: 10000,
+          description: "Transport payment",
+        }}
         setNewTransaction={setNewTransaction}
       />
     </div>
