@@ -149,14 +149,14 @@ const ChatPage = () => {
     <div className="relative flex flex-col w-full h-screen p-4 pt-0">
       <div className="flex items-center justify-between sticky top-0 bg-white px-4 py-2">
         <Link href="/dashboard" className="flex items-center gap-2">
-          <Button variant="link" size="icon">
-            <ArrowLeft className="w-12 h-12" />
+          <Button variant="link" size="icon" className="w-auto h-auto">
+            <ArrowLeft className="w-8 h-8" />
           </Button>
           <h2 className="text-xl font-medium">Chat</h2>
         </Link>
         <Link href="/voice">
-          <Button variant="link" size="icon">
-            <AudioLines className="w-12 h-12" />
+          <Button variant="link" size="icon" className="w-auto h-auto">
+            <AudioLines className="w-8 h-8" />
           </Button>
         </Link>
       </div>
