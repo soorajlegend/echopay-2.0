@@ -9,6 +9,9 @@ import axios from "axios";
 import useChat from "@/hooks/use-chat";
 import ConfirmTransaction from "@/components/confirm-transaction";
 import useBeneficiary from "@/hooks/use-beneficiary";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft, AudioLines } from "lucide-react";
+import Link from "next/link";
 
 const name = "Suraj Muhammad";
 const balance = 100000;
@@ -56,12 +59,12 @@ const ChatPage = () => {
     scrollToBottom();
   }, [chats]);
 
-  useEffect(() => {
-    if (newTransaction) {
-      // Reset transaction after handling
-      setNewTransaction(null);
-    }
-  }, [newTransaction]);
+  // useEffect(() => {
+  //   if (newTransaction) {
+  //     // Reset transaction after handling
+  //     setNewTransaction(null);
+  //   }
+  // }, [newTransaction]);
 
   const handleSubmit = async () => {
     if (!newMessage) return;
@@ -121,7 +124,6 @@ const ChatPage = () => {
       const jsonData = JSON.parse(response.data);
 
       if (jsonData.newTransaction) {
-        console.log(jsonData.newTransaction);
         setNewTransaction(jsonData.newTransaction);
       } else {
         console.log("no transaction");
@@ -144,7 +146,20 @@ const ChatPage = () => {
   };
 
   return (
-    <div className="relative flex flex-col w-full h-screen p-4">
+    <div className="relative flex flex-col w-full h-screen p-4 pt-0">
+      <div className="flex items-center justify-between sticky top-0 bg-white px-4 py-2">
+        <Link href="/dashboard" className="flex items-center gap-2">
+          <Button variant="link" size="icon" className="w-auto h-auto">
+            <ArrowLeft className="w-8 h-8" />
+          </Button>
+          <h2 className="text-xl font-medium">Chat</h2>
+        </Link>
+        <Link href="/voice">
+          <Button variant="link" size="icon" className="w-auto h-auto">
+            <AudioLines className="w-8 h-8" />
+          </Button>
+        </Link>
+      </div>
       <div className="flex-1 overflow-y-auto mb-4 space-y-4">
         {chats.map((chat, index) => (
           <ChatItem

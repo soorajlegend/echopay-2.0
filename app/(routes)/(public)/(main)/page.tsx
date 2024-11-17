@@ -8,15 +8,12 @@ import useUserInfo from "@/hooks/use-userinfo";
 import MobileInput from "./_components/mobile-input";
 import SplashSlides from "./_components/splash-slides";
 import OTPVerification from "./_components/otp-verification";
-import { Loader2, 
-  // Phone  
-} from "lucide-react";
+import { Loader2 } from "lucide-react";
 import UpsetPassword from "@/components/ui/upset-password";
 import SlideContainer from "@/components/slide-container";
 import LanguageSelector from "@/components/language-selector";
 import { useRouter } from "next/navigation";
 import ExistingUserLogin from "@/components/ui/ExistingUserLogin"
-//import PasswordInput from "@/components/password-input";
 
 const OnboardingPage = () => {
   const [stage, setStage] = useState(0);
@@ -28,15 +25,15 @@ const OnboardingPage = () => {
   const [isVerifying, setIsVerifying] = useState(false);
   const [isVerified, setIsVerified] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState("");
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
   const [isNewUser, setIsNewUser] = useState<boolean | null>(null);
   const [otpError, setOtpError] = useState("");
-  const [userPassword, setUserPassword] = useState("")
- 
+  const [userPassword, setUserPassword] = useState("");
+
   // const newUser = true;
 
   const router = useRouter();
-  const {setInfo} = useUserInfo()
+  const { setInfo } = useUserInfo();
 
   useEffect(() => {
     const timer1 = setTimeout(() => setZoomLogo(true), 2000);
@@ -53,19 +50,22 @@ const OnboardingPage = () => {
 
   const handleContinue = async () => {
     console.log("handleContinue called", stage);
-    console.log(mobile)
-    setLoading(true)
+    console.log(mobile);
+    setLoading(true);
     if (stage === 5) {
       try {
-        const response = await axios.post("https://echo-pay.onrender.com/api/send-otp", {
-          phone: mobile,
-          name: name,
-          email: email
-        });
+        const response = await axios.post(
+          "https://echo-pay.onrender.com/api/send-otp",
+          {
+            phone: mobile,
+            name: name,
+            email: email,
+          }
+        );
 
         if (response.status === 200) {
           // OTP sent successfully, move to OTP entry stage
-          setLoading(false)
+          setLoading(false);
           setStage(6);
         } else {
           console.error("Failed to send OTP");
@@ -76,13 +76,13 @@ const OnboardingPage = () => {
       }
     } else {
       setStage(stage + 1);
-      setLoading(false)
+      setLoading(false);
     }
-  }
-
+  };
 
 
   const handleOTPVerification = async (otp: string, mobile: string) => {
+
     setIsVerifying(true);
     setOtpError("");
     // setLoading(true)
@@ -92,7 +92,7 @@ const OnboardingPage = () => {
         mobile
       })
 
-      console.log(response.data.responseBody, "fom otp")
+      console.log(response.data.responseBody, "fom otp");
 
       if (response.status === 200) {
         setIsVerifying(false);
@@ -101,8 +101,8 @@ const OnboardingPage = () => {
           setIsNewUser(true);
           setStage(7); //
         } else {
-          setIsNewUser(false)
-          setStage(7)
+          setIsNewUser(false);
+          setStage(7);
         }
       } else {
         // Handle OTP verification failure
@@ -117,14 +117,17 @@ const OnboardingPage = () => {
     }
   };
 
-  const handleRegister  = async () => {
+  const handleRegister = async () => {
     try {
-      const response = await axios.post("https://echo-pay.onrender.com/api/register", {
-        phone: mobile,
-        password: userPassword,
-        language: selectedLanguage,
-      });
-  
+      const response = await axios.post(
+        "https://echo-pay.onrender.com/api/register",
+        {
+          phone: mobile,
+          password: userPassword,
+          language: selectedLanguage,
+        }
+      );
+
       if (response.status === 200) {
        console.log("User registered successfully");
         console.log(response.data, "from register")
@@ -148,6 +151,9 @@ const OnboardingPage = () => {
         router.push("/dashboard"); // Redirect to dashboard
         setLoading(false)
 
+        console.log("User registered successfully");
+        console.log(response.data, "from register");
+
       } else {
         console.error("Registration failed");
         setLoading(false)
@@ -160,17 +166,19 @@ const OnboardingPage = () => {
   };
   };
 
-
   const handleExistingUserLogin = async (password: string) => {
     try {
-      const response = await axios.post("https://echo-pay.onrender.com/api/login", {
-        phone: mobile,
-        password,
-      });
-  
+      const response = await axios.post(
+        "https://echo-pay.onrender.com/api/login",
+        {
+          phone: mobile,
+          password,
+        }
+      );
+
       if (response.status === 200) {
         console.log("Login successful");
-        console.log(response.data, " from login")
+        console.log(response.data, " from login");
         router.push("/dashboard"); // Redirect to dashboard
       } else {
         console.error("Login failed");
@@ -179,15 +187,15 @@ const OnboardingPage = () => {
       console.error("Error logging in:", error);
     }
   };
-  
 
   return (
     <div className="w-full h-full flex flex-col gap-10 relative">
       <div className="h-screen w-full flex flex-col p-3 items-center justify-center">
         {showLogo && (
           <motion.div
-            className={`transition-transform duration-1000 ${zoomLogo ? "scale-110" : "scale-100"
-              }`}
+            className={`transition-transform duration-1000 ${
+              zoomLogo ? "scale-110" : "scale-100"
+            }`}
             initial={{ scale: 0.5 }}
             animate={{ scale: 1 }}
             transition={{ duration: 1 }}
@@ -204,14 +212,14 @@ const OnboardingPage = () => {
         />
 
         {stage === 4 && (
-           <SlideContainer custom={stage}>
-           <LanguageSelector
-             selectedLanguage={selectedLanguage}
-             setSelectedLanguage={setSelectedLanguage}
-             onContinue={() => setStage(5)}
-           />
-         </SlideContainer>
-      )}
+          <SlideContainer custom={stage}>
+            <LanguageSelector
+              selectedLanguage={selectedLanguage}
+              setSelectedLanguage={setSelectedLanguage}
+              onContinue={() => setStage(5)}
+            />
+          </SlideContainer>
+        )}
 
         {/* mobile input stage */}
 
@@ -238,6 +246,7 @@ const OnboardingPage = () => {
               otpError={otpError}
               setStage={setStage}
               onVerify={(otp, mobile) => handleOTPVerification(otp, mobile)}
+
             />
           </SlideContainer>
         )}
@@ -246,21 +255,27 @@ const OnboardingPage = () => {
       {/* if verified and is new user */}
       {stage === 7 && !isNewUser && isVerified && (
         <SlideContainer custom={stage}>
-          <ExistingUserLogin mobile={mobile} isLoading={loading} onLogin={handleExistingUserLogin} />
+          <ExistingUserLogin
+            mobile={mobile}
+            isLoading={loading}
+            onLogin={handleExistingUserLogin}
+          />
         </SlideContainer>
       )}
 
       {/* if verified and is existing user */}
       {stage === 7 && isNewUser && isVerified && (
         <SlideContainer custom={stage}>
-          <UpsetPassword onFinish={(password) => {
-            setUserPassword(password); // Temporarily store the password
-            handleRegister();
-          }} />
+
+          <UpsetPassword
+            onFinish={(password) => {
+              setUserPassword(password);
+              handleRegister();
+            }}
+          />
+
         </SlideContainer>
       )}
-
-      
 
       {/*
        loader 

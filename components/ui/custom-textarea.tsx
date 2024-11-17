@@ -70,7 +70,7 @@ const CustomTextareaForm: React.FC<
       className="flex items-center justify-between h-auto w-full "
       onSubmit={handleSubmit}
     >
-      <div className="w-full lg:max-w-4xl mx-auto flex items-end dark:ring-arsenic rounded-lg gap-2 focus-visible:ring-0 ring-1 ring-gray-200/60 bg-gray-200/50 focus-visible:border-none p-1">
+      <div className="w-full lg:max-w-4xl mx-auto flex items-end dark:ring-arsenic rounded-2xl gap-2 focus-visible:ring-0 ring-1 ring-gray-200/60 bg-gray-200/50 focus-visible:border-none p-2 mb-5 lg:mb-0">
         <textarea
           value={value}
           disabled={disabled}
@@ -88,7 +88,7 @@ const CustomTextareaForm: React.FC<
           type="submit"
           size="icon"
           disabled={value.length === 0}
-          className="w-8 h-8"
+          className="w-8 h-8 rounded-xl"
         >
           <SendHorizonal />
         </Button>
