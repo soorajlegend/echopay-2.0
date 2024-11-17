@@ -8,13 +8,15 @@ import useUserInfo from "@/hooks/use-userinfo";
 import MobileInput from "./_components/mobile-input";
 import SplashSlides from "./_components/splash-slides";
 import OTPVerification from "./_components/otp-verification";
-import { Loader2, Phone } from "lucide-react";
+import { Loader2, 
+  // Phone  
+} from "lucide-react";
 import UpsetPassword from "@/components/ui/upset-password";
 import SlideContainer from "@/components/slide-container";
 import LanguageSelector from "@/components/language-selector";
 import { useRouter } from "next/navigation";
 import ExistingUserLogin from "@/components/ui/ExistingUserLogin"
-import PasswordInput from "@/components/password-input";
+//import PasswordInput from "@/components/password-input";
 
 const OnboardingPage = () => {
   const [stage, setStage] = useState(0);
@@ -70,6 +72,7 @@ const OnboardingPage = () => {
         }
       } catch (error) {
         console.error("Error sending OTP:", error);
+        setLoading(false)
       }
     } else {
       setStage(stage + 1);
@@ -79,14 +82,14 @@ const OnboardingPage = () => {
 
 
 
-  const handleOTPVerification = async (otp: string, phone: string) => {
+  const handleOTPVerification = async (otp: string, mobile: string) => {
     setIsVerifying(true);
     setOtpError("");
     // setLoading(true)
     try {
       const response = await axios.post("https://echo-pay.onrender.com/api/verify-otp", {
         otp,
-        phone: mobile
+        mobile
       })
 
       console.log(response.data.responseBody, "fom otp")
@@ -143,13 +146,18 @@ const OnboardingPage = () => {
         status: response.data.responseBody.status || "",
       });
         router.push("/dashboard"); // Redirect to dashboard
+        setLoading(false)
 
       } else {
         console.error("Registration failed");
+        setLoading(false)
       }
     } catch (error) {
       console.error("Error during registration:", error);
-    }
+      setLoading(false)
+    } finally {
+      setLoading(false)
+  };
   };
 
 
@@ -229,7 +237,7 @@ const OnboardingPage = () => {
               mobile={mobile}
               otpError={otpError}
               setStage={setStage}
-              onVerify={(otp, phone) => handleOTPVerification(otp, phone)}
+              onVerify={(otp, mobile) => handleOTPVerification(otp, mobile)}
             />
           </SlideContainer>
         )}
@@ -248,7 +256,7 @@ const OnboardingPage = () => {
           <UpsetPassword onFinish={(password) => {
             setUserPassword(password); // Temporarily store the password
             handleRegister();
-          }} mobile={mobile} />
+          }} />
         </SlideContainer>
       )}
 

@@ -1,8 +1,10 @@
 "use client";
 import React from "react";
 import Image from "next/image";
-import { useState, useEffect } from "react";
-import { Home, Wallet, X, MessageSquare, Menu } from "lucide-react";
+import { useState, 
+  //useEffect 
+} from "react";
+import { Home, Wallet, MessageSquare, Menu } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import useUserInfo from "@/hooks/use-userinfo";
@@ -261,8 +263,7 @@ const DashboardPage = () => {
   const { info } = useUserInfo();
   
 
-  const isVerified = info?.isVerified
-  console.log(info)
+  // const isVerified = info?.isVerified
 
   // useEffect(() => {
   //   // Simulating first visit check

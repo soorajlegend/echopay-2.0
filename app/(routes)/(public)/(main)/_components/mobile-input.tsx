@@ -80,7 +80,7 @@ const MobileInput = ({ mobile, name, email, setMobile, setName, setEmail, onProc
           onClick={onProceed}
           disabled={!mobile.length || isLoading}
         >
-          {isLoading ? "loading.." : "proceed"}
+          {isLoading ? "Sending OTP" : "proceed"}
         </Button>
       </div>
     </div>
