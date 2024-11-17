@@ -56,12 +56,12 @@ const ChatPage = () => {
     scrollToBottom();
   }, [chats]);
 
-  useEffect(() => {
-    if (newTransaction) {
-      // Reset transaction after handling
-      setNewTransaction(null);
-    }
-  }, [newTransaction]);
+  // useEffect(() => {
+  //   if (newTransaction) {
+  //     // Reset transaction after handling
+  //     setNewTransaction(null);
+  //   }
+  // }, [newTransaction]);
 
   const handleSubmit = async () => {
     if (!newMessage) return;
@@ -121,7 +121,6 @@ const ChatPage = () => {
       const jsonData = JSON.parse(response.data);
 
       if (jsonData.newTransaction) {
-        console.log(jsonData.newTransaction);
         setNewTransaction(jsonData.newTransaction);
       } else {
         console.log("no transaction");
@@ -173,12 +172,7 @@ const ChatPage = () => {
         disabled={isLoading}
       />
       <ConfirmTransaction
-        data={{
-          beneficiaryId: "3",
-          name: "Muhammed Ali",
-          amount: 10000,
-          description: "Transport payment",
-        }}
+        data={newTransaction}
         setNewTransaction={setNewTransaction}
       />
     </div>
