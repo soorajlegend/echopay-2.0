@@ -28,19 +28,13 @@ export const TransactionChart = () => {
     (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
   );
 
-  // Only show first and last date
-  const firstDate = sortedTransactions[0].date;
-  const lastDate = sortedTransactions[sortedTransactions.length - 1].date;
+  const labels = sortedTransactions.map((t, index) => 
+    index === 0 || index === sortedTransactions.length - 1 ? t.date : ""
+  );
 
-  const labels = [firstDate, lastDate];
-  const amounts = [
-    sortedTransactions[0].isCredit
-      ? sortedTransactions[0].amount
-      : -sortedTransactions[0].amount,
-    sortedTransactions[sortedTransactions.length - 1].isCredit
-      ? sortedTransactions[sortedTransactions.length - 1].amount
-      : -sortedTransactions[sortedTransactions.length - 1].amount,
-  ];
+  const amounts = sortedTransactions.map(t => 
+    t.isCredit ? t.amount : -t.amount
+  );
 
   const data = {
     labels,
