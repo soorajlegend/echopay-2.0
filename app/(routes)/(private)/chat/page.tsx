@@ -10,7 +10,7 @@ import useChat from "@/hooks/use-chat";
 import ConfirmTransaction from "@/components/confirm-transaction";
 import useBeneficiary from "@/hooks/use-beneficiary";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, AudioLines } from "lucide-react";
+import { AudioLines, ChevronLeft } from "lucide-react";
 import Link from "next/link";
 
 const name = "Suraj Muhammad";
@@ -149,15 +149,11 @@ const ChatPage = () => {
     <div className="relative flex flex-col w-full h-screen p-4 pt-0">
       <div className="flex items-center justify-between sticky top-0 bg-white px-4 py-2">
         <Link href="/dashboard" className="flex items-center gap-2">
-          <Button variant="link" size="icon" className="w-auto h-auto">
-            <ArrowLeft className="w-8 h-8" />
-          </Button>
+          <ChevronLeft className="w-10 h-10" />
           <h2 className="text-xl font-medium">Chat</h2>
         </Link>
         <Link href="/voice">
-          <Button variant="link" size="icon" className="w-auto h-auto">
-            <AudioLines className="w-8 h-8" />
-          </Button>
+          <AudioLines className="w-10 h-10" />
         </Link>
       </div>
       <div className="flex-1 overflow-y-auto mb-4 space-y-4">
