@@ -11,33 +11,27 @@ import ConfirmTransaction from "@/components/confirm-transaction";
 import useBeneficiary from "@/hooks/use-beneficiary";
 import { AudioLines, ChevronLeft } from "lucide-react";
 import Link from "next/link";
+import { transactions } from "@/store";
+import Chart, { ChartType } from "./_components/chart";
 
 const name = "Suraj Muhammad";
 const balance = 100000;
-// dummu data
-const transactions = [
-  {
-    id: 1,
-    name: "John Doe",
-    amount: 100,
-    date: "2024-10-15",
-    type: "send",
-  },
-  {
-    id: 2,
-    name: "James Bond",
-    amount: 200,
-    date: "2024-10-14",
-    type: "receive",
-  },
-  {
-    id: 3,
-    name: "Muhammad Ali",
-    amount: 300,
-    date: "2024-10-13",
-    type: "send",
-  },
-];
+
+// const info = {
+//   id: 2,
+//   fullname: "suraj muhammad",
+//   email: "soorajwizard01@gmail.com",
+//   phone: "08082905659",
+//   password: "$2a$10$rQyXwCUS2wbconQiY0DFvOmsCjfCr8hU8Rquj9zy/74Br2OWi95A.",
+//   pin: null,
+//   balance: "0.00",
+//   image: null,
+//   status: null,
+//   language: "PG",
+//   isVerified: false,
+//   createdAt: "2024-11-17T14:41:46.000Z",
+//   updatedAt: "2024-11-17T14:41:46.000Z",
+// };
 
 const ChatPage = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -49,6 +43,7 @@ const ChatPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [newTransaction, setNewTransaction] =
     useState<NewTransactionType | null>(null);
+  const [chartType, setChartType] = useState<ChartType>(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -102,7 +97,10 @@ const ChatPage = () => {
         ),
         transactions: JSON.stringify(
           transactions.map(
-            (t) => `${t.name} - ${t.type} - NGN${t.amount} - ${t.date} |`
+            (t) =>
+              `${t.isCredit ? t.senderName : t.receiverName} - ${
+                t.isCredit ? "Credit" : "Debit"
+              } - NGN${t.amount} - ${t.date} |`
           )
         ),
         name,
@@ -136,6 +134,7 @@ const ChatPage = () => {
           createdAt: new Date(),
         };
         addChat(modelMessage);
+        setChartType("TRANSACTIONS");
       }
     } catch (error) {
       console.error("API request failed:", error);
@@ -186,6 +185,7 @@ const ChatPage = () => {
         data={newTransaction}
         setNewTransaction={setNewTransaction}
       />
+      <Chart type={chartType} setType={setChartType} />
     </div>
   );
 };

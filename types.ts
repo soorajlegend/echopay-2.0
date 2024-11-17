@@ -17,8 +17,8 @@ export interface UserType {
   balance: number;
   image: string;
   status: number;
-  createdAt: string; // ISO date string
-  updatedAt: string; // ISO date string
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface Beneficiary {
