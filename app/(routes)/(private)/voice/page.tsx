@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { ChevronLeft, Mic, Pause, Play, X } from "lucide-react";
+import { ChevronLeft, Mic, Pause, Play, X, Send } from "lucide-react";
 import Link from "next/link";
 import axios from "axios";
 
@@ -139,7 +139,7 @@ const VoicePage = () => {
   };
 
   return (
-    <div className="relative flex flex-col w-full max-w-lg mx-auto h-screen p-4 pt-0">
+    <div className="relative flex flex-col w-full  h-screen p-4 pt-0">
       <div className="flex items-center justify-between sticky top-0 bg-white px-4 py-2">
         <Link href="/chat" className="flex items-center">
           <ChevronLeft className="w-10 h-10 p-1.5" />
@@ -149,11 +149,17 @@ const VoicePage = () => {
 
       <div className="flex-1 flex flex-col items-center">
         <div className="flex-1 flex items-center justify-center w-full max-w-lg mx-auto">
-          <div className="flex gap-1 h-40 max-w-xs mx-auto items-center justify-center">
+          <div
+            className={`flex w-min gap-1 h-40 max-w-xs mx-auto items-center justify-center ${
+              isPaused ? "opacity-50" : ""
+            }`}
+          >
             {visualizerData.map((value, index) => (
               <div
                 key={index}
-                className="w-1.5 bg-blue-500 rounded-full"
+                className={`w-1.5 rounded-full ${
+                  isPaused ? "bg-red-500" : "bg-blue-500"
+                }`}
                 style={{
                   height: `${value * 100}%`,
                   transition: "height 0.05s ease",
@@ -163,7 +169,7 @@ const VoicePage = () => {
           </div>
         </div>
 
-        <div className="w-full flex justify-evenly gap-4 p-4 bg-white fixed bottom-0 left-0">
+        <div className="w-full flex justify-evenly gap-4 p-4 bg-white fixed max-w-lg mx-auto bottom-0 left-0">
           {isRecording ? (
             <>
               <button
@@ -175,10 +181,14 @@ const VoicePage = () => {
 
               <button
                 onClick={isPaused ? resumeRecording : pauseRecording}
-                className="w-16 h-16 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center aspect-square"
+                className={`w-16 h-16 rounded-full ${
+                  isPaused
+                    ? "bg-red-500 hover:bg-red-600"
+                    : "bg-gray-100 hover:bg-gray-200"
+                } flex items-center justify-center aspect-square`}
               >
                 {isPaused ? (
-                  <Play className="w-8 h-8 text-gray-600" />
+                  <Play className="w-8 h-8 text-white" />
                 ) : (
                   <Pause className="w-8 h-8 text-gray-600" />
                 )}
@@ -188,7 +198,7 @@ const VoicePage = () => {
                 onClick={stopRecording}
                 className="w-16 h-16 rounded-full bg-blue-500 hover:bg-blue-600 flex items-center justify-center aspect-square"
               >
-                <Mic className="w-8 h-8 text-white" />
+                <Send className="w-8 h-8 text-white" />
               </button>
             </>
           ) : (
