@@ -72,7 +72,8 @@ const VoicePage = () => {
       analyserRef.current!.getByteFrequencyData(dataArray);
       const normalizedData = Array.from(dataArray)
         .slice(0, 50)
-        .map((value) => value / 255);
+        .map((value) => value / 255)
+        .reverse(); // Reverse the array to make visualization go right to left
       setVisualizerData(normalizedData);
       animationFrameRef.current = requestAnimationFrame(draw);
     };
@@ -167,14 +168,14 @@ const VoicePage = () => {
             <>
               <button
                 onClick={cancelRecording}
-                className="w-16 h-16 rounded-full bg-red-100 hover:bg-red-200 flex items-center justify-center"
+                className="w-16 h-16 rounded-full bg-red-100 hover:bg-red-200 flex items-center justify-center aspect-square"
               >
                 <X className="w-8 h-8 text-red-600" />
               </button>
 
               <button
                 onClick={isPaused ? resumeRecording : pauseRecording}
-                className="w-16 h-16 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center"
+                className="w-16 h-16 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center aspect-square"
               >
                 {isPaused ? (
                   <Play className="w-8 h-8 text-gray-600" />
@@ -185,7 +186,7 @@ const VoicePage = () => {
 
               <button
                 onClick={stopRecording}
-                className="w-16 h-16 rounded-full bg-blue-500 hover:bg-blue-600 flex items-center justify-center"
+                className="w-16 h-16 rounded-full bg-blue-500 hover:bg-blue-600 flex items-center justify-center aspect-square"
               >
                 <Mic className="w-8 h-8 text-white" />
               </button>
@@ -193,7 +194,7 @@ const VoicePage = () => {
           ) : (
             <button
               onClick={startRecording}
-              className="w-16 h-16 rounded-full bg-blue-500 hover:bg-blue-600 flex items-center justify-center"
+              className="w-16 h-16 rounded-full bg-blue-500 hover:bg-blue-600 flex items-center justify-center aspect-square"
             >
               <Mic className="w-8 h-8 text-white" />
             </button>
