@@ -11,25 +11,26 @@ interface BeneficiaryType {
   clearAll: () => void;
 }
 
+
 const useBeneficiary = create(
   persist<BeneficiaryType>(
     (set, get) => ({
       beneficiaries: [
         {
           id: 1,
-          userid: "user1",
-          acc_name: "John Doe",
-          acc_num: "1234567890",
-          bank_name: "Bank of America",
-          bank_code: "BOA001",
-          status: 1,
-          createdAt: "2024-01-01T00:00:00Z",
-          updatedAt: "2024-01-01T00:00:00Z",
+          userid: "2",
+          acc_name: "Faruq Hassan",
+          acc_num: "08114528984",
+          bank_name: "",
+          bank_code: "",
+          status: 0,
+          createdAt: "2024-11-17T15:14:46.000Z",
+          updatedAt: "2024-11-17T15:14:46.000Z",
         },
         {
-          id: 2,
+          id: 3,
           userid: "user2",
-          acc_name: "James Bond",
+          acc_name: "Salma Gambo",
           acc_num: "0987654321",
           bank_name: "Chase Bank",
           bank_code: "CHASE001",
@@ -38,7 +39,7 @@ const useBeneficiary = create(
           updatedAt: "2024-01-01T00:00:00Z",
         },
         {
-          id: 3,
+          id: 4,
           userid: "user3",
           acc_name: "Muhammad Ali",
           acc_num: "5555555555",
@@ -75,7 +76,7 @@ const useBeneficiary = create(
       },
     }),
     {
-      name: "fintech-gpt-beneficiaries-storage",
+      name: "echopay-beneficiaries-storage",
       storage: createJSONStorage(() => localStorage),
     }
   )
