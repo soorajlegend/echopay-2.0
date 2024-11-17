@@ -3,7 +3,7 @@
 import React from "react";
 import { Label } from "@/components/ui/label";
 import { InputWithIcon } from "@/components/ui/input-with-icon";
-import { PhoneCall, Inbox } from "lucide-react";
+import { PhoneCall } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input"
 

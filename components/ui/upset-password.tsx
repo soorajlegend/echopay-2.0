@@ -5,10 +5,9 @@ import PasswordInput from "../password-input";
 
 interface UpsetPasswordProps {
   onFinish: (password: string) => void;
-  mobile: string;
 }
 
-const UpsetPassword = ({ onFinish, mobile }: UpsetPasswordProps) => {
+const UpsetPassword = ({ onFinish }: UpsetPasswordProps) => {
   const [passStage, setPassStage] = useState(1);
   const [pass1, setPass1] = useState("");
   const [pass2, setPass2] = useState("");
