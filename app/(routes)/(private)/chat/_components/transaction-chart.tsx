@@ -23,10 +23,14 @@ export function TransactionChart() {
 
   const chartData =
     transactions.length > 0
-      ? transactions.map((t) => ({
-          date: t.date,
-          amount: t.isCredit ? t.amount : -t.amount,
-        }))
+      ? transactions
+          .map((t) => ({
+            date: t.date,
+            amount: t.isCredit ? t.amount : -t.amount,
+          }))
+          .sort(
+            (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+          )
       : [];
   const activeChart = "amount";
 
