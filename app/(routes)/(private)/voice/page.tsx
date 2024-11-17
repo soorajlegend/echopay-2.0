@@ -1,14 +1,13 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { ChevronLeft, Mic, Pause, Play, Send, X } from "lucide-react";
+import { ChevronLeft, Mic, Pause, Play, X } from "lucide-react";
 import Link from "next/link";
 import axios from "axios";
 
 const VoicePage = () => {
   const [isRecording, setIsRecording] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
-  const [audioData, setAudioData] = useState<Blob | null>(null);
   const [visualizerData, setVisualizerData] = useState<number[]>([]);
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -52,7 +51,6 @@ const VoicePage = () => {
 
       mediaRecorderRef.current.onstop = () => {
         const blob = new Blob(chunks, { type: "audio/webm" });
-        setAudioData(blob);
         // Automatically send audio when recording stops
         sendAudio(blob);
       };
@@ -112,7 +110,6 @@ const VoicePage = () => {
 
   const cancelRecording = () => {
     stopRecording();
-    setAudioData(null);
     setVisualizerData([]);
   };
 
@@ -134,7 +131,6 @@ const VoicePage = () => {
       );
 
       // Reset after successful send
-      setAudioData(null);
       setVisualizerData([]);
     } catch (error) {
       console.error("Error sending audio:", error);
