@@ -450,7 +450,7 @@ export default function KYCProcess() {
                         className="mt-8 w-full py-4 bg-[#003056]"
                         onClick={handleHome}
                       >
-                        <Home className="mr-2 h-4 w-4" /> Home
+                      Home
                       </Button>
                     </>
                   ) : (
