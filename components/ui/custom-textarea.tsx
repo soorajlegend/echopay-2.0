@@ -79,7 +79,7 @@ const CustomTextareaForm: React.FC<
           onKeyDown={handleKeyDown}
           rows={1}
           className={cn(
-            "w-full py-1 px-2 bg-transparent outline-none focus-visible:ring-0 resize-none hidden-scrollbar placeholder:text-gray-400  rounded-full max-h-52 hide-scrollbar text-sm caret-theme-primary",
+            "w-full py-1 px-2 bg-transparent outline-none focus-visible:ring-0 resize-none hidden-scrollbar placeholder:text-gray-400 max-h-52 hide-scrollbar text-sm caret-theme-primary",
             className
           )}
           {...rest}
@@ -88,7 +88,7 @@ const CustomTextareaForm: React.FC<
           type="submit"
           size="icon"
           disabled={value.length === 0}
-          className="w-8 h-8 rounded-xl"
+          className="w-8 h-8 rounded-full"
         >
           <SendHorizonal />
         </Button>
