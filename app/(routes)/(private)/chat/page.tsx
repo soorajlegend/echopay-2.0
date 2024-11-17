@@ -149,7 +149,7 @@ const ChatPage = () => {
       <div className="flex items-center justify-between sticky top-0 bg-white px-4 py-2">
         <Link href="/dashboard" className="flex items-center">
           <ChevronLeft className="w-10 h-10 p-1.5" />
-          <h2 className="text-xl font-medium">Chat</h2>
+          <h2 className="text-base lg:text-lg font-semibold">Chat</h2>
         </Link>
         <Link href="/voice">
           <AudioLines className="w-10 h-10 p-1.5" />

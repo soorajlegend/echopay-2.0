@@ -14,7 +14,7 @@ import { cn } from "@/lib/utils";
 interface OTPVerificationProps {
   mobile: string;
   setStage: (value: number) => void;
-  onVerify: (value: string, phone: string) => void;
+  onVerify: (value: string) => void;
   otpError: string;
 }
 
@@ -27,7 +27,7 @@ const OTPVerification = ({
   const [value, setValue] = useState("");
 
   const handleVerify = () => {
-    onVerify(value, mobile);
+    onVerify(value);
   };
 
   return (
@@ -36,7 +36,10 @@ const OTPVerification = ({
         <h2 className="text-2xl font-medium text-start text-[#1A1A1A]">
           Verify your mobile number
         </h2>
-        <p className="text-[#434343] text-start mt-[6px] fontmedium text-[16px]">Enter the verification code sent to your [Email/Phone Number] to complete your registration</p>
+        <p className="text-[#434343] text-start mt-[6px] fontmedium text-[16px]">
+          Enter the verification code sent to your [Email/Phone Number] to
+          complete your registration
+        </p>
       </div>
       <div className="w-full items-center mt-[48px] flex flex-col gap-3">
         <Label htmlFor="terms" className="w-full text-center ">
@@ -71,7 +74,11 @@ const OTPVerification = ({
           </InputOTPGroup>
         </InputOTP>
       </div>
-      {otpError && <p className="error-message text-red-500 mt-6 text-start">{otpError}</p>}
+      {otpError && (
+        <p className="error-message text-red-500 mt-6 text-center">
+          {otpError}
+        </p>
+      )}
 
       <div className="absolute bottom-0 mb-32 w-full flex justify-center">
         <Button
@@ -86,7 +93,6 @@ const OTPVerification = ({
         >
           Verify
         </Button>
-
       </div>
     </div>
   );
