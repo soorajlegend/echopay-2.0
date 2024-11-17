@@ -258,10 +258,9 @@ const OnboardingPage = () => {
         <SlideContainer custom={stage}>
           <UpsetPassword
             onFinish={(password) => {
-              setUserPassword(password); // Temporarily store the password
+              setUserPassword(password);
               handleRegister();
             }}
-            mobile={mobile}
           />
         </SlideContainer>
       )}
