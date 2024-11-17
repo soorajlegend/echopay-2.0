@@ -210,7 +210,7 @@ export default function KYCProcess() {
           )}
 
           {currentStage === 1 && (
-            <div className="absolute inset-0 w-full h-full p-4 flex flex-col justify-between">
+            <div className="absolute inset-0 w-full max-w-md mx-auto p-6 wfull h-full p4 flex flex-col justify-between">
               <div className="flex-1 w-full h-full">
                 <ArrowLeft onClick={handleBack} className="cursor-pointer" />
                 <p className="text-center">
@@ -249,7 +249,7 @@ export default function KYCProcess() {
           )}
 
           {currentStage === 2 && (
-            <div className="absolute inset-0 w-full h-full p-4 flex flex-col justify-between">
+            <div className="absolute inset-0 w-full max-w-md mx-auto p-6 wfull h-full p4 flex flex-col justify-between">
               <div className="flex-1 w-full h-full">
                 <ArrowLeft onClick={handleBack} className="cursor-pointer" />
                 <p className="text-center">
@@ -310,7 +310,7 @@ export default function KYCProcess() {
           )}
 
           {currentStage === 3 && (
-            <div className="absolute inset-0 w-full h-full p-4 flex flex-col justify-between">
+            <div className="absolute inset-0 wfull h-full w-full max-w-md mx-auto p-6 p4 flex flex-col justify-between">
               <div className="flex-1 w-full h-full">
               {!isProcessing && !verificationStatus && (
                 <div className="flex items-center justify-between mb-6">
@@ -400,7 +400,7 @@ export default function KYCProcess() {
                       My selfie is clear
                     </Button>
                     <Button
-                      className="flex-1 py-4 bg-transparent border border-[#003056] hover:bg-none text-[#003056] hover:text-white"
+                      className="flex-1 py-4 bg-transparent border border-[#003056] text-[#003056] hover:text-white"
                       onClick={handleRetake}
                     >
                       Retake photo
@@ -419,7 +419,7 @@ export default function KYCProcess() {
                     Please wait while we process your verification details. This
                     may take a few minutes. Thank you for your patience
                   </p>
-                  <Loader2 className="w-16 h-16 text-[#003056] animate-spin" />
+                  <Loader2 className="w-16 h-16 mt-20 text-[#003056] animate-spin" />
                 </div>
               )}
 
