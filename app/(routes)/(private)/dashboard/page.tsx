@@ -264,8 +264,9 @@ const DashboardPage = () => {
 
   const { info } = useUserInfo();
 
-  // const isVerified = info?.isVerified;
-  // console.log(info);
+
+  // const isVerified = info?.isVerified
+
 
   // useEffect(() => {
   //   // Simulating first visit check

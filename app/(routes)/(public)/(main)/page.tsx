@@ -13,7 +13,7 @@ import UpsetPassword from "@/components/ui/upset-password";
 import SlideContainer from "@/components/slide-container";
 import LanguageSelector from "@/components/language-selector";
 import { useRouter } from "next/navigation";
-import ExistingUserLogin from "@/components/ui/ExistingUserLogin";
+import ExistingUserLogin from "@/components/ui/ExistingUserLogin"
 
 const OnboardingPage = () => {
   const [stage, setStage] = useState(0);
@@ -72,6 +72,7 @@ const OnboardingPage = () => {
         }
       } catch (error) {
         console.error("Error sending OTP:", error);
+        setLoading(false)
       }
     } else {
       setStage(stage + 1);
@@ -79,18 +80,17 @@ const OnboardingPage = () => {
     }
   };
 
-  const handleOTPVerification = async (otp: string) => {
+
+  const handleOTPVerification = async (otp: string, mobile: string) => {
+
     setIsVerifying(true);
     setOtpError("");
     // setLoading(true)
     try {
-      const response = await axios.post(
-        "https://echo-pay.onrender.com/api/verify-otp",
-        {
-          otp,
-          phone: mobile,
-        }
-      );
+      const response = await axios.post("https://echo-pay.onrender.com/api/verify-otp", {
+        otp,
+        mobile
+      })
 
       console.log(response.data.responseBody, "fom otp");
 
@@ -129,32 +129,41 @@ const OnboardingPage = () => {
       );
 
       if (response.status === 200) {
+       console.log("User registered successfully");
+        console.log(response.data, "from register")
+        
+      // Store user info in Zustand
+      setInfo({
+        id: response.data.responseBody.id || "",
+        userid: response.data.responseBody.userid || "", 
+        fullname: response.data.responseBody.fullname || "",
+        email: response.data.responseBody.email || "",
+        phone: response.data.responseBody.phone,
+        password: response.data.responseBody.language,
+        image: response.data.responseBody.image || "",
+        language: response.data.responseBody.language,
+        balance: response.data.responseBody.balance,
+        isVerified: response.data.responseBody.isVerified,
+        createdAt: response.data.responseBody.createdAt || "",
+        updatedAt: response.data.responseBody.updatedAt || "",
+        status: response.data.responseBody.status || "",
+      });
+        router.push("/dashboard"); // Redirect to dashboard
+        setLoading(false)
+
         console.log("User registered successfully");
         console.log(response.data, "from register");
 
-        // Store user info in Zustand
-        setInfo({
-          id: response.data.responseBody.id || "",
-          userid: response.data.responseBody.userid || "",
-          fullname: response.data.responseBody.fullname || "",
-          email: response.data.responseBody.email || "",
-          phone: response.data.responseBody.phone,
-          password: response.data.responseBody.language,
-          image: response.data.responseBody.image || "",
-          language: response.data.responseBody.language,
-          balance: response.data.responseBody.balance,
-          isVerified: response.data.responseBody.isVerified,
-          createdAt: response.data.responseBody.createdAt || "",
-          updatedAt: response.data.responseBody.updatedAt || "",
-          status: response.data.responseBody.status || "",
-        });
-        router.push("/dashboard"); // Redirect to dashboard
       } else {
         console.error("Registration failed");
+        setLoading(false)
       }
     } catch (error) {
       console.error("Error during registration:", error);
-    }
+      setLoading(false)
+    } finally {
+      setLoading(false)
+  };
   };
 
   const handleExistingUserLogin = async (password: string) => {
@@ -236,7 +245,8 @@ const OnboardingPage = () => {
               mobile={mobile}
               otpError={otpError}
               setStage={setStage}
-              onVerify={(otp) => handleOTPVerification(otp)}
+              onVerify={(otp, mobile) => handleOTPVerification(otp, mobile)}
+
             />
           </SlideContainer>
         )}
@@ -256,12 +266,14 @@ const OnboardingPage = () => {
       {/* if verified and is existing user */}
       {stage === 7 && isNewUser && isVerified && (
         <SlideContainer custom={stage}>
+
           <UpsetPassword
             onFinish={(password) => {
               setUserPassword(password);
               handleRegister();
             }}
           />
+
         </SlideContainer>
       )}
 
