@@ -136,14 +136,14 @@ const OnboardingPage = () => {
         // Store user info in Zustand
         setInfo({
           id: response.data.responseBody.id || "",
-          userid: response.data.responseBody.userid || "",
           fullname: response.data.responseBody.fullname || "",
           email: response.data.responseBody.email || "",
           phone: response.data.responseBody.phone,
           password: response.data.responseBody.language,
+          pin: response.data.responseBody.pin || null,
           image: response.data.responseBody.image || "",
           language: response.data.responseBody.language,
-          balance: response.data.responseBody.balance,
+          balance: Number(response.data.responseBody.balance) | 0,
           isVerified: response.data.responseBody.isVerified,
           createdAt: response.data.responseBody.createdAt || "",
           updatedAt: response.data.responseBody.updatedAt || "",

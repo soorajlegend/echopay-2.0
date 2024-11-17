@@ -7,15 +7,15 @@ export interface Chat {
 
 export interface UserType {
   id: number;
-  userid: string;
   fullname: string;
   email: string;
   phone: string;
   password: string;
+  pin: number | null;
   language: string;
   isVerified: boolean;
   balance: number;
-  image: string;
+  image: string | null;
   status: number;
   createdAt: string;
   updatedAt: string;
