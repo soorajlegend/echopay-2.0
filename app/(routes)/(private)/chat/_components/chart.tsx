@@ -17,7 +17,7 @@ const Chart = ({ type, setType }: ChartProps) => {
   return (
     <Drawer open onClose={() => setType(null)}>
       <DrawerContent>
-        {type === "TRANSACTIONS" && <TransactionChart />}
+        {type === "TRANSACTIONS" && <TransactionChart chartType="line" />}
       </DrawerContent>
     </Drawer>
   );
