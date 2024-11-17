@@ -9,6 +9,9 @@ import axios from "axios";
 import useChat from "@/hooks/use-chat";
 import ConfirmTransaction from "@/components/confirm-transaction";
 import useBeneficiary from "@/hooks/use-beneficiary";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft, AudioLines } from "lucide-react";
+import Link from "next/link";
 
 const name = "Suraj Muhammad";
 const balance = 100000;
@@ -143,7 +146,20 @@ const ChatPage = () => {
   };
 
   return (
-    <div className="relative flex flex-col w-full h-screen p-4">
+    <div className="relative flex flex-col w-full h-screen p-4 pt-0">
+      <div className="flex items-center justify-between sticky top-0 bg-white">
+        <div className="flex items-center gap-2">
+          <Button variant="link" size="icon">
+            <ArrowLeft className="w-4 h-4" />
+          </Button>
+          <h2 className="text-2xl font-medium">Chat</h2>
+        </div>
+        <Link href="/voice">
+          <Button variant="link" size="icon">
+            <AudioLines className="w-4 h-4" />
+          </Button>
+        </Link>
+      </div>
       <div className="flex-1 overflow-y-auto mb-4 space-y-4">
         {chats.map((chat, index) => (
           <ChatItem
