@@ -5,18 +5,46 @@ import { ChevronLeft, Mic, Pause, Play, X, Send } from "lucide-react";
 import Link from "next/link";
 import axios from "axios";
 
+declare global {
+  interface Window {
+    SpeechRecognition: any;
+    webkitSpeechRecognition: any;
+  }
+}
+
 const VoicePage = () => {
   const [isRecording, setIsRecording] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [visualizerData, setVisualizerData] = useState<number[]>([]);
+  const [transcript, setTranscript] = useState("");
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
   const animationFrameRef = useRef<number>();
   const streamRef = useRef<MediaStream | null>(null);
+  const recognitionRef = useRef<Window["SpeechRecognition"] | null>(null);
 
   useEffect(() => {
+    // Initialize speech recognition
+    if ("SpeechRecognition" in window || "webkitSpeechRecognition" in window) {
+      const SpeechRecognition =
+        window.SpeechRecognition || window.webkitSpeechRecognition;
+      recognitionRef.current = new SpeechRecognition();
+      recognitionRef.current.continuous = true;
+      recognitionRef.current.interimResults = true;
+
+      recognitionRef.current.onresult = (event: any) => {
+        let finalTranscript = "";
+        for (let i = 0; i < event.results.length; i++) {
+          if (event.results[i].isFinal) {
+            finalTranscript += event.results[i][0].transcript;
+          }
+        }
+        setTranscript(finalTranscript);
+      };
+    }
+
     return () => {
       if (animationFrameRef.current) {
         cancelAnimationFrame(animationFrameRef.current);
@@ -26,6 +54,9 @@ const VoicePage = () => {
       }
       if (streamRef.current) {
         streamRef.current.getTracks().forEach((track) => track.stop());
+      }
+      if (recognitionRef.current) {
+        recognitionRef.current.stop();
       }
     };
   }, []);
@@ -42,20 +73,11 @@ const VoicePage = () => {
 
       analyserRef.current.fftSize = 256;
 
-      mediaRecorderRef.current = new MediaRecorder(stream);
-      const chunks: BlobPart[] = [];
+      // Start speech recognition
+      if (recognitionRef.current) {
+        recognitionRef.current.start();
+      }
 
-      mediaRecorderRef.current.ondataavailable = (e) => {
-        chunks.push(e.data);
-      };
-
-      mediaRecorderRef.current.onstop = () => {
-        const blob = new Blob(chunks, { type: "audio/webm" });
-        // Automatically send audio when recording stops
-        sendAudio(blob);
-      };
-
-      mediaRecorderRef.current.start();
       setIsRecording(true);
       visualize();
     } catch (err) {
@@ -73,7 +95,7 @@ const VoicePage = () => {
       const normalizedData = Array.from(dataArray)
         .slice(0, 50)
         .map((value) => value / 255)
-        .reverse(); // Reverse the array to make visualization go right to left
+        .reverse();
       setVisualizerData(normalizedData);
       animationFrameRef.current = requestAnimationFrame(draw);
     };
@@ -82,22 +104,24 @@ const VoicePage = () => {
   };
 
   const pauseRecording = () => {
-    if (mediaRecorderRef.current && isRecording) {
-      mediaRecorderRef.current.pause();
+    if (recognitionRef.current && isRecording) {
+      recognitionRef.current.stop();
       setIsPaused(true);
     }
   };
 
   const resumeRecording = () => {
-    if (mediaRecorderRef.current && isRecording) {
-      mediaRecorderRef.current.resume();
+    if (recognitionRef.current && isRecording) {
+      recognitionRef.current.start();
       setIsPaused(false);
     }
   };
 
   const stopRecording = () => {
-    if (mediaRecorderRef.current && isRecording) {
-      mediaRecorderRef.current.stop();
+    if (isRecording) {
+      if (recognitionRef.current) {
+        recognitionRef.current.stop();
+      }
       setIsRecording(false);
       setIsPaused(false);
       if (animationFrameRef.current) {
@@ -106,40 +130,44 @@ const VoicePage = () => {
       if (streamRef.current) {
         streamRef.current.getTracks().forEach((track) => track.stop());
       }
+      // Send the transcript instead of audio
+      sendTranscript();
     }
   };
 
   const cancelRecording = () => {
+    if (recognitionRef.current) {
+      recognitionRef.current.stop();
+    }
     stopRecording();
     setVisualizerData([]);
+    setTranscript("");
   };
 
-  const sendAudio = async (blob: Blob) => {
-    if (!blob) return;
+  const sendTranscript = async () => {
+    if (!transcript.trim()) return;
 
     try {
-      const formData = new FormData();
-      formData.append("audio", blob);
-
       await axios.post(
         "https://raj-assistant-api.vercel.app/api/echopay-models/voice",
-        formData,
+        { text: transcript },
         {
           headers: {
-            "Content-Type": "multipart/form-data",
+            "Content-Type": "application/json",
           },
         }
       );
 
       // Reset after successful send
       setVisualizerData([]);
+      setTranscript("");
     } catch (error) {
-      console.error("Error sending audio:", error);
+      console.error("Error sending transcript:", error);
     }
   };
 
   return (
-    <div className="relative flex flex-col w-full  h-screen p-4 pt-0">
+    <div className="relative flex flex-col w-full h-screen p-4 pt-0">
       <div className="flex items-center justify-between sticky top-0 bg-white px-4 py-2">
         <Link href="/chat" className="flex items-center">
           <ChevronLeft className="w-10 h-10 p-1.5" />
@@ -148,7 +176,7 @@ const VoicePage = () => {
       </div>
 
       <div className="flex-1 flex flex-col items-center">
-        <div className="flex-1 flex items-center justify-center w-full max-w-lg mx-auto">
+        <div className="flex-1 flex flex-col items-center justify-center w-full max-w-lg mx-auto">
           <div
             className={`flex w-auto gap-1 h-20 max-w-xs mx-auto items-center justify-center ${
               isPaused ? "opacity-50" : ""
@@ -167,6 +195,11 @@ const VoicePage = () => {
               />
             ))}
           </div>
+          {transcript && (
+            <div className="mt-4 p-4 bg-gray-100 rounded-lg max-w-xs text-sm">
+              {transcript}
+            </div>
+          )}
         </div>
 
         <div className="w-full flex justify-evenly gap-4 p-4 bg-white fixed max-w-lg mx-auto bottom-0 left-0">
