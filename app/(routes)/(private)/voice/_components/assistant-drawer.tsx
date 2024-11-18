@@ -59,7 +59,7 @@ const Assistant = () => {
   }, [open]);
 
   return (
-    <Drawer open onClose={() => setOpen(false)}>
+    <Drawer open={open} onClose={() => setOpen(false)}>
       <DrawerContent>
         <Recorder isDrawer isOpen={open} />
       </DrawerContent>
