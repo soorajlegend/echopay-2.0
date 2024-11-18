@@ -1,14 +1,19 @@
-"use client";
-import React from "react";
-import { useState } from "react";
-import axios from "axios";
-import { Inbox, Eye } from "lucide-react";
-import { InputWithIcon } from "@/components/ui/input-with-icon";
-import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
 
-const LoginPage = () => {
+"use client";	
+import React from 'react'
+import { useState } from 'react';
+import axios from 'axios';
+import { Inbox, Eye } from 'lucide-react'
+import { InputWithIcon } from '@/components/ui/input-with-icon'
+import { Label } from '@/components/ui/label'
+import { Button } from '@/components/ui/button';
+import { useRouter } from 'next/navigation';
+
+interface LoginPageProps {
+  onClickSignUp: () => void;
+}
+
+const LoginPage = ({onClickSignUp}: LoginPageProps) => {
   const router = useRouter();
   const [phone, setPhone] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -55,7 +60,8 @@ const LoginPage = () => {
         </p>
       </div>
 
-      <div className="w-full flex flex-col gap-3 items-start">
+      {error && <p className="text-red-500">{error}</p>}
+      <div className='w-full flex flex-col gap-3 items-start'>
         <Label htmlFor="email" className="w-full text-left text-xl">
           Email
         </Label>
