@@ -17,9 +17,10 @@ interface MobileInputProps {
   setEmail: (value: string) => void;
   onProceed: () => void;
   isLoading: boolean;
+  stageChange: () => void;
 }
 
-const MobileInput = ({ mobile, name, email, setMobile, setName, setEmail, onProceed, isLoading }: MobileInputProps) => {
+const MobileInput = ({ mobile, name, email, setMobile, setName, setEmail, onProceed, isLoading, stageChange }: MobileInputProps) => {
 
   return (
     <div className="text-center relative w-full h-screen">
@@ -86,9 +87,17 @@ const MobileInput = ({ mobile, name, email, setMobile, setName, setEmail, onProc
       </div>
 
 
-      <div className="mt-[25px]">
-        <p>Already have an account? <Link href="/login">Sign In</Link></p>
-      </div>
+      <div className='w-full flex justify-center items-center'>
+        <div className=''>
+        <p className="text-center w-full">
+          Don't have an account? 
+        </p>
+        </div>
+        <Button 
+          variant="link" 
+          onClick={stageChange}
+          className="text-[18px] font-medium py-[24px]">Sign in</Button>
+        </div>
     </div>
   );
 };
