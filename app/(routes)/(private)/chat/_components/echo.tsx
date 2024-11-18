@@ -1,7 +1,15 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { Mic, Pause, Play, X, SendHorizonal } from "lucide-react";
+import {
+  Mic,
+  Pause,
+  Play,
+  X,
+  SendHorizonal,
+  Loader,
+  Volume2,
+} from "lucide-react";
 import axios from "axios";
 import { Drawer, DrawerContent } from "@/components/ui/drawer";
 import useEcho from "@/hooks/use-echo";
@@ -14,6 +22,7 @@ import { Chat, NewTransactionType } from "@/types";
 import { nanoid } from "nanoid";
 import { ChartType } from "./chart";
 import TransactionChart from "./transaction-chart";
+import ConfirmTransaction from "@/components/confirm-transaction";
 
 declare global {
   interface Window {
@@ -30,6 +39,8 @@ const Echo = () => {
   const [interimTranscript, setInterimTranscript] = useState("");
   const [newTransaction, setNewTransaction] =
     useState<NewTransactionType | null>(null);
+  const [isThinking, setIsThinking] = useState(false);
+  const [isSpeaking, setIsSpeaking] = useState(false);
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
@@ -212,6 +223,8 @@ const Echo = () => {
     }
 
     try {
+      setIsThinking(true);
+
       const messages = [
         ...[...chats, ...voiceChats].map((chat) => ({
           role: chat.role === "model" ? "assistant" : "user",
@@ -253,16 +266,22 @@ const Echo = () => {
       const response = await axios.request(config);
       const jsonData = JSON.parse(response.data);
 
+      setIsThinking(false);
+
       if (jsonData.newTransaction) {
         setNewTransaction(jsonData.newTransaction);
       }
 
       if (jsonData.message) {
         if ("speechSynthesis" in window) {
+          setIsSpeaking(true);
           const utterance = new SpeechSynthesisUtterance(jsonData.message);
           utterance.rate = 1;
           utterance.pitch = 1;
           utterance.volume = 1;
+          utterance.onend = () => {
+            setIsSpeaking(false);
+          };
           window.speechSynthesis.speak(utterance);
         }
 
@@ -293,6 +312,8 @@ const Echo = () => {
       setOpenEcho(false);
     } catch (error) {
       console.error("Error sending transcript:", error);
+      setIsThinking(false);
+      setIsSpeaking(false);
     }
   };
 
@@ -302,24 +323,42 @@ const Echo = () => {
         <div className="flex-1 flex flex-col items-center justify-between">
           <div className="flex-1 flex flex-col items-center justify-center w-full max-w-lg mx-auto">
             {chartType === "TRANSACTIONS" && <TransactionChart />}
-            <div
-              className={`flex w-auto gap-1 h-20 max-w-xs mx-auto items-center justify-center ${
-                isPaused ? "opacity-50" : ""
-              }`}
-            >
-              {visualizerData.map((value, index) => (
-                <div
-                  key={index}
-                  className={`w-1.5 rounded-full ${
-                    isPaused ? "bg-rose-500" : "bg-theme-primary"
-                  }`}
-                  style={{
-                    height: `${value * 100}%`,
-                    transition: "height 0.05s ease",
-                  }}
-                />
-              ))}
-            </div>
+            <ConfirmTransaction
+              data={newTransaction}
+              setNewTransaction={setNewTransaction}
+            />
+            {isThinking && (
+              <div className="flex items-center gap-2 mb-4">
+                <Loader className="w-6 h-6 animate-spin text-theme-primary" />
+                <span className="text-sm text-gray-600">Thinking...</span>
+              </div>
+            )}
+            {isSpeaking && (
+              <div className="flex items-center gap-2 mb-4">
+                <Volume2 className="w-6 h-6 animate-pulse text-theme-primary" />
+                <span className="text-sm text-gray-600">Speaking...</span>
+              </div>
+            )}
+            {!isThinking && !isSpeaking && (
+              <div
+                className={`flex w-auto gap-1 h-20 max-w-xs mx-auto items-center justify-center ${
+                  isPaused ? "opacity-50" : ""
+                }`}
+              >
+                {visualizerData.map((value, index) => (
+                  <div
+                    key={index}
+                    className={`w-1.5 rounded-full ${
+                      isPaused ? "bg-rose-500" : "bg-theme-primary"
+                    }`}
+                    style={{
+                      height: `${value * 100}%`,
+                      transition: "height 0.05s ease",
+                    }}
+                  />
+                ))}
+              </div>
+            )}
             {(transcript || interimTranscript) && (
               <div className="mt-4 p-4 bg-gray-100 rounded-lg max-w-xs text-sm">
                 {transcript}
