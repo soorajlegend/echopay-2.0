@@ -84,6 +84,7 @@ const Echo = () => {
       recognitionRef.current = new SpeechRecognition();
       recognitionRef.current.continuous = true;
       recognitionRef.current.interimResults = true;
+      recognitionRef.current.lang = "en-US"; // Set language to English
 
       recognitionRef.current.onresult = (event: any) => {
         let finalTranscript = "";
@@ -132,11 +133,16 @@ const Echo = () => {
       analyserRef.current.fftSize = 256;
 
       // Initialize speech recognition if not already initialized
-      if (!recognitionRef.current && ("SpeechRecognition" in window || "webkitSpeechRecognition" in window)) {
-        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (
+        !recognitionRef.current &&
+        ("SpeechRecognition" in window || "webkitSpeechRecognition" in window)
+      ) {
+        const SpeechRecognition =
+          window.SpeechRecognition || window.webkitSpeechRecognition;
         recognitionRef.current = new SpeechRecognition();
         recognitionRef.current.continuous = true;
         recognitionRef.current.interimResults = true;
+        recognitionRef.current.lang = "en-US"; // Set language to English
 
         recognitionRef.current.onresult = (event: any) => {
           let finalTranscript = "";
@@ -302,13 +308,28 @@ const Echo = () => {
       if (jsonData.message) {
         if ("speechSynthesis" in window) {
           setIsSpeaking(true);
+
+          // Cancel any ongoing speech
+          window.speechSynthesis.cancel();
+
           const utterance = new SpeechSynthesisUtterance(jsonData.message);
+          utterance.lang = "en-US";
           utterance.rate = 1;
           utterance.pitch = 1;
           utterance.volume = 1;
+
           utterance.onend = () => {
             setIsSpeaking(false);
+            // Restart recording after speech ends
+            startRecording();
           };
+
+          utterance.onerror = (event) => {
+            console.error("Speech synthesis error:", event);
+            setIsSpeaking(false);
+            startRecording();
+          };
+
           window.speechSynthesis.speak(utterance);
         }
 
@@ -341,6 +362,8 @@ const Echo = () => {
       console.error("Error sending transcript:", error);
       setIsThinking(false);
       setIsSpeaking(false);
+      // Restart recording even if there's an error
+      startRecording();
     }
   };
 
