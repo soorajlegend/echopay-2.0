@@ -14,6 +14,7 @@ interface PasswordInputProps {
   label: string;
   error?: string;
   onComplete: () => void;
+  disabled?: boolean;
 }
 
 const PasswordInput = ({
@@ -22,6 +23,7 @@ const PasswordInput = ({
   label,
   error,
   onComplete,
+  disabled,
 }: PasswordInputProps) => {
   useEffect(() => {
     if (value.length === 6) {
@@ -36,6 +38,7 @@ const PasswordInput = ({
           {label}
         </Label>
         <InputOTP
+          disabled={disabled}
           type="password"
           id={label}
           maxLength={6}

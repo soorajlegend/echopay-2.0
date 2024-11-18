@@ -143,14 +143,14 @@ const VoicePage = () => {
       <div className="flex items-center justify-between sticky top-0 bg-white px-4 py-2">
         <Link href="/chat" className="flex items-center">
           <ChevronLeft className="w-10 h-10 p-1.5" />
-          <h2 className="text-xl font-medium">Voice Message</h2>
+          <h2 className="text-base lg:text-lg font-semibold">Voice Message</h2>
         </Link>
       </div>
 
       <div className="flex-1 flex flex-col items-center">
         <div className="flex-1 flex items-center justify-center w-full max-w-lg mx-auto">
           <div
-            className={`flex w-min gap-1 h-40 max-w-xs mx-auto items-center justify-center ${
+            className={`flex w-auto gap-1 h-20 max-w-xs mx-auto items-center justify-center ${
               isPaused ? "opacity-50" : ""
             }`}
           >
@@ -158,7 +158,7 @@ const VoicePage = () => {
               <div
                 key={index}
                 className={`w-1.5 rounded-full ${
-                  isPaused ? "bg-red-500" : "bg-blue-500"
+                  isPaused ? "bg-rose-500" : "bg-theme-primary"
                 }`}
                 style={{
                   height: `${value * 100}%`,
@@ -196,7 +196,7 @@ const VoicePage = () => {
 
               <button
                 onClick={stopRecording}
-                className="w-16 h-16 rounded-full bg-blue-500 hover:bg-blue-600 flex items-center justify-center aspect-square"
+                className="w-16 h-16 rounded-full bg-theme-primary hover:opacity-90 flex items-center justify-center aspect-square"
               >
                 <Send className="w-8 h-8 text-white" />
               </button>
@@ -204,7 +204,7 @@ const VoicePage = () => {
           ) : (
             <button
               onClick={startRecording}
-              className="w-16 h-16 rounded-full bg-blue-500 hover:bg-blue-600 flex items-center justify-center aspect-square"
+              className="w-16 h-16 rounded-full bg-theme-primary hover:opacity-90 flex items-center justify-center aspect-square"
             >
               <Mic className="w-8 h-8 text-white" />
             </button>

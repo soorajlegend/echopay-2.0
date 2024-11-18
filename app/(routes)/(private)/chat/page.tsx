@@ -11,33 +11,11 @@ import ConfirmTransaction from "@/components/confirm-transaction";
 import useBeneficiary from "@/hooks/use-beneficiary";
 import { AudioLines, ChevronLeft } from "lucide-react";
 import Link from "next/link";
+import Chart, { ChartType } from "./_components/chart";
+import useTransaction from "@/hooks/use-transaction";
 
 const name = "Suraj Muhammad";
 const balance = 100000;
-// dummu data
-const transactions = [
-  {
-    id: 1,
-    name: "John Doe",
-    amount: 100,
-    date: "2024-10-15",
-    type: "send",
-  },
-  {
-    id: 2,
-    name: "James Bond",
-    amount: 200,
-    date: "2024-10-14",
-    type: "receive",
-  },
-  {
-    id: 3,
-    name: "Muhammad Ali",
-    amount: 300,
-    date: "2024-10-13",
-    type: "send",
-  },
-];
 
 const ChatPage = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -45,10 +23,12 @@ const ChatPage = () => {
 
   const { chats, addChat } = useChat();
   const { beneficiaries } = useBeneficiary();
+  const { transactions } = useTransaction();
 
   const [isLoading, setIsLoading] = useState(false);
   const [newTransaction, setNewTransaction] =
     useState<NewTransactionType | null>(null);
+  const [chartType, setChartType] = useState<ChartType>(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -102,7 +82,10 @@ const ChatPage = () => {
         ),
         transactions: JSON.stringify(
           transactions.map(
-            (t) => `${t.name} - ${t.type} - NGN${t.amount} - ${t.date} |`
+            (t) =>
+              `${t.isCredit ? t.senderName : t.receiverName} - ${
+                t.isCredit ? "Credit" : "Debit"
+              } - NGN${t.amount} - ${t.date} |`
           )
         ),
         name,
@@ -124,8 +107,6 @@ const ChatPage = () => {
 
       if (jsonData.newTransaction) {
         setNewTransaction(jsonData.newTransaction);
-      } else {
-        console.log("no transaction");
       }
 
       if (jsonData.message) {
@@ -137,6 +118,12 @@ const ChatPage = () => {
         };
         addChat(modelMessage);
       }
+
+      if (jsonData.transactionChart) {
+        setChartType("TRANSACTIONS");
+      }
+
+      console.log(jsonData);
     } catch (error) {
       console.error("API request failed:", error);
     } finally {
@@ -149,7 +136,7 @@ const ChatPage = () => {
       <div className="flex items-center justify-between sticky top-0 bg-white px-4 py-2">
         <Link href="/dashboard" className="flex items-center">
           <ChevronLeft className="w-10 h-10 p-1.5" />
-          <h2 className="text-xl font-medium">Chat</h2>
+          <h2 className="text-base lg:text-lg font-semibold">Chat</h2>
         </Link>
         <Link href="/voice">
           <AudioLines className="w-10 h-10 p-1.5" />
@@ -174,6 +161,7 @@ const ChatPage = () => {
 
         <div ref={messagesEndRef} />
       </div>
+
       <CustomTextareaForm
         value={newMessage}
         onChange={setNewMessage}
@@ -182,10 +170,12 @@ const ChatPage = () => {
         onSubmit={handleSubmit}
         disabled={isLoading}
       />
+
       <ConfirmTransaction
         data={newTransaction}
         setNewTransaction={setNewTransaction}
       />
+      {chartType && <Chart type={chartType} setType={setChartType} />}
     </div>
   );
 };

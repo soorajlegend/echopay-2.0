@@ -7,18 +7,18 @@ export interface Chat {
 
 export interface UserType {
   id: number;
-  userid: string;
   fullname: string;
   email: string;
   phone: string;
   password: string;
+  pin: number | null;
   language: string;
   isVerified: boolean;
   balance: number;
-  image: string;
+  image: string | null;
   status: number;
-  createdAt: string; // ISO date string
-  updatedAt: string; // ISO date string
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface Beneficiary {
