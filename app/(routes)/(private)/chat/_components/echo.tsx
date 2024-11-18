@@ -12,11 +12,11 @@ declare global {
 }
 
 interface RecorderProps {
-  isDrawer?: boolean;
-  isOpen?: boolean;
+  isOpen: boolean;
+  setIsOpen: (value: boolean) => void;
 }
 
-const Recorder = ({ isDrawer = false, isOpen = false }: RecorderProps) => {
+const Echo = ({ isOpen, setIsOpen }: RecorderProps) => {
   const [isRecording, setIsRecording] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [visualizerData, setVisualizerData] = useState<number[]>([]);
@@ -31,10 +31,12 @@ const Recorder = ({ isDrawer = false, isOpen = false }: RecorderProps) => {
   const recognitionRef = useRef<Window["SpeechRecognition"] | null>(null);
 
   useEffect(() => {
-    if (isDrawer && isOpen) {
+    if (isOpen) {
       startRecording();
+    } else {
+      stopRecording();
     }
-  }, [isDrawer, isOpen]);
+  }, [isOpen]);
 
   useEffect(() => {
     if ("SpeechRecognition" in window || "webkitSpeechRecognition" in window) {
@@ -160,6 +162,7 @@ const Recorder = ({ isDrawer = false, isOpen = false }: RecorderProps) => {
     setVisualizerData([]);
     setTranscript("");
     setInterimTranscript("");
+    setIsOpen(false);
   };
 
   const sendTranscript = async () => {
@@ -180,89 +183,88 @@ const Recorder = ({ isDrawer = false, isOpen = false }: RecorderProps) => {
       setVisualizerData([]);
       setTranscript("");
       setInterimTranscript("");
+      setIsOpen(false);
     } catch (error) {
       console.error("Error sending transcript:", error);
     }
   };
 
   return (
-    <>
-      <div className="flex-1 flex flex-col items-center">
-        <div className="flex-1 flex flex-col items-center justify-center w-full max-w-lg mx-auto">
-          <div
-            className={`flex w-auto gap-1 h-20 max-w-xs mx-auto items-center justify-center ${
-              isPaused ? "opacity-50" : ""
-            }`}
-          >
-            {visualizerData.map((value, index) => (
-              <div
-                key={index}
-                className={`w-1.5 rounded-full ${
-                  isPaused ? "bg-rose-500" : "bg-theme-primary"
-                }`}
-                style={{
-                  height: `${value * 100}%`,
-                  transition: "height 0.05s ease",
-                }}
-              />
-            ))}
+    <div className="flex-1 flex flex-col items-center">
+      <div className="flex-1 flex flex-col items-center justify-center w-full max-w-lg mx-auto">
+        <div
+          className={`flex w-auto gap-1 h-20 max-w-xs mx-auto items-center justify-center ${
+            isPaused ? "opacity-50" : ""
+          }`}
+        >
+          {visualizerData.map((value, index) => (
+            <div
+              key={index}
+              className={`w-1.5 rounded-full ${
+                isPaused ? "bg-rose-500" : "bg-theme-primary"
+              }`}
+              style={{
+                height: `${value * 100}%`,
+                transition: "height 0.05s ease",
+              }}
+            />
+          ))}
+        </div>
+        {(transcript || interimTranscript) && (
+          <div className="mt-4 p-4 bg-gray-100 rounded-lg max-w-xs text-sm">
+            {transcript}
+            <span className="text-gray-500 text-center">
+              {interimTranscript}
+            </span>
           </div>
-          {(transcript || interimTranscript) && (
-            <div className="mt-4 p-4 bg-gray-100 rounded-lg max-w-xs text-sm">
-              {transcript}
-              <span className="text-gray-500 text-center">
-                {interimTranscript}
-              </span>
-            </div>
-          )}
-        </div>
-
-        <div className="w-full flex justify-evenly gap-4 p-4 bg-white fixed max-w-lg mx-auto bottom-0 left-0">
-          {isRecording && (
-            <>
-              <button
-                onClick={cancelRecording}
-                className="w-16 h-16 rounded-full bg-red-100 hover:bg-red-200 flex items-center justify-center aspect-square"
-              >
-                <X className="w-8 h-8 text-red-600" />
-              </button>
-
-              <button
-                onClick={isPaused ? resumeRecording : pauseRecording}
-                className={`w-16 h-16 rounded-full ${
-                  isPaused
-                    ? "bg-red-500 hover:bg-red-600"
-                    : "bg-gray-100 hover:bg-gray-200"
-                } flex items-center justify-center aspect-square`}
-              >
-                {isPaused ? (
-                  <Play className="w-8 h-8 text-white" />
-                ) : (
-                  <Pause className="w-8 h-8 text-gray-600" />
-                )}
-              </button>
-
-              <button
-                onClick={stopRecording}
-                className="w-16 h-16 rounded-full bg-theme-primary hover:opacity-90 flex items-center justify-center aspect-square"
-              >
-                <SendHorizonal className="w-8 h-8 text-white" />
-              </button>
-            </>
-          )}
-
-          {!isRecording && !isDrawer && (
-            <button
-              onClick={startRecording}
-              className="w-16 h-16 mx-auto rounded-full bg-theme-primary hover:opacity-90 flex items-center justify-center aspect-square"
-            >
-              <Mic className="w-8 h-8 text-white" />
-            </button>
-          )}
-        </div>
+        )}
       </div>
-    </>
+
+      <div className="w-full flex justify-evenly gap-4 p-4 bg-white fixed max-w-lg mx-auto bottom-0 left-0">
+        {isRecording && (
+          <>
+            <button
+              onClick={cancelRecording}
+              className="w-16 h-16 rounded-full bg-red-100 hover:bg-red-200 flex items-center justify-center aspect-square"
+            >
+              <X className="w-8 h-8 text-red-600" />
+            </button>
+
+            <button
+              onClick={isPaused ? resumeRecording : pauseRecording}
+              className={`w-16 h-16 rounded-full ${
+                isPaused
+                  ? "bg-red-500 hover:bg-red-600"
+                  : "bg-gray-100 hover:bg-gray-200"
+              } flex items-center justify-center aspect-square`}
+            >
+              {isPaused ? (
+                <Play className="w-8 h-8 text-white" />
+              ) : (
+                <Pause className="w-8 h-8 text-gray-600" />
+              )}
+            </button>
+
+            <button
+              onClick={stopRecording}
+              className="w-16 h-16 rounded-full bg-theme-primary hover:opacity-90 flex items-center justify-center aspect-square"
+            >
+              <SendHorizonal className="w-8 h-8 text-white" />
+            </button>
+          </>
+        )}
+
+        {!isRecording && (
+          <button
+            onClick={startRecording}
+            className="w-16 h-16 mx-auto rounded-full bg-theme-primary hover:opacity-90 flex items-center justify-center aspect-square"
+          >
+            <Mic className="w-8 h-8 text-white" />
+          </button>
+        )}
+      </div>
+    </div>
   );
 };
 
-export default Recorder;
+export default Echo;

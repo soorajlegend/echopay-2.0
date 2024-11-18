@@ -1,4 +1,5 @@
-import Assistant from "@/app/(routes)/(private)/voice/_components/assistant-drawer";
+import Echo from "./chat/_components/echo";
+import EchoListener from "./chat/_components/echo-listener";
 
 export default function RoutesLayout({
   children,
@@ -8,7 +9,7 @@ export default function RoutesLayout({
   return (
     <>
       {children}
-      <Assistant />
+      <EchoListener />
     </>
   );
 }
