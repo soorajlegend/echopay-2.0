@@ -13,18 +13,22 @@ const features = [
   {
     image: "/arrow-up-down.svg",
     title: "Transfer",
+    url: "/transaction"
   },
   {
     image: "/globe-02.svg",
     title: "Buy Data",
+    url: "/buy-data"
   },
   {
     image: "/invoice-01.svg",
     title: "Buy Airtime",
+    url: "buy-airtime"
   },
   {
     image: "/coins-01.svg",
     title: "Get Loans",
+    url: "get-loan"
   },
 ];
 
@@ -343,6 +347,7 @@ const DashboardPage = () => {
             {features.map((feature, index) => (
               <div key={index} className="flex flex-col justify-between">
                 <div className="flex justify-center rounded-[8px] mb-[8px] items-center p-2 bg-[#FAFAFA] h-[64px]">
+                  <Link href={feature.url}>
                   <Image
                     className=" h-[24px] w-[24px]"
                     src={feature.image}
@@ -350,6 +355,7 @@ const DashboardPage = () => {
                     width={12}
                     height={12}
                   />
+                  </Link>
                 </div>
                 <p className="text-[14px] font-medium text-[#1A1A1A]">
                   {feature.title}
