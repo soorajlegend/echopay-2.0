@@ -5,20 +5,21 @@ import Echo from "./echo";
 
 const EchoListener = () => {
   const [isOpen, setIsOpen] = useState(false);
+  
   useEffect(() => {
     const recognition = new (window.SpeechRecognition ||
       window.webkitSpeechRecognition)();
     recognition.continuous = true;
-    recognition.interimResults = true; // Changed to true to get interim results
-    recognition.lang = "en-US"; // Set language explicitly
+    recognition.interimResults = true;
+    recognition.lang = "en-US";
 
     recognition.onresult = (event: any) => {
       for (let i = event.resultIndex; i < event.results.length; i++) {
         const transcript = event.results[i][0].transcript.toLowerCase();
-        console.log("Heard:", transcript); // Debug what's being heard
+        console.log("Heard:", transcript);
 
         if (transcript.includes("hey echo") || transcript.includes("echo")) {
-          console.log("Trigger word detected!"); // Debug trigger detection
+          console.log("Trigger word detected!");
           setIsOpen(true);
           recognition.stop();
         }
@@ -26,44 +27,47 @@ const EchoListener = () => {
     };
 
     recognition.onerror = (event: any) => {
-      console.log("Speech recognition error:", event.error); // More visible error logging
+      console.log("Speech recognition error:", event.error);
       if (event.error === "not-allowed") {
         console.error("Microphone access denied");
       } else {
-        if (!isOpen) {
-          recognition.stop();
-          setTimeout(() => {
-            console.log("Attempting to restart recognition..."); // Debug restart attempts
-            recognition.start();
-          }, 1000);
-        }
+        recognition.stop();
+        setTimeout(() => {
+          console.log("Attempting to restart recognition...");
+          recognition.start();
+        }, 1000);
       }
     };
 
     recognition.onstart = () => {
-      console.log("Speech recognition started"); // Debug when recognition starts
+      console.log("Speech recognition started");
     };
 
     recognition.onend = () => {
-      console.log("Speech recognition ended"); // Debug when recognition ends
-      if (!isOpen) {
-        console.log("Restarting recognition..."); // Debug restart
-        recognition.start();
-      }
+      console.log("Speech recognition ended");
+      // Always restart recognition unless there was an error
+      setTimeout(() => {
+        if (!recognition.error) {
+          console.log("Restarting recognition...");
+          try {
+            recognition.start();
+          } catch (err) {
+            console.error("Failed to restart recognition:", err);
+          }
+        }
+      }, 1000);
     };
 
-    if (!isOpen) {
-      try {
-        recognition.start();
-      } catch (err) {
-        console.error("Failed to start recognition:", err);
-      }
+    try {
+      recognition.start();
+    } catch (err) {
+      console.error("Failed to start recognition:", err);
     }
 
     return () => {
       recognition.stop();
     };
-  }, [isOpen]);
+  }, []); // Remove isOpen dependency
 
   if (!isOpen) return null;
 
