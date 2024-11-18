@@ -161,6 +161,7 @@ const ChatPage = () => {
 
         <div ref={messagesEndRef} />
       </div>
+
       <CustomTextareaForm
         value={newMessage}
         onChange={setNewMessage}
@@ -169,6 +170,7 @@ const ChatPage = () => {
         onSubmit={handleSubmit}
         disabled={isLoading}
       />
+      
       <ConfirmTransaction
         data={newTransaction}
         setNewTransaction={setNewTransaction}
