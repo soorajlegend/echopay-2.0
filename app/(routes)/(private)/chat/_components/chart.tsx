@@ -12,7 +12,7 @@ interface ChartProps {
 }
 
 const Chart = ({ type, setType }: ChartProps) => {
-  if (type === null) return null;
+  if (type === null) return;
 
   return (
     <Drawer open onClose={() => setType(null)}>
