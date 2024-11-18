@@ -7,7 +7,6 @@ import { InputWithIcon } from '@/components/ui/input-with-icon'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
-import Link from 'next/link';
 
 interface LoginPageProps {
   onClickSignUp: () => void;
