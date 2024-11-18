@@ -258,6 +258,14 @@ const Echo = () => {
       }
 
       if (jsonData.message) {
+        if ("speechSynthesis" in window) {
+          const utterance = new SpeechSynthesisUtterance(jsonData.message);
+          utterance.rate = 1;
+          utterance.pitch = 1;
+          utterance.volume = 1;
+          window.speechSynthesis.speak(utterance);
+        }
+
         const userMessage: Chat = {
           id: nanoid(),
           role: "user",
