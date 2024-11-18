@@ -6,6 +6,7 @@ import { InputWithIcon } from "@/components/ui/input-with-icon";
 import { PhoneCall } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input"
+import Link from "next/link";
 
 interface MobileInputProps {
   mobile: string;
@@ -23,7 +24,7 @@ const MobileInput = ({ mobile, name, email, setMobile, setName, setEmail, onProc
   return (
     <div className="text-center relative w-full h-screen">
       <div className="w-full mt-[77px] mb-[88px]">
-        <h2 className="text-2xl font-medium text-center text-[#1A1A1A]">
+        <h2 className="text-2xl font-medium text-start text-[#1A1A1A]">
           Register
         </h2>
       </div>
@@ -71,7 +72,7 @@ const MobileInput = ({ mobile, name, email, setMobile, setName, setEmail, onProc
       </div>
 
 
-      <div className="absolute bottom-0 mb-32 w-full flex justify-center">
+      <div className="absolte bottom0 mb32 w-full flex justify-center">
         <Button
           className={` ${!mobile.length
               ? "opacity-80 cursor-not-allowed hover:bg-none"
@@ -82,6 +83,11 @@ const MobileInput = ({ mobile, name, email, setMobile, setName, setEmail, onProc
         >
           {isLoading ? "Sending OTP" : "proceed"}
         </Button>
+      </div>
+
+
+      <div className="mt-[25px]">
+        <p>Already have an account? <Link href="/login">Sign In</Link></p>
       </div>
     </div>
   );

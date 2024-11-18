@@ -5,6 +5,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { InputWithIcon } from "@/components/ui/input-with-icon";
 import { Label } from "@/components/ui/label";
 import { Eye, Mail, Phone } from "lucide-react";
+import Link from "next/link";
 import React, { useState } from "react";
 
 const RegisterPage = () => {
@@ -167,7 +168,7 @@ const RegisterPage = () => {
       <div className="w-full flex flex-col gap-8">
         <Button type="submit">Create Account</Button>
         <p className="w-full text-center">
-          Already have an account? <a href="#">Sign In</a>
+          Already have an account? <Link href="/login">Sign In</Link>
         </p>
       </div>
     </form>
