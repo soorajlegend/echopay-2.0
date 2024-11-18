@@ -5,7 +5,7 @@ import Echo from "./echo";
 import useEcho from "@/hooks/use-echo";
 
 const EchoListener = () => {
-  const { setOpenEcho } = useEcho();
+  const { openEcho, setOpenEcho } = useEcho();
 
   useEffect(() => {
     const recognition = new (window.SpeechRecognition ||
@@ -19,11 +19,13 @@ const EchoListener = () => {
         const transcript = event.results[i][0].transcript.toLowerCase();
         console.log("Heard:", transcript);
 
-        if (transcript.includes("hey echo") || transcript.includes("echo")) {
+        if (
+          !openEcho &&
+          (transcript.includes("hey echo") || transcript.includes("echo"))
+        ) {
           console.log("Trigger word detected!");
           setOpenEcho(true);
           recognition.stop();
-          // Don't restart recognition after trigger word detected
           return;
         }
       }
@@ -46,7 +48,9 @@ const EchoListener = () => {
     };
 
     try {
-      recognition.start();
+      if (!openEcho) {
+        recognition.start();
+      }
     } catch (err) {
       console.error("Failed to start recognition:", err);
     }
@@ -54,7 +58,7 @@ const EchoListener = () => {
     return () => {
       recognition.stop();
     };
-  }, []);
+  }, [openEcho]);
 
   return <Echo />;
 };
