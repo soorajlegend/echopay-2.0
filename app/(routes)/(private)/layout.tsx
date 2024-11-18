@@ -9,7 +9,7 @@ export default function RoutesLayout({
   return (
     <>
       {children}
-      <EchoListener />
+      {/* <EchoListener /> */}
     </>
   );
 }
