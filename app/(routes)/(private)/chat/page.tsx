@@ -171,10 +171,10 @@ const ChatPage = () => {
         disabled={isLoading}
       />
 
-      {/* <ConfirmTransaction
+      <ConfirmTransaction
         data={newTransaction}
         setNewTransaction={setNewTransaction}
-      /> */}
+      />
       {/* <Chart type={chartType} setType={setChartType} /> */}
     </div>
   );
