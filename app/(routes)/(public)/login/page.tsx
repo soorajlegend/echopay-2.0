@@ -8,11 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 
-interface LoginPageProps {
-  onClickSignUp: () => void;
-}
-
-const LoginPage = ({ onClickSignUp }: LoginPageProps) => {
+const LoginPage = () => {
   const router = useRouter();
   const [phone, setPhone] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -100,7 +96,7 @@ const LoginPage = ({ onClickSignUp }: LoginPageProps) => {
           </div>
           <Button
             variant="link"
-            onClick={onClickSignUp}
+            onClick={() => router.push("/signup")}
             className="text-[18px] font-medium py-[24px]"
           >
             Sign Up
