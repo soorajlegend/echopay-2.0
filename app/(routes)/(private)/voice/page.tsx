@@ -17,6 +17,7 @@ const VoicePage = () => {
   const [isPaused, setIsPaused] = useState(false);
   const [visualizerData, setVisualizerData] = useState<number[]>([]);
   const [transcript, setTranscript] = useState("");
+  const [interimTranscript, setInterimTranscript] = useState("");
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
@@ -36,12 +37,18 @@ const VoicePage = () => {
 
       recognitionRef.current.onresult = (event: any) => {
         let finalTranscript = "";
+        let currentInterim = "";
+
         for (let i = 0; i < event.results.length; i++) {
           if (event.results[i].isFinal) {
             finalTranscript += event.results[i][0].transcript;
+          } else {
+            currentInterim += event.results[i][0].transcript;
           }
         }
+
         setTranscript(finalTranscript);
+        setInterimTranscript(currentInterim);
       };
     }
 
@@ -130,6 +137,7 @@ const VoicePage = () => {
       if (streamRef.current) {
         streamRef.current.getTracks().forEach((track) => track.stop());
       }
+      setInterimTranscript("");
       // Send the transcript instead of audio
       sendTranscript();
     }
@@ -142,6 +150,7 @@ const VoicePage = () => {
     stopRecording();
     setVisualizerData([]);
     setTranscript("");
+    setInterimTranscript("");
   };
 
   const sendTranscript = async () => {
@@ -161,6 +170,7 @@ const VoicePage = () => {
       // Reset after successful send
       setVisualizerData([]);
       setTranscript("");
+      setInterimTranscript("");
     } catch (error) {
       console.error("Error sending transcript:", error);
     }
@@ -195,9 +205,10 @@ const VoicePage = () => {
               />
             ))}
           </div>
-          {transcript && (
+          {(transcript || interimTranscript) && (
             <div className="mt-4 p-4 bg-gray-100 rounded-lg max-w-xs text-sm">
               {transcript}
+              <span className="text-gray-500">{interimTranscript}</span>
             </div>
           )}
         </div>
