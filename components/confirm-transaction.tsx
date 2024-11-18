@@ -58,6 +58,10 @@ const ConfirmTransaction = ({
       return toast.error("Please login to continue");
     }
 
+    if (isLoading) {
+      return;
+    }
+
     setIsLoading(true);
     const response = await axios.post(
       "https://echo-pay.onrender.com/api/transfer",
@@ -136,7 +140,7 @@ const ConfirmTransaction = ({
           </div>
         )}
 
-        {!showPinInput && (
+        {!showPinInput && !isLoading && (
           <div className="flex justify-between gap-3 w-full py-3 max-w-md mx-auto px-3 lg:px-0">
             <DrawerClose
               disabled={isLoading}
