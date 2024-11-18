@@ -1,8 +1,9 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { ChevronLeft, Mic, Pause, Play, X, SendHorizonal } from "lucide-react";
+import { Mic, Pause, Play, X, SendHorizonal } from "lucide-react";
 import axios from "axios";
+import { Drawer, DrawerContent } from "@/components/ui/drawer";
 
 declare global {
   interface Window {
@@ -32,6 +33,18 @@ const Echo = ({ isOpen, setIsOpen }: RecorderProps) => {
 
   useEffect(() => {
     if (isOpen) {
+      if (mediaRecorderRef.current) {
+        mediaRecorderRef.current.stop();
+      }
+      if (recognitionRef.current) {
+        recognitionRef.current.stop();
+      }
+      if (audioContextRef.current) {
+        audioContextRef.current.close();
+      }
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach((track) => track.stop());
+      }
       startRecording();
     } else {
       stopRecording();
@@ -137,18 +150,37 @@ const Echo = ({ isOpen, setIsOpen }: RecorderProps) => {
 
   const stopRecording = () => {
     if (isRecording) {
+      // Stop speech recognition
       if (recognitionRef.current) {
         recognitionRef.current.stop();
       }
-      setIsRecording(false);
-      setIsPaused(false);
+
+      // Stop audio context and disconnect nodes
+      if (audioContextRef.current) {
+        if (analyserRef.current) {
+          analyserRef.current.disconnect();
+        }
+        audioContextRef.current.close();
+      }
+
+      // Stop animation frame
       if (animationFrameRef.current) {
         cancelAnimationFrame(animationFrameRef.current);
       }
+
+      // Stop all tracks from media stream
       if (streamRef.current) {
-        streamRef.current.getTracks().forEach((track) => track.stop());
+        streamRef.current.getTracks().forEach((track) => {
+          track.stop();
+          track.enabled = false;
+        });
+        streamRef.current = null;
       }
+
+      setIsRecording(false);
+      setIsPaused(false);
       setInterimTranscript("");
+
       // Send the transcript instead of audio
       sendTranscript();
     }
@@ -190,80 +222,84 @@ const Echo = ({ isOpen, setIsOpen }: RecorderProps) => {
   };
 
   return (
-    <div className="flex-1 flex flex-col items-center">
-      <div className="flex-1 flex flex-col items-center justify-center w-full max-w-lg mx-auto">
-        <div
-          className={`flex w-auto gap-1 h-20 max-w-xs mx-auto items-center justify-center ${
-            isPaused ? "opacity-50" : ""
-          }`}
-        >
-          {visualizerData.map((value, index) => (
+    <Drawer>
+      <DrawerContent className="h-full w-full">
+        <div className="flex-1 flex flex-col items-center">
+          <div className="flex-1 flex flex-col items-center justify-center w-full max-w-lg mx-auto">
             <div
-              key={index}
-              className={`w-1.5 rounded-full ${
-                isPaused ? "bg-rose-500" : "bg-theme-primary"
+              className={`flex w-auto gap-1 h-20 max-w-xs mx-auto items-center justify-center ${
+                isPaused ? "opacity-50" : ""
               }`}
-              style={{
-                height: `${value * 100}%`,
-                transition: "height 0.05s ease",
-              }}
-            />
-          ))}
-        </div>
-        {(transcript || interimTranscript) && (
-          <div className="mt-4 p-4 bg-gray-100 rounded-lg max-w-xs text-sm">
-            {transcript}
-            <span className="text-gray-500 text-center">
-              {interimTranscript}
-            </span>
+            >
+              {visualizerData.map((value, index) => (
+                <div
+                  key={index}
+                  className={`w-1.5 rounded-full ${
+                    isPaused ? "bg-rose-500" : "bg-theme-primary"
+                  }`}
+                  style={{
+                    height: `${value * 100}%`,
+                    transition: "height 0.05s ease",
+                  }}
+                />
+              ))}
+            </div>
+            {(transcript || interimTranscript) && (
+              <div className="mt-4 p-4 bg-gray-100 rounded-lg max-w-xs text-sm">
+                {transcript}
+                <span className="text-gray-500 text-center">
+                  {interimTranscript}
+                </span>
+              </div>
+            )}
           </div>
-        )}
-      </div>
 
-      <div className="w-full flex justify-evenly gap-4 p-4 bg-white fixed max-w-lg mx-auto bottom-0 left-0">
-        {isRecording && (
-          <>
-            <button
-              onClick={cancelRecording}
-              className="w-16 h-16 rounded-full bg-red-100 hover:bg-red-200 flex items-center justify-center aspect-square"
-            >
-              <X className="w-8 h-8 text-red-600" />
-            </button>
+          <div className="w-full flex justify-evenly gap-4 p-4 bg-white fixed max-w-lg mx-auto bottom-0 left-0">
+            {isRecording && (
+              <>
+                <button
+                  onClick={cancelRecording}
+                  className="w-16 h-16 rounded-full bg-red-100 hover:bg-red-200 flex items-center justify-center aspect-square"
+                >
+                  <X className="w-8 h-8 text-red-600" />
+                </button>
 
-            <button
-              onClick={isPaused ? resumeRecording : pauseRecording}
-              className={`w-16 h-16 rounded-full ${
-                isPaused
-                  ? "bg-red-500 hover:bg-red-600"
-                  : "bg-gray-100 hover:bg-gray-200"
-              } flex items-center justify-center aspect-square`}
-            >
-              {isPaused ? (
-                <Play className="w-8 h-8 text-white" />
-              ) : (
-                <Pause className="w-8 h-8 text-gray-600" />
-              )}
-            </button>
+                <button
+                  onClick={isPaused ? resumeRecording : pauseRecording}
+                  className={`w-16 h-16 rounded-full ${
+                    isPaused
+                      ? "bg-red-500 hover:bg-red-600"
+                      : "bg-gray-100 hover:bg-gray-200"
+                  } flex items-center justify-center aspect-square`}
+                >
+                  {isPaused ? (
+                    <Play className="w-8 h-8 text-white" />
+                  ) : (
+                    <Pause className="w-8 h-8 text-gray-600" />
+                  )}
+                </button>
 
-            <button
-              onClick={stopRecording}
-              className="w-16 h-16 rounded-full bg-theme-primary hover:opacity-90 flex items-center justify-center aspect-square"
-            >
-              <SendHorizonal className="w-8 h-8 text-white" />
-            </button>
-          </>
-        )}
+                <button
+                  onClick={stopRecording}
+                  className="w-16 h-16 rounded-full bg-theme-primary hover:opacity-90 flex items-center justify-center aspect-square"
+                >
+                  <SendHorizonal className="w-8 h-8 text-white" />
+                </button>
+              </>
+            )}
 
-        {!isRecording && (
-          <button
-            onClick={startRecording}
-            className="w-16 h-16 mx-auto rounded-full bg-theme-primary hover:opacity-90 flex items-center justify-center aspect-square"
-          >
-            <Mic className="w-8 h-8 text-white" />
-          </button>
-        )}
-      </div>
-    </div>
+            {!isRecording && (
+              <button
+                onClick={startRecording}
+                className="w-16 h-16 mx-auto rounded-full bg-theme-primary hover:opacity-90 flex items-center justify-center aspect-square"
+              >
+                <Mic className="w-8 h-8 text-white" />
+              </button>
+            )}
+          </div>
+        </div>
+      </DrawerContent>
+    </Drawer>
   );
 };
 
