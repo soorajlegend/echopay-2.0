@@ -90,11 +90,12 @@ const ConfirmTransaction = ({
         closeRef.current.click();
       }
       setNewTransaction(null);
+      setIsLoading(false);
     } else {
-      toast.error("Something went wrong");
+      toast.error(response.data.message);
+      setIsLoading(false);
+      setShowPinInput(false);
     }
-
-    setIsLoading(false);
   };
 
   return (

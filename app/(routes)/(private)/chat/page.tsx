@@ -107,8 +107,6 @@ const ChatPage = () => {
 
       if (jsonData.newTransaction) {
         setNewTransaction(jsonData.newTransaction);
-      } else {
-        console.log("no transaction");
       }
 
       if (jsonData.message) {
@@ -124,6 +122,8 @@ const ChatPage = () => {
       if (jsonData.transactionChart) {
         setChartType("TRANSACTIONS");
       }
+
+      console.log(jsonData);
     } catch (error) {
       console.error("API request failed:", error);
     } finally {
