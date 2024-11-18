@@ -27,6 +27,7 @@ const Assistant = () => {
 
         if (transcript.includes("hey echo") || transcript.includes("echo")) {
           console.log("Trigger word detected!"); // Debug trigger detection
+          alert("Trigger word detected!");
           setOpen(true);
           recognition.stop();
         }
