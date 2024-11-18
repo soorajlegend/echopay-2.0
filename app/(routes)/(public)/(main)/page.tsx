@@ -40,7 +40,6 @@ const OnboardingPage = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
 
-  // const newUser = true;
 
   const router = useRouter();
   const { setInfo, info } = useUserInfo();

@@ -120,19 +120,46 @@ const Echo = () => {
 
   const startRecording = async () => {
     try {
+      // Request microphone access
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       streamRef.current = stream;
 
+      // Set up audio context and analyzer
       audioContextRef.current = new AudioContext();
       analyserRef.current = audioContextRef.current.createAnalyser();
       const source = audioContextRef.current.createMediaStreamSource(stream);
       source.connect(analyserRef.current);
-
       analyserRef.current.fftSize = 256;
+
+      // Initialize speech recognition if not already initialized
+      if (!recognitionRef.current && ("SpeechRecognition" in window || "webkitSpeechRecognition" in window)) {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        recognitionRef.current = new SpeechRecognition();
+        recognitionRef.current.continuous = true;
+        recognitionRef.current.interimResults = true;
+
+        recognitionRef.current.onresult = (event: any) => {
+          let finalTranscript = "";
+          let currentInterim = "";
+
+          for (let i = 0; i < event.results.length; i++) {
+            if (event.results[i].isFinal) {
+              finalTranscript += event.results[i][0].transcript;
+            } else {
+              currentInterim += event.results[i][0].transcript;
+            }
+          }
+
+          setTranscript(finalTranscript);
+          setInterimTranscript(currentInterim);
+        };
+      }
 
       // Start speech recognition
       if (recognitionRef.current) {
         recognitionRef.current.start();
+      } else {
+        console.error("Speech recognition not supported");
       }
 
       setIsRecording(true);
@@ -369,7 +396,7 @@ const Echo = () => {
             )}
           </div>
 
-          <div className="w-full flex justify-evenly gap-4 p-4 bg-white mt-auto sticky bottom-0 max-w-lg mx-auto">
+          <div className="w-full flex justify-evenly gap-4 p-4 pb-8 lg:pb-4 bg-white mt-auto sticky bottom-0 max-w-lg mx-auto">
             {isRecording && (
               <>
                 <button
