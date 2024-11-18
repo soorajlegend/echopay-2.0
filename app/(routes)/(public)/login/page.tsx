@@ -7,7 +7,6 @@ import { InputWithIcon } from '@/components/ui/input-with-icon'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
-import Link from 'next/link';
 
 interface LoginPageProps {
   onClickSignUp: () => void;
@@ -56,7 +55,7 @@ const LoginPage = ({onClickSignUp}: LoginPageProps) => {
         </h2>
         <p className='text-base  mt-2'>Log in to your EchoPay account to access your funds and manage your finances</p>
       </div>
-
+      {error && <p className="text-red-500">{error}</p>}
       <div className='w-full flex flex-col gap-3 items-start'>
         <Label htmlFor="email" className="w-full text-left text-xl">
           Email
