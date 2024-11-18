@@ -141,22 +141,26 @@ const ConfirmTransaction = ({
           </div>
         )}
 
-        {!showPinInput && !isLoading && (
-          <div className="flex justify-between gap-3 w-full py-3 max-w-md mx-auto px-3 lg:px-0">
-            <DrawerClose
-              disabled={isLoading}
-              onClick={() => setNewTransaction(null)}
-            >
-              <Button disabled={isLoading} ref={closeRef} variant="ghost">
-                Cancel
+        {!showPinInput ||
+          (isLoading && showPinInput && (
+            <div className="flex justify-between gap-3 w-full py-3 max-w-md mx-auto px-3 lg:px-0">
+              <DrawerClose
+                disabled={isLoading}
+                onClick={() => setNewTransaction(null)}
+              >
+                <Button disabled={isLoading} ref={closeRef} variant="ghost">
+                  Cancel
+                </Button>
+              </DrawerClose>
+              <Button
+                onClick={() => setShowPinInput(true)}
+                disabled={isLoading}
+              >
+                {isLoading ? "Loading..." : "Cornfirm"}
+                {isLoading && <Loader className="w-6 h-6 animate-spin ml-2" />}
               </Button>
-            </DrawerClose>
-            <Button onClick={() => setShowPinInput(true)} disabled={isLoading}>
-              {isLoading ? "Loading..." : "Cornfirm"}
-              {isLoading && <Loader className="w-6 h-6 animate-spin ml-2" />}
-            </Button>
-          </div>
-        )}
+            </div>
+          ))}
       </DrawerContent>
     </Drawer>
   );
