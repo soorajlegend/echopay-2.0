@@ -44,7 +44,7 @@ const OTPVerification = ({
       <div className="w-full items-center mt-[48px] flex flex-col gap-3">
         <Label htmlFor="terms" className="w-full text-center ">
           We&apos;ve sent an OTP to {mobile} -
-          <Button onClick={() => setStage(4)} variant="link">
+          <Button onClick={() => setStage(10)} variant="link">
             Edit <Edit />
           </Button>
         </Label>

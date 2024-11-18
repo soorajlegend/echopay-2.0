@@ -6,8 +6,16 @@ import { Home, Wallet, MessageSquare, Menu } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import useUserInfo from "@/hooks/use-userinfo";
-import { AlertCircle } from "lucide-react";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { useRouter } from "next/navigation";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import { Button } from "@/components/ui/button";
+
 
 const features = [
   {
@@ -61,20 +69,31 @@ const transactions = [
 ];
 
 const DashboardView = () => {
+  const router = useRouter();
+
+  const navigateToKyc = () => {
+    router.push("/kyc");
+    console.log("navigate to kyc");
+  };
   return (
     <div className="mt-[48px] h-auto  h[calc(100vh-100px)] overflow-y-auto">
       {/* {showPopup &&  ( */}
       <div className="mb-5">
-        <Link href="/kyc">
-          <Alert variant="destructive">
-            <AlertCircle className="h-4 w-4" />
-            <AlertTitle>Verify Account</AlertTitle>
-            <AlertDescription>
-              To ensure the security of your account and enable full access to
-              EchoPay&apos;s features, please complete the verification process
-            </AlertDescription>
-          </Alert>
-        </Link>
+        <Card className=" shadow-none">
+  <CardHeader>
+    <CardTitle className="border-b pb-[10px]">Verify Account</CardTitle>
+  </CardHeader>
+  <CardContent>
+    <p>To ensure the security of your account and enable full access to EchoPay's features, please complete the verification process</p>
+  </CardContent>
+  <CardFooter>
+    <Button 
+    onClick={navigateToKyc}
+     size="lg"
+     className="text-[18px] py-[24px] font-medium bg-[#003056] hover:bg-[#0c2941] text-[#FAFAFA] w-full"
+    >Verify</Button>
+  </CardFooter>
+</Card>
       </div>
       {/* )} */}
       <Link

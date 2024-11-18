@@ -9,8 +9,11 @@ import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
+interface LoginPageProps {
+  onClickSignUp: () => void;
+}
 
-const LoginPage = () => {
+const LoginPage = ({onClickSignUp}: LoginPageProps) => {
 
   const router = useRouter();
   const [phone, setPhone] = useState<string>("");
@@ -76,9 +79,19 @@ const LoginPage = () => {
         >
           {isLoading ? "Signing in..." : "Sign In"}
         </Button>
-        <p className="w-full text-center">
-          Don't have an account? <Link href="/register">Sign Up</Link>
+
+        <div className='w-full flex justify-center items-center'>
+        <div className=''>
+        <p className="text-center w-full">
+          Don't have an account? 
         </p>
+        </div>
+        <Button 
+          variant="link" 
+          onClick={onClickSignUp}
+          className="text-[18px] font-medium py-[24px]">Sign Up</Button>
+        </div>
+
       </div>
     </div>
   )
