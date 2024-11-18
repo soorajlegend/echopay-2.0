@@ -43,13 +43,17 @@ const OnboardingPage = () => {
   // const newUser = true;
 
   const router = useRouter();
-  const { setInfo } = useUserInfo();
+  const { setInfo, info } = useUserInfo();
 
   useEffect(() => {
     const timer1 = setTimeout(() => setZoomLogo(true), 2000);
     const timer2 = setTimeout(() => {
       setShowLogo(false);
-      setStage(1);
+      if (info) {
+        router.push("/dashboard");
+      } else {
+        setStage(1);
+      }
     }, 3000);
 
     return () => {
