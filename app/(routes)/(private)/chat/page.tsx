@@ -175,7 +175,7 @@ const ChatPage = () => {
         data={newTransaction}
         setNewTransaction={setNewTransaction}
       />
-      {/* <Chart type={chartType} setType={setChartType} /> */}
+      {chartType && <Chart type={chartType} setType={setChartType} />}
     </div>
   );
 };
