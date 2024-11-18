@@ -223,7 +223,7 @@ const Echo = ({ isOpen, setIsOpen }: EchoProps) => {
 
   return (
     <Drawer open={isOpen} onClose={() => setIsOpen(false)}>
-      <DrawerContent className="h-full w-full">
+      <DrawerContent className="min-h-52 w-full">
         <div className="flex-1 flex flex-col items-center">
           <div className="flex-1 flex flex-col items-center justify-center w-full max-w-lg mx-auto">
             <div
