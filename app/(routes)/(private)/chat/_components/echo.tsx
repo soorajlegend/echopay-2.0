@@ -224,7 +224,7 @@ const Echo = ({ isOpen, setIsOpen }: EchoProps) => {
   return (
     <Drawer open={isOpen} onClose={() => setIsOpen(false)}>
       <DrawerContent className="min-h-[60%] w-full">
-        <div className="flex-1 flex flex-col items-center">
+        <div className="flex-1 flex flex-col items-center justify-between">
           <div className="flex-1 flex flex-col items-center justify-center w-full max-w-lg mx-auto">
             <div
               className={`flex w-auto gap-1 h-20 max-w-xs mx-auto items-center justify-center ${
@@ -254,7 +254,7 @@ const Echo = ({ isOpen, setIsOpen }: EchoProps) => {
             )}
           </div>
 
-          <div className="w-full flex justify-evenly gap-4 p-4 bg-white fixed max-w-lg mx-auto bottom-0 left-0">
+          <div className="w-full flex justify-evenly gap-4 p-4 bg-white mt-auto sticky bottom-0 max-w-lg mx-auto">
             {isRecording && (
               <>
                 <button
