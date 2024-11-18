@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Mic, Pause, Play, X, SendHorizonal } from "lucide-react";
 import axios from "axios";
 import { Drawer, DrawerContent } from "@/components/ui/drawer";
+import useEcho from "@/hooks/use-echo";
 
 declare global {
   interface Window {
@@ -12,12 +13,7 @@ declare global {
   }
 }
 
-interface EchoProps {
-  isOpen: boolean;
-  setIsOpen: (value: boolean) => void;
-}
-
-const Echo = ({ isOpen, setIsOpen }: EchoProps) => {
+const Echo = () => {
   const [isRecording, setIsRecording] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [visualizerData, setVisualizerData] = useState<number[]>([]);
@@ -31,8 +27,10 @@ const Echo = ({ isOpen, setIsOpen }: EchoProps) => {
   const streamRef = useRef<MediaStream | null>(null);
   const recognitionRef = useRef<Window["SpeechRecognition"] | null>(null);
 
+  const { openEcho, setOpenEcho } = useEcho();
+
   useEffect(() => {
-    if (isOpen) {
+    if (openEcho) {
       if (mediaRecorderRef.current) {
         mediaRecorderRef.current.stop();
       }
@@ -49,7 +47,7 @@ const Echo = ({ isOpen, setIsOpen }: EchoProps) => {
     } else {
       stopRecording();
     }
-  }, [isOpen]);
+  }, [openEcho]);
 
   useEffect(() => {
     if ("SpeechRecognition" in window || "webkitSpeechRecognition" in window) {
@@ -155,14 +153,6 @@ const Echo = ({ isOpen, setIsOpen }: EchoProps) => {
         recognitionRef.current.stop();
       }
 
-      // Stop audio context and disconnect nodes
-      if (audioContextRef.current) {
-        if (analyserRef.current) {
-          analyserRef.current.disconnect();
-        }
-        audioContextRef.current.close();
-      }
-
       // Stop animation frame
       if (animationFrameRef.current) {
         cancelAnimationFrame(animationFrameRef.current);
@@ -194,7 +184,7 @@ const Echo = ({ isOpen, setIsOpen }: EchoProps) => {
     setVisualizerData([]);
     setTranscript("");
     setInterimTranscript("");
-    setIsOpen(false);
+    setOpenEcho(false);
   };
 
   const sendTranscript = async () => {
@@ -215,14 +205,14 @@ const Echo = ({ isOpen, setIsOpen }: EchoProps) => {
       setVisualizerData([]);
       setTranscript("");
       setInterimTranscript("");
-      setIsOpen(false);
+      setOpenEcho(false);
     } catch (error) {
       console.error("Error sending transcript:", error);
     }
   };
 
   return (
-    <Drawer open={isOpen} onClose={() => setIsOpen(false)}>
+    <Drawer open={openEcho} onClose={() => setOpenEcho(false)}>
       <DrawerContent className="min-h-[60%] w-full">
         <div className="flex-1 flex flex-col items-center justify-between">
           <div className="flex-1 flex flex-col items-center justify-center w-full max-w-lg mx-auto">

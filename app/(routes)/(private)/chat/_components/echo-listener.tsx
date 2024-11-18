@@ -2,10 +2,11 @@
 
 import React, { useEffect, useState } from "react";
 import Echo from "./echo";
+import useEcho from "@/hooks/use-echo";
 
 const EchoListener = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  
+  const { setOpenEcho } = useEcho();
+
   useEffect(() => {
     const recognition = new (window.SpeechRecognition ||
       window.webkitSpeechRecognition)();
@@ -20,8 +21,10 @@ const EchoListener = () => {
 
         if (transcript.includes("hey echo") || transcript.includes("echo")) {
           console.log("Trigger word detected!");
-          setIsOpen(true);
+          setOpenEcho(true);
           recognition.stop();
+          // Don't restart recognition after trigger word detected
+          return;
         }
       }
     };
@@ -30,13 +33,8 @@ const EchoListener = () => {
       console.log("Speech recognition error:", event.error);
       if (event.error === "not-allowed") {
         console.error("Microphone access denied");
-      } else {
-        recognition.stop();
-        setTimeout(() => {
-          console.log("Attempting to restart recognition...");
-          recognition.start();
-        }, 1000);
       }
+      recognition.stop();
     };
 
     recognition.onstart = () => {
@@ -45,17 +43,6 @@ const EchoListener = () => {
 
     recognition.onend = () => {
       console.log("Speech recognition ended");
-      // Always restart recognition unless there was an error
-      setTimeout(() => {
-        if (!recognition.error) {
-          console.log("Restarting recognition...");
-          try {
-            recognition.start();
-          } catch (err) {
-            console.error("Failed to restart recognition:", err);
-          }
-        }
-      }, 1000);
     };
 
     try {
@@ -67,11 +54,9 @@ const EchoListener = () => {
     return () => {
       recognition.stop();
     };
-  }, []); // Remove isOpen dependency
+  }, []);
 
-  if (!isOpen) return null;
-
-  return <Echo isOpen={isOpen} setIsOpen={setIsOpen} />;
+  return <Echo />;
 };
 
 export default EchoListener;

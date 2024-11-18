@@ -14,6 +14,7 @@ import Link from "next/link";
 import Chart, { ChartType } from "./_components/chart";
 import useTransaction from "@/hooks/use-transaction";
 import Echo from "./_components/echo";
+import useEcho from "@/hooks/use-echo";
 
 const name = "Suraj Muhammad";
 const balance = 100000;
@@ -21,7 +22,6 @@ const balance = 100000;
 const ChatPage = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [newMessage, setNewMessage] = useState("");
-  const [showEcho, setShowEcho] = useState(false);
 
   const { chats, addChat } = useChat();
   const { beneficiaries } = useBeneficiary();
@@ -31,6 +31,8 @@ const ChatPage = () => {
   const [newTransaction, setNewTransaction] =
     useState<NewTransactionType | null>(null);
   const [chartType, setChartType] = useState<ChartType>(null);
+
+  const { openEcho, setOpenEcho } = useEcho();
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -140,7 +142,7 @@ const ChatPage = () => {
           <ChevronLeft className="w-10 h-10 p-1.5" />
           <h2 className="text-base lg:text-lg font-semibold">Chat</h2>
         </Link>
-        <button onClick={() => setShowEcho(true)}>
+        <button onClick={() => setOpenEcho(true)}>
           <AudioLines className="w-10 h-10 p-1.5" />
         </button>
       </div>
@@ -178,7 +180,7 @@ const ChatPage = () => {
         setNewTransaction={setNewTransaction}
       />
       {chartType && <Chart type={chartType} setType={setChartType} />}
-      {showEcho && <Echo isOpen={showEcho} setIsOpen={setShowEcho} />}
+      {openEcho && <Echo />}
     </div>
   );
 };
