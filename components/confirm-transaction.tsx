@@ -107,60 +107,51 @@ const ConfirmTransaction = ({
           </DrawerTitle>
         </DrawerHeader>
 
-        {!showPinInput ? (
-          <div className="p-10 px-3 lg:px-0">
-            <Card className="p-3 border-gray-100/80 text-gray-800 w-full h-auto flex gap-3 max-w-md mx-auto">
-              <Avatar className="w-10 h-10">
-                <AvatarImage src={beneficiary?.avatar} />
-                <AvatarFallback className="font-bold">
-                  {beneficiary.acc_name[0]}
-                </AvatarFallback>
-              </Avatar>
-              <div className="flex flex-1 flex-col gap-1">
-                <div className="text-sm font-bold text-gray-900">
-                  {beneficiary.acc_name}
-                </div>
-                <div className="text-sm">{data.description}</div>
+        <div className="p-10 px-3 lg:px-0">
+          <Card className="p-3 border-gray-100/80 text-gray-800 w-full h-auto flex gap-3 max-w-md mx-auto">
+            <Avatar className="w-10 h-10">
+              <AvatarImage src={beneficiary?.avatar} />
+              <AvatarFallback className="font-bold">
+                {beneficiary.acc_name[0]}
+              </AvatarFallback>
+            </Avatar>
+            <div className="flex flex-1 flex-col gap-1">
+              <div className="text-sm font-bold text-gray-900">
+                {beneficiary.acc_name}
               </div>
-              <div className="text-base font-semibold px-2 text-rose-500">
-                ₦{data?.amount}
-              </div>
-            </Card>
-          </div>
-        ) : (
-          <div className="p-10 px-3 lg:px-0">
-            <Card className="p-3 border-gray-100/80 text-gray-800 w-full h-auto flex justify-center items-center max-w-md mx-auto">
-              <PasswordInput
-                label="Verify your pin"
-                onComplete={createTransaction}
-                value={password}
-                setValue={setPassword}
-                disabled={isLoading}
-              />
-            </Card>
-          </div>
-        )}
-
-        {!showPinInput ||
-          (isLoading && showPinInput && (
-            <div className="flex justify-between gap-3 w-full py-3 max-w-md mx-auto px-3 lg:px-0">
-              <DrawerClose
-                disabled={isLoading}
-                onClick={() => setNewTransaction(null)}
-              >
-                <Button disabled={isLoading} ref={closeRef} variant="ghost">
-                  Cancel
-                </Button>
-              </DrawerClose>
-              <Button
-                onClick={() => setShowPinInput(true)}
-                disabled={isLoading}
-              >
-                {isLoading ? "Loading..." : "Cornfirm"}
-                {isLoading && <Loader className="w-6 h-6 animate-spin ml-2" />}
-              </Button>
+              <div className="text-sm">{data.description}</div>
             </div>
-          ))}
+            <div className="text-base font-semibold px-2 text-rose-500">
+              ₦{data?.amount}
+            </div>
+          </Card>
+        </div>
+        <div className="p-10 px-3 lg:px-0">
+          <Card className="p-3 border-gray-100/80 text-gray-800 w-full h-auto flex justify-center items-center max-w-md mx-auto">
+            <PasswordInput
+              label="Verify your pin"
+              onComplete={createTransaction}
+              value={password}
+              setValue={setPassword}
+              disabled={isLoading}
+            />
+          </Card>
+        </div>
+
+        <div className="flex justify-between gap-3 w-full py-3 max-w-md mx-auto px-3 lg:px-0">
+          <DrawerClose
+            disabled={isLoading}
+            onClick={() => setNewTransaction(null)}
+          >
+            <Button disabled={isLoading} ref={closeRef} variant="ghost">
+              Cancel
+            </Button>
+          </DrawerClose>
+          <Button onClick={() => setShowPinInput(true)} disabled={isLoading}>
+            {isLoading ? "Loading..." : "Cornfirm"}
+            {isLoading && <Loader className="w-6 h-6 animate-spin ml-2" />}
+          </Button>
+        </div>
       </DrawerContent>
     </Drawer>
   );
