@@ -28,15 +28,17 @@ const Assistant = () => {
       }
     };
 
-    recognition.start();
+    if (!open) {
+      recognition.start();
+    }
 
     return () => {
       recognition.stop();
     };
-  }, []);
+  }, [open]);
 
   return (
-    <Drawer open={open}>
+    <Drawer open onClose={() => setOpen(false)}>
       <DrawerContent>
         <Recorder isDrawer isOpen={open} />
       </DrawerContent>
