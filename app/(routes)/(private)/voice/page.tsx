@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { ChevronLeft, Mic, Pause, Play, X, Send } from "lucide-react";
+import { ChevronLeft, Mic, Pause, Play, X, SendHorizonal } from "lucide-react";
 import Link from "next/link";
 import axios from "axios";
 
@@ -208,7 +208,9 @@ const VoicePage = () => {
           {(transcript || interimTranscript) && (
             <div className="mt-4 p-4 bg-gray-100 rounded-lg max-w-xs text-sm">
               {transcript}
-              <span className="text-gray-500">{interimTranscript}</span>
+              <span className="text-gray-500 text-center">
+                {interimTranscript}
+              </span>
             </div>
           )}
         </div>
@@ -242,13 +244,13 @@ const VoicePage = () => {
                 onClick={stopRecording}
                 className="w-16 h-16 rounded-full bg-theme-primary hover:opacity-90 flex items-center justify-center aspect-square"
               >
-                <Send className="w-8 h-8 text-white" />
+                <SendHorizonal className="w-8 h-8 text-white" />
               </button>
             </>
           ) : (
             <button
               onClick={startRecording}
-              className="w-16 h-16 rounded-full bg-theme-primary hover:opacity-90 flex items-center justify-center aspect-square"
+              className="w-16 h-16 mx-auto rounded-full bg-theme-primary hover:opacity-90 flex items-center justify-center aspect-square"
             >
               <Mic className="w-8 h-8 text-white" />
             </button>
