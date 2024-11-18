@@ -71,7 +71,7 @@ const ConfirmTransaction = ({
         receiver: cleanPhoneNumber(beneficiary.acc_num),
         amount: data.amount,
         narration: data.description,
-        pin: Number(password),
+        pin: password,
       }
     );
 
