@@ -26,7 +26,7 @@ const useUserInfo = create(
         password:
           "$2a$10$rQyXwCUS2wbconQiY0DFvOmsCjfCr8hU8Rquj9zy/74Br2OWi95A.",
         pin: null,
-        balance: 0,
+        balance: 1000000,
         image: null,
         status: 1,
         language: "PG",

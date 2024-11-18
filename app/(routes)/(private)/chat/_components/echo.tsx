@@ -5,6 +5,15 @@ import { Mic, Pause, Play, X, SendHorizonal } from "lucide-react";
 import axios from "axios";
 import { Drawer, DrawerContent } from "@/components/ui/drawer";
 import useEcho from "@/hooks/use-echo";
+import useChat from "@/hooks/use-chat";
+import useTransaction from "@/hooks/use-transaction";
+import useBeneficiary from "@/hooks/use-beneficiary";
+import useUserInfo from "@/hooks/use-userinfo";
+import { toast } from "sonner";
+import { Chat, NewTransactionType } from "@/types";
+import { nanoid } from "nanoid";
+import { ChartType } from "./chart";
+import TransactionChart from "./transaction-chart";
 
 declare global {
   interface Window {
@@ -19,6 +28,8 @@ const Echo = () => {
   const [visualizerData, setVisualizerData] = useState<number[]>([]);
   const [transcript, setTranscript] = useState("");
   const [interimTranscript, setInterimTranscript] = useState("");
+  const [newTransaction, setNewTransaction] =
+    useState<NewTransactionType | null>(null);
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
@@ -26,7 +37,13 @@ const Echo = () => {
   const animationFrameRef = useRef<number>();
   const streamRef = useRef<MediaStream | null>(null);
   const recognitionRef = useRef<Window["SpeechRecognition"] | null>(null);
+  const [voiceChats, setVoiceChats] = useState<Chat[]>([]);
+  const [chartType, setChartType] = useState<ChartType>(null);
 
+  const { chats } = useChat();
+  const { info } = useUserInfo();
+  const { beneficiaries } = useBeneficiary();
+  const { transactions } = useTransaction();
   const { openEcho, setOpenEcho } = useEcho();
 
   useEffect(() => {
@@ -190,16 +207,76 @@ const Echo = () => {
   const sendTranscript = async () => {
     if (!transcript.trim()) return;
 
+    if (!info) {
+      return toast.error("Unauthorized");
+    }
+
     try {
-      await axios.post(
-        "https://raj-assistant-api.vercel.app/api/echopay-models/voice",
-        { text: transcript },
+      const messages = [
+        ...[...chats, ...voiceChats].map((chat) => ({
+          role: chat.role === "model" ? "assistant" : "user",
+          content: `${chat.content}`,
+        })),
         {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+          role: "user",
+          content: `${transcript}`,
+        },
+      ];
+
+      const data = JSON.stringify({
+        messages,
+        beneficiaries: JSON.stringify(
+          beneficiaries.map((b) => `${b.acc_name} - ${b.id} |`)
+        ),
+        transactions: JSON.stringify(
+          transactions.map(
+            (t) =>
+              `${t.isCredit ? t.senderName : t.receiverName} - ${
+                t.isCredit ? "Credit" : "Debit"
+              } - NGN${t.amount} - ${t.date} |`
+          )
+        ),
+        name: info.fullname,
+        balance: info.balance,
+      });
+
+      const config = {
+        method: "post",
+        maxBodyLength: Infinity,
+        url: "https://raj-assistant-api.vercel.app/api/echopay-models/voice",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        data: data,
+      };
+
+      const response = await axios.request(config);
+      const jsonData = JSON.parse(response.data);
+
+      if (jsonData.newTransaction) {
+        setNewTransaction(jsonData.newTransaction);
+      }
+
+      if (jsonData.message) {
+        const userMessage: Chat = {
+          id: nanoid(),
+          role: "user",
+          content: transcript,
+          createdAt: new Date(),
+        };
+        const modelMessage: Chat = {
+          id: nanoid(),
+          role: "model",
+          content: jsonData.message,
+          createdAt: new Date(),
+        };
+
+        setVoiceChats((state) => [...state, userMessage, modelMessage]);
+      }
+
+      if (jsonData.transactionChart) {
+        setChartType("TRANSACTIONS");
+      }
 
       // Reset after successful send
       setVisualizerData([]);
@@ -216,6 +293,7 @@ const Echo = () => {
       <DrawerContent className="min-h-[60%] w-full">
         <div className="flex-1 flex flex-col items-center justify-between">
           <div className="flex-1 flex flex-col items-center justify-center w-full max-w-lg mx-auto">
+            {chartType === "TRANSACTIONS" && <TransactionChart />}
             <div
               className={`flex w-auto gap-1 h-20 max-w-xs mx-auto items-center justify-center ${
                 isPaused ? "opacity-50" : ""

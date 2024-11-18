@@ -15,24 +15,22 @@ import Chart, { ChartType } from "./_components/chart";
 import useTransaction from "@/hooks/use-transaction";
 import Echo from "./_components/echo";
 import useEcho from "@/hooks/use-echo";
-
-const name = "Suraj Muhammad";
-const balance = 100000;
+import useUserInfo from "@/hooks/use-userinfo";
 
 const ChatPage = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [newMessage, setNewMessage] = useState("");
-
-  const { chats, addChat } = useChat();
-  const { beneficiaries } = useBeneficiary();
-  const { transactions } = useTransaction();
 
   const [isLoading, setIsLoading] = useState(false);
   const [newTransaction, setNewTransaction] =
     useState<NewTransactionType | null>(null);
   const [chartType, setChartType] = useState<ChartType>(null);
 
+  const { info } = useUserInfo();
   const { openEcho, setOpenEcho } = useEcho();
+  const { chats, addChat } = useChat();
+  const { beneficiaries } = useBeneficiary();
+  const { transactions } = useTransaction();
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -92,8 +90,8 @@ const ChatPage = () => {
               } - NGN${t.amount} - ${t.date} |`
           )
         ),
-        name,
-        balance,
+        name: info?.fullname,
+        balance: info?.balance,
       });
 
       const config = {
@@ -126,8 +124,6 @@ const ChatPage = () => {
       if (jsonData.transactionChart) {
         setChartType("TRANSACTIONS");
       }
-
-      console.log(jsonData);
     } catch (error) {
       console.error("API request failed:", error);
     } finally {
@@ -137,7 +133,7 @@ const ChatPage = () => {
 
   return (
     <div className="relative flex flex-col w-full h-screen p-4 pt-0">
-      <div className="flex items-center justify-between sticky top-0 z-50 bg-white px-4 py-2">
+      <div className="flex items-center justify-between sticky top-0 z-50 bg-white py-2">
         <Link href="/dashboard" className="flex items-center">
           <ChevronLeft className="w-10 h-10 p-1.5" />
           <h2 className="text-base lg:text-lg font-semibold">Chat</h2>

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import Echo from "./echo";
 import useEcho from "@/hooks/use-echo";
 
@@ -23,7 +23,6 @@ const EchoListener = () => {
           !openEcho &&
           (transcript.includes("hey echo") || transcript.includes("echo"))
         ) {
-          console.log("Trigger word detected!");
           setOpenEcho(true);
           recognition.stop();
           return;
@@ -37,14 +36,6 @@ const EchoListener = () => {
         console.error("Microphone access denied");
       }
       recognition.stop();
-    };
-
-    recognition.onstart = () => {
-      console.log("Speech recognition started");
-    };
-
-    recognition.onend = () => {
-      console.log("Speech recognition ended");
     };
 
     try {
