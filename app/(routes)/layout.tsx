@@ -1,4 +1,3 @@
-import { Toaster } from "@/components/ui/sonner";
 
 export default function RoutesLayout({
   children,
@@ -9,7 +8,6 @@ export default function RoutesLayout({
     <div className="bg-white dark:bg-gray-900 w-full h-full flex">
       <main className="w-full h-full max-w-lg mx-auto flex flex-col justify-end">
         {children}
-        <Toaster />
       </main>
     </div>
   );
