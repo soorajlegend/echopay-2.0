@@ -122,6 +122,23 @@ const Echo = () => {
   const startRecording = async () => {
     try {
       // Request microphone access
+      if ("speechSynthesis" in window) {
+        // Cancel any ongoing speech
+        window.speechSynthesis.cancel();
+
+        const greeting = new SpeechSynthesisUtterance("Hi");
+        greeting.lang = "en-US";
+        greeting.rate = 1;
+        greeting.pitch = 1;
+        greeting.volume = 1;
+
+        // Wait for greeting to finish before starting recording
+        await new Promise((resolve) => {
+          greeting.onend = resolve;
+          window.speechSynthesis.speak(greeting);
+        });
+      }
+
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       streamRef.current = stream;
 
