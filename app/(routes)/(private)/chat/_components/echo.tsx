@@ -12,12 +12,12 @@ declare global {
   }
 }
 
-interface RecorderProps {
+interface EchoProps {
   isOpen: boolean;
   setIsOpen: (value: boolean) => void;
 }
 
-const Echo = ({ isOpen, setIsOpen }: RecorderProps) => {
+const Echo = ({ isOpen, setIsOpen }: EchoProps) => {
   const [isRecording, setIsRecording] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [visualizerData, setVisualizerData] = useState<number[]>([]);
@@ -222,7 +222,7 @@ const Echo = ({ isOpen, setIsOpen }: RecorderProps) => {
   };
 
   return (
-    <Drawer>
+    <Drawer open={isOpen} onClose={() => setIsOpen(false)}>
       <DrawerContent className="h-full w-full">
         <div className="flex-1 flex flex-col items-center">
           <div className="flex-1 flex flex-col items-center justify-center w-full max-w-lg mx-auto">
