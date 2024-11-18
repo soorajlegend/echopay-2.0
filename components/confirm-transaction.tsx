@@ -54,11 +54,15 @@ const ConfirmTransaction = ({
   }
 
   const createTransaction = async () => {
+    if (!info) {
+      return toast.error("Please login to continue");
+    }
+
     setIsLoading(true);
     const response = await axios.post(
-      "https://fintech-gpt.onrender.com/user/transfer",
+      "https://echo-pay.onrender.com/api/transfer",
       {
-        sender: 2,
+        sender: info.phone,
         receiver: cleanPhoneNumber(beneficiary.acc_num),
         amount: data.amount,
         narration: data.description,
@@ -81,6 +85,9 @@ const ConfirmTransaction = ({
         closeRef.current.click();
       }
       setNewTransaction(null);
+    } else {
+      toast.error("Something went wrong");
+      setIsLoading(false);
     }
 
     setIsLoading(false);
@@ -123,25 +130,28 @@ const ConfirmTransaction = ({
                 onComplete={createTransaction}
                 value={password}
                 setValue={setPassword}
+                disabled={isLoading}
               />
             </Card>
           </div>
         )}
 
-        <div className="flex justify-between gap-3 w-full py-3 max-w-md mx-auto px-3 lg:px-0">
-          <DrawerClose
-            disabled={isLoading}
-            onClick={() => setNewTransaction(null)}
-          >
-            <Button disabled={isLoading} ref={closeRef} variant="ghost">
-              Cancel
+        {!showPinInput && (
+          <div className="flex justify-between gap-3 w-full py-3 max-w-md mx-auto px-3 lg:px-0">
+            <DrawerClose
+              disabled={isLoading}
+              onClick={() => setNewTransaction(null)}
+            >
+              <Button disabled={isLoading} ref={closeRef} variant="ghost">
+                Cancel
+              </Button>
+            </DrawerClose>
+            <Button onClick={() => setShowPinInput(true)} disabled={isLoading}>
+              {isLoading ? "Loading..." : "Cornfirm"}
+              {isLoading && <Loader className="w-6 h-6 animate-spin ml-2" />}
             </Button>
-          </DrawerClose>
-          <Button onClick={() => setShowPinInput(true)} disabled={isLoading}>
-            {isLoading ? "Loading..." : "Cornfirm"}
-            {isLoading && <Loader className="w-6 h-6 animate-spin ml-2" />}
-          </Button>
-        </div>
+          </div>
+        )}
       </DrawerContent>
     </Drawer>
   );
