@@ -59,6 +59,7 @@ const ConfirmTransaction = ({
     }
 
     if (isLoading) {
+      console.log("already loading");
       return;
     }
 
@@ -91,7 +92,6 @@ const ConfirmTransaction = ({
       setNewTransaction(null);
     } else {
       toast.error("Something went wrong");
-      setIsLoading(false);
     }
 
     setIsLoading(false);
@@ -112,14 +112,14 @@ const ConfirmTransaction = ({
               <Avatar className="w-10 h-10">
                 <AvatarImage src={beneficiary?.avatar} />
                 <AvatarFallback className="font-bold">
-                  {beneficiary?.acc_name[0]}
+                  {beneficiary.acc_name[0]}
                 </AvatarFallback>
               </Avatar>
               <div className="flex flex-1 flex-col gap-1">
                 <div className="text-sm font-bold text-gray-900">
-                  {beneficiary?.acc_name}
+                  {beneficiary.acc_name}
                 </div>
-                <div className="text-sm">{data?.description}</div>
+                <div className="text-sm">{data.description}</div>
               </div>
               <div className="text-base font-semibold px-2 text-rose-500">
                 ₦{data?.amount}
