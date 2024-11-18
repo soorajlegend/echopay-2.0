@@ -1,19 +1,16 @@
+"use client";
+import React from "react";
+import { useState } from "react";
+import axios from "axios";
+import { Inbox, Eye } from "lucide-react";
+import { InputWithIcon } from "@/components/ui/input-with-icon";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 
-"use client";	
-import React from 'react'
-import { useState } from 'react';
-import axios from 'axios';
-import { Inbox, Eye } from 'lucide-react'
-import { InputWithIcon } from '@/components/ui/input-with-icon'
-import { Label } from '@/components/ui/label'
-import { Button } from '@/components/ui/button';
-import { useRouter } from 'next/navigation';
+// routes can not have props except for params which are passed through the url
 
-interface LoginPageProps {
-  onClickSignUp: () => void;
-}
-
-const LoginPage = ({onClickSignUp}: LoginPageProps) => {
+const LoginPage = () => {
   const router = useRouter();
   const [phone, setPhone] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -61,7 +58,7 @@ const LoginPage = ({onClickSignUp}: LoginPageProps) => {
       </div>
 
       {error && <p className="text-red-500">{error}</p>}
-      <div className='w-full flex flex-col gap-3 items-start'>
+      <div className="w-full flex flex-col gap-3 items-start">
         <Label htmlFor="email" className="w-full text-left text-xl">
           Email
         </Label>
@@ -102,7 +99,7 @@ const LoginPage = ({onClickSignUp}: LoginPageProps) => {
           </div>
           <Button
             variant="link"
-            onClick={() => router.push("/signup")}
+            onClick={() => {}} // define the function you want
             className="text-[18px] font-medium py-[24px]"
           >
             Sign Up
