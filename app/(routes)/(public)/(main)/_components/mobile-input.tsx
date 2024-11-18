@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { InputWithIcon } from "@/components/ui/input-with-icon";
 import { PhoneCall } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input"
+import { Input } from "@/components/ui/input";
 import Link from "next/link";
 
 interface MobileInputProps {
@@ -20,8 +20,17 @@ interface MobileInputProps {
   stageChange: () => void;
 }
 
-const MobileInput = ({ mobile, name, email, setMobile, setName, setEmail, onProceed, isLoading, stageChange }: MobileInputProps) => {
-
+const MobileInput = ({
+  mobile,
+  name,
+  email,
+  setMobile,
+  setName,
+  setEmail,
+  onProceed,
+  isLoading,
+  stageChange,
+}: MobileInputProps) => {
   return (
     <div className="text-center relative w-full h-screen">
       <div className="w-full mt-[77px] mb-[88px]">
@@ -43,7 +52,6 @@ const MobileInput = ({ mobile, name, email, setMobile, setName, setEmail, onProc
         />
       </div>
 
-
       <div className="mt-4 w-full flex flex-col gap-3 items-start">
         <Label htmlFor="mobile" className="w-full text-left text-xl">
           Mobile
@@ -63,22 +71,22 @@ const MobileInput = ({ mobile, name, email, setMobile, setName, setEmail, onProc
           Email
         </Label>
         <Input
-        // icon={Inbox}
-        type="email"
-        id="email"
-        placeholder="Enter your email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
+          // icon={Inbox}
+          type="email"
+          id="email"
+          placeholder="Enter your email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
         />
       </div>
 
-
       <div className="absolte bottom0 mb32 w-full flex justify-center">
         <Button
-          className={` ${!mobile.length
+          className={` ${
+            !mobile.length
               ? "opacity-80 cursor-not-allowed hover:bg-none"
               : "bg-theme-primary hover:bg-[#0c2941]"
-            } mt-[48px] bottom-0 text-[18px] font-medium text-white w-full py-[24px]`}
+          } mt-[48px] bottom-0 text-[18px] font-medium text-white w-full py-[24px]`}
           onClick={onProceed}
           disabled={!mobile.length || isLoading}
         >
@@ -86,18 +94,18 @@ const MobileInput = ({ mobile, name, email, setMobile, setName, setEmail, onProc
         </Button>
       </div>
 
-
-      <div className='w-full flex justify-center items-center'>
-        <div className=''>
-        <p className="text-center w-full">
-          Don't have an account? 
-        </p>
+      <div className="w-full flex justify-center items-center">
+        <div className="">
+          <p className="text-center w-full">Don&apos;t have an account?</p>
         </div>
-        <Button 
-          variant="link" 
+        <Button
+          variant="link"
           onClick={stageChange}
-          className="text-[18px] font-medium py-[24px]">Sign in</Button>
-        </div>
+          className="text-[18px] font-medium py-[24px]"
+        >
+          Sign in
+        </Button>
+      </div>
     </div>
   );
 };

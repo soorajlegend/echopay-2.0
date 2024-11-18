@@ -16,10 +16,10 @@ import LanguageSelector from "@/components/language-selector";
 import { useRouter } from "next/navigation";
 import ExistingUserLogin from "@/components/ui/ExistingUserLogin";
 
-import { Inbox, Eye } from 'lucide-react'
-import { InputWithIcon } from '@/components/ui/input-with-icon'
-import { Label } from '@/components/ui/label'
-import { Button } from '@/components/ui/button';
+import { Inbox, Eye } from "lucide-react";
+import { InputWithIcon } from "@/components/ui/input-with-icon";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 
 const OnboardingPage = () => {
   const [stage, setStage] = useState(0);
@@ -198,17 +198,19 @@ const OnboardingPage = () => {
     }
   };
 
-   
   // sigin in function
   const handleSignIn = async () => {
     setIsLoading(true);
     setError("");
 
     try {
-      const response = await axios.post("https://echo-pay.onrender.com/api/login", {
-        phone,
-        password,
-      });
+      const response = await axios.post(
+        "https://echo-pay.onrender.com/api/login",
+        {
+          phone,
+          password,
+        }
+      );
 
       if (response.status === 200) {
         console.log("Login successful", response.data);
@@ -250,67 +252,87 @@ const OnboardingPage = () => {
         {stage === 4 && (
           <SlideContainer custom={stage}>
             <div>
-            <div className='p-4 h-screen w-full relative'>
-      <div className="w-full mt-[77px] mb-[88px]">
-        <h2 className="text-2xl font-medium text-start text-[#1A1A1A]">
-        Welcome Back!
-        </h2>
-        <p className='text-base text-start  mt-2'>Log in to your EchoPay account to access your funds and manage your finances</p>
-      </div>
+              <div className="p-4 h-screen w-full relative">
+                <div className="w-full mt-[77px] mb-[88px]">
+                  <h2 className="text-2xl font-medium text-start text-[#1A1A1A]">
+                    Welcome Back!
+                  </h2>
+                  <p className="text-base text-start  mt-2">
+                    Log in to your EchoPay account to access your funds and
+                    manage your finances
+                  </p>
+                </div>
 
-      <div className='w-full flex flex-col gap-3 items-start'>
-        <Label htmlFor="email" className="w-full text-left text-xl">
-          Email
-        </Label>
-        <InputWithIcon icon={Inbox} type="text" placeholder="Enter your phone number" value={phone} onChange={(e) => setPhone(e.target.value)} />
-      </div>
+                <div className="w-full flex flex-col gap-3 items-start">
+                  <Label htmlFor="email" className="w-full text-left text-xl">
+                    Email
+                  </Label>
+                  <InputWithIcon
+                    icon={Inbox}
+                    type="text"
+                    placeholder="Enter your phone number"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                  />
+                </div>
 
-      <div className='w-full flex  mt-6 flex-col gap-3 items-start'>
-        <Label htmlFor="password" className="w-full text-left text-xl">
-          Password
-        </Label>
-        <InputWithIcon icon={Eye} type="password" placeholder="Enter your password" value={password} onChange={(e) => setPassword(e.target.value)} />
-      </div>
+                <div className="w-full flex  mt-6 flex-col gap-3 items-start">
+                  <Label
+                    htmlFor="password"
+                    className="w-full text-left text-xl"
+                  >
+                    Password
+                  </Label>
+                  <InputWithIcon
+                    icon={Eye}
+                    type="password"
+                    placeholder="Enter your password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                </div>
 
-      <div className="w-full flex flex-col gap-8">  
-      <Button
-          className="mt-[48px] bottom-0 text-[18px] font-medium text-white w-full py-[24px]"
-          onClick={handleSignIn}
-          disabled={isLoading}
-        >
-          {isLoading ? "Signing in..." : "Sign In"}
-      </Button>
+                <div className="w-full flex flex-col gap-8">
+                  <Button
+                    className="mt-[48px] bottom-0 text-[18px] font-medium text-white w-full py-[24px]"
+                    onClick={handleSignIn}
+                    disabled={isLoading}
+                  >
+                    {isLoading ? "Signing in..." : "Sign In"}
+                  </Button>
 
-        <div className='w-full flex justify-center items-center'>
-        <div className=''>
-        <p className="text-center w-full">
-          Don't have an account? 
-        </p>
-        </div>
-        <Button 
-          variant="link" 
-          onClick={() => setStage(6)}
-          className="text-[18px] font-medium py-[24px]">Sign Up</Button>
-        </div>
-
-      </div>
-    </div>
+                  <div className="w-full flex justify-center items-center">
+                    <div className="">
+                      <p className="text-center w-full">
+                        Don&apos;t have an account?
+                      </p>
+                    </div>
+                    <Button
+                      variant="link"
+                      onClick={() => setStage(6)}
+                      className="text-[18px] font-medium py-[24px]"
+                    >
+                      Sign Up
+                    </Button>
+                  </div>
+                </div>
+              </div>
             </div>
           </SlideContainer>
         )}
 
         {/* language selector */}
-        { stage === 6 && (
+        {stage === 6 && (
           <SlideContainer custom={stage}>
-              <LanguageSelector
-                selectedLanguage={selectedLanguage}
-                setSelectedLanguage={setSelectedLanguage}
-                onContinue={() => setStage(10)}
-                />
+            <LanguageSelector
+              selectedLanguage={selectedLanguage}
+              setSelectedLanguage={setSelectedLanguage}
+              onContinue={() => setStage(10)}
+            />
           </SlideContainer>
         )}
 
-{/* 
+        {/* 
         {stage === 4 && (
           <SlideContainer custom={stage}>
             <LanguageSelector

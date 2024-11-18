@@ -13,30 +13,29 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-
 
 const features = [
   {
     image: "/arrow-up-down.svg",
     title: "Transfer",
-    url: "/transfer"
+    url: "/transfer",
   },
   {
     image: "/globe-02.svg",
     title: "Buy Data",
-    url: "/buy-data"
+    url: "/buy-data",
   },
   {
     image: "/invoice-01.svg",
     title: "Buy Airtime",
-    url: "buy-airtime"
+    url: "buy-airtime",
   },
   {
     image: "/coins-01.svg",
     title: "Get Loans",
-    url: "get-loan"
+    url: "get-loan",
   },
 ];
 
@@ -80,20 +79,25 @@ const DashboardView = () => {
       {/* {showPopup &&  ( */}
       <div className="mb-5">
         <Card className=" shadow-none">
-  <CardHeader>
-    <CardTitle className="border-b pb-[10px]">Verify Account</CardTitle>
-  </CardHeader>
-  <CardContent>
-    <p>To ensure the security of your account and enable full access to EchoPay's features, please complete the verification process</p>
-  </CardContent>
-  <CardFooter>
-    <Button 
-    onClick={navigateToKyc}
-     size="lg"
-     className="text-[18px] py-[24px] font-medium bg-[#003056] hover:bg-[#0c2941] text-[#FAFAFA] w-full"
-    >Verify</Button>
-  </CardFooter>
-</Card>
+          <CardHeader>
+            <CardTitle className="border-b pb-[10px]">Verify Account</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p>
+              To ensure the security of your account and enable full access to
+              EchoPay&apos;s features, please complete the verification process
+            </p>
+          </CardContent>
+          <CardFooter>
+            <Button
+              onClick={navigateToKyc}
+              size="lg"
+              className="text-[18px] py-[24px] font-medium bg-[#003056] hover:bg-[#0c2941] text-[#FAFAFA] w-full"
+            >
+              Verify
+            </Button>
+          </CardFooter>
+        </Card>
       </div>
       {/* )} */}
       <Link
@@ -287,9 +291,7 @@ const DashboardPage = () => {
 
   const { info } = useUserInfo();
 
-
   // const isVerified = info?.isVerified
-
 
   // useEffect(() => {
   //   // Simulating first visit check
@@ -367,13 +369,13 @@ const DashboardPage = () => {
               <div key={index} className="flex flex-col justify-between">
                 <div className="flex justify-center rounded-[8px] mb-[8px] items-center p-2 bg-[#FAFAFA] h-[64px]">
                   <Link href={feature.url}>
-                  <Image
-                    className=" h-[24px] w-[24px]"
-                    src={feature.image}
-                    alt={feature.title}
-                    width={12}
-                    height={12}
-                  />
+                    <Image
+                      className=" h-[24px] w-[24px]"
+                      src={feature.image}
+                      alt={feature.title}
+                      width={12}
+                      height={12}
+                    />
                   </Link>
                 </div>
                 <p className="text-[14px] font-medium text-[#1A1A1A]">
