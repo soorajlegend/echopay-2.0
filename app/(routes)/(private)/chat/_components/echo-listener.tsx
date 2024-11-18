@@ -1,18 +1,10 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Drawer, DrawerContent } from "@/components/ui/drawer";
-import Recorder from "./recorder";
+import Echo from "./echo";
 
-declare global {
-  interface Window {
-    SpeechRecognition: any;
-    webkitSpeechRecognition: any;
-  }
-}
-
-const Assistant = () => {
-  const [open, setOpen] = useState(false);
+const EchoListener = () => {
+  const [isOpen, setIsOpen] = useState(false);
   useEffect(() => {
     const recognition = new (window.SpeechRecognition ||
       window.webkitSpeechRecognition)();
@@ -27,8 +19,7 @@ const Assistant = () => {
 
         if (transcript.includes("hey echo") || transcript.includes("echo")) {
           console.log("Trigger word detected!"); // Debug trigger detection
-          alert("Trigger word detected!");
-          setOpen(true);
+          setIsOpen(true);
           recognition.stop();
         }
       }
@@ -39,7 +30,7 @@ const Assistant = () => {
       if (event.error === "not-allowed") {
         console.error("Microphone access denied");
       } else {
-        if (!open) {
+        if (!isOpen) {
           recognition.stop();
           setTimeout(() => {
             console.log("Attempting to restart recognition..."); // Debug restart attempts
@@ -55,13 +46,13 @@ const Assistant = () => {
 
     recognition.onend = () => {
       console.log("Speech recognition ended"); // Debug when recognition ends
-      if (!open) {
+      if (!isOpen) {
         console.log("Restarting recognition..."); // Debug restart
         recognition.start();
       }
     };
 
-    if (!open) {
+    if (!isOpen) {
       try {
         recognition.start();
       } catch (err) {
@@ -72,15 +63,11 @@ const Assistant = () => {
     return () => {
       recognition.stop();
     };
-  }, [open]);
+  }, [isOpen]);
 
-  return (
-    <Drawer open={open} onClose={() => setOpen(false)}>
-      <DrawerContent>
-        <Recorder isDrawer isOpen={open} />
-      </DrawerContent>
-    </Drawer>
-  );
+  if (!isOpen) return null;
+
+  return <Echo isOpen={isOpen} setIsOpen={setIsOpen} />;
 };
 
-export default Assistant;
+export default EchoListener;
