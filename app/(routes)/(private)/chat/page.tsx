@@ -9,7 +9,7 @@ import axios from "axios";
 import useChat from "@/hooks/use-chat";
 import ConfirmTransaction from "@/components/confirm-transaction";
 import useBeneficiary from "@/hooks/use-beneficiary";
-import { AudioLines, ChevronLeft } from "lucide-react";
+import { AudioLines, ChevronLeft, RefreshCw } from "lucide-react";
 import Link from "next/link";
 import Chart, { ChartType } from "./_components/chart";
 import useTransaction from "@/hooks/use-transaction";
@@ -20,6 +20,8 @@ import useUserInfo from "@/hooks/use-userinfo";
 const ChatPage = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [newMessage, setNewMessage] = useState("");
+  const [lastAttemptedMessage, setLastAttemptedMessage] = useState("");
+  const [showRetry, setShowRetry] = useState(false);
 
   const [isLoading, setIsLoading] = useState(false);
   const [newTransaction, setNewTransaction] =
@@ -48,12 +50,21 @@ const ChatPage = () => {
   // }, [newTransaction]);
 
   const handleSubmit = async () => {
-    if (!newMessage) return;
+    let messageToSend = newMessage;
+    const lastMessage = chats[chats.length - 1];
+
+    if (lastMessage.role === "user") {
+      messageToSend = lastAttemptedMessage;
+    }
+
+    if (!messageToSend) return;
 
     const history = [...chats];
     setIsLoading(true);
+    setShowRetry(false);
 
-    const filteredPrompt = newMessage;
+    const filteredPrompt = messageToSend;
+    setLastAttemptedMessage(messageToSend);
 
     const userMessage: Chat = {
       id: nanoid(),
@@ -107,6 +118,15 @@ const ChatPage = () => {
       const response = await axios.request(config);
       const jsonData = JSON.parse(response.data);
 
+      if (
+        !jsonData.message &&
+        !jsonData.newTransaction &&
+        !jsonData.transactionChart
+      ) {
+        setShowRetry(true);
+        return;
+      }
+
       if (jsonData.newTransaction) {
         setNewTransaction(jsonData.newTransaction);
       }
@@ -126,6 +146,7 @@ const ChatPage = () => {
       }
     } catch (error) {
       console.error("API request failed:", error);
+      setShowRetry(true);
     } finally {
       setIsLoading(false);
     }
@@ -156,6 +177,18 @@ const ChatPage = () => {
             <div className="w-2 h-2 rounded-full bg-gray-500 animate-bounce [animation-delay:-0.3s]"></div>
             <div className="w-2 h-2 rounded-full bg-gray-500 animate-bounce [animation-delay:-0.15s]"></div>
             <div className="w-2 h-2 rounded-full bg-gray-500 animate-bounce"></div>
+          </div>
+        )}
+
+        {showRetry && (
+          <div className="flex items-center justify-center gap-2">
+            <button
+              onClick={handleSubmit}
+              className="flex items-center gap-2 px-4 py-2 text-sm text-white bg-blue-500 rounded-lg hover:bg-blue-600"
+            >
+              <RefreshCw className="w-4 h-4" />
+              Retry
+            </button>
           </div>
         )}
 
