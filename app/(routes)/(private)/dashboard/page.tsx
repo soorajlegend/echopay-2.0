@@ -21,7 +21,7 @@ const features = [
   {
     image: "/arrow-up-down.svg",
     title: "Transfer",
-    url: "/transaction"
+    url: "/transfer"
   },
   {
     image: "/globe-02.svg",
