@@ -40,7 +40,7 @@ const ChatItem = ({ data, isLast }: Chatcontent) => {
     return;
   }
 
-  const isAssistant = data.role === "model";
+  const isAssistant = data.role === "assistant";
 
   return (
     <div
@@ -67,7 +67,7 @@ const ChatItem = ({ data, isLast }: Chatcontent) => {
             "flex flex-row gap-3 lg:gap-2 w-full relative mt-0 p-1"
           )}
         >
-          {data.role === "model" && (
+          {data.role === "assistant" && (
             <Avatar
               className={cn("w-9 h-9 aspect-square dark:bg-gray-900/40 ")}
             >
