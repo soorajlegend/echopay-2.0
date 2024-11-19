@@ -90,7 +90,7 @@ const ChatPage = () => {
 
     const messages: ChatStructure[] = [
       ...history.map((chat) => ({
-        role: chat.role,
+        role: chat.role as "user" | "assistant",
         content: `${chat.content}`,
       })),
       {
@@ -114,7 +114,7 @@ const ChatPage = () => {
           )
         ),
         name: user.fullname || "",
-        balance: user.balance || 0,
+        balance: Number(user.balance) || 0,
       };
 
       // const config = {
