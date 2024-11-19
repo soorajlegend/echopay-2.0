@@ -21,7 +21,7 @@ export default function RootLayout({
         className={`${montserrat.className}  antialiased bg-white dark:bg-gray-900`}
       >
         {children}
-        <Toaster />
+        <Toaster position="top-center" />
       </body>
     </html>
   );

@@ -18,22 +18,7 @@ interface UserInfo {
 const useUserInfo = create(
   persist<UserInfo>(
     (set, get) => ({
-      info: {
-        id: 2,
-        fullname: "suraj muhammad",
-        email: "soorajwizard01@gmail.com",
-        phone: "08082905659",
-        password:
-          "$2a$10$rQyXwCUS2wbconQiY0DFvOmsCjfCr8hU8Rquj9zy/74Br2OWi95A.",
-        pin: null,
-        balance: 0,
-        image: null,
-        status: 1,
-        language: "PG",
-        isVerified: false,
-        createdAt: "2024-11-17T14:41:46.000Z",
-        updatedAt: "2024-11-17T14:41:46.000Z",
-      },
+      info: null,
       setInfo: (data: UserType) => {
         set({ info: data });
       },

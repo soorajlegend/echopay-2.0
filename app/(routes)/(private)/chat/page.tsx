@@ -9,28 +9,30 @@ import axios from "axios";
 import useChat from "@/hooks/use-chat";
 import ConfirmTransaction from "@/components/confirm-transaction";
 import useBeneficiary from "@/hooks/use-beneficiary";
-import { AudioLines, ChevronLeft } from "lucide-react";
+import { AudioLines, ChevronLeft, RefreshCw } from "lucide-react";
 import Link from "next/link";
 import Chart, { ChartType } from "./_components/chart";
 import useTransaction from "@/hooks/use-transaction";
 import Echo from "./_components/echo";
-
-const name = "Suraj Muhammad";
-const balance = 100000;
+import useEcho from "@/hooks/use-echo";
+import useUserInfo from "@/hooks/use-userinfo";
 
 const ChatPage = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [newMessage, setNewMessage] = useState("");
-  const [showEcho, setShowEcho] = useState(false);
-
-  const { chats, addChat } = useChat();
-  const { beneficiaries } = useBeneficiary();
-  const { transactions } = useTransaction();
+  const [lastAttemptedMessage, setLastAttemptedMessage] = useState("");
+  const [showRetry, setShowRetry] = useState(false);
 
   const [isLoading, setIsLoading] = useState(false);
   const [newTransaction, setNewTransaction] =
     useState<NewTransactionType | null>(null);
   const [chartType, setChartType] = useState<ChartType>(null);
+
+  const { info } = useUserInfo();
+  const { openEcho, setOpenEcho } = useEcho();
+  const { chats, addChat } = useChat();
+  const { beneficiaries } = useBeneficiary();
+  const { transactions } = useTransaction();
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -48,12 +50,21 @@ const ChatPage = () => {
   // }, [newTransaction]);
 
   const handleSubmit = async () => {
-    if (!newMessage) return;
+    let messageToSend = newMessage;
+    const lastMessage = chats[chats.length - 1];
+
+    if (lastMessage.role === "user") {
+      messageToSend = lastAttemptedMessage;
+    }
+
+    if (!messageToSend) return;
 
     const history = [...chats];
     setIsLoading(true);
+    setShowRetry(false);
 
-    const filteredPrompt = newMessage;
+    const filteredPrompt = messageToSend;
+    setLastAttemptedMessage(messageToSend);
 
     const userMessage: Chat = {
       id: nanoid(),
@@ -90,8 +101,8 @@ const ChatPage = () => {
               } - NGN${t.amount} - ${t.date} |`
           )
         ),
-        name,
-        balance,
+        name: info?.fullname,
+        balance: info?.balance,
       });
 
       const config = {
@@ -106,6 +117,15 @@ const ChatPage = () => {
 
       const response = await axios.request(config);
       const jsonData = JSON.parse(response.data);
+
+      if (
+        !jsonData.message &&
+        !jsonData.newTransaction &&
+        !jsonData.transactionChart
+      ) {
+        setShowRetry(true);
+        return;
+      }
 
       if (jsonData.newTransaction) {
         setNewTransaction(jsonData.newTransaction);
@@ -124,10 +144,9 @@ const ChatPage = () => {
       if (jsonData.transactionChart) {
         setChartType("TRANSACTIONS");
       }
-
-      console.log(jsonData);
     } catch (error) {
       console.error("API request failed:", error);
+      setShowRetry(true);
     } finally {
       setIsLoading(false);
     }
@@ -135,12 +154,12 @@ const ChatPage = () => {
 
   return (
     <div className="relative flex flex-col w-full h-screen p-4 pt-0">
-      <div className="flex items-center justify-between sticky top-0 z-50 bg-white px-4 py-2">
+      <div className="flex items-center justify-between sticky top-0 z-50 bg-white py-2">
         <Link href="/dashboard" className="flex items-center">
           <ChevronLeft className="w-10 h-10 p-1.5" />
           <h2 className="text-base lg:text-lg font-semibold">Chat</h2>
         </Link>
-        <button onClick={() => setShowEcho(true)}>
+        <button onClick={() => setOpenEcho(true)}>
           <AudioLines className="w-10 h-10 p-1.5" />
         </button>
       </div>
@@ -161,6 +180,18 @@ const ChatPage = () => {
           </div>
         )}
 
+        {showRetry && (
+          <div className="flex items-center justify-center gap-2">
+            <button
+              onClick={handleSubmit}
+              className="flex items-center gap-2 px-4 py-2 text-sm text-white bg-blue-500 rounded-lg hover:bg-blue-600"
+            >
+              <RefreshCw className="w-4 h-4" />
+              Retry
+            </button>
+          </div>
+        )}
+
         <div ref={messagesEndRef} />
       </div>
 
@@ -178,7 +209,7 @@ const ChatPage = () => {
         setNewTransaction={setNewTransaction}
       />
       {chartType && <Chart type={chartType} setType={setChartType} />}
-      {showEcho && <Echo isOpen={showEcho} setIsOpen={setShowEcho} />}
+      {openEcho && <Echo />}
     </div>
   );
 };

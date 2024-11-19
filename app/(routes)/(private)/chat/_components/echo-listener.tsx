@@ -1,11 +1,12 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import Echo from "./echo";
+import useEcho from "@/hooks/use-echo";
 
 const EchoListener = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  
+  const { openEcho, setOpenEcho } = useEcho();
+
   useEffect(() => {
     const recognition = new (window.SpeechRecognition ||
     window.webkitSpeechRecognition)();
@@ -18,10 +19,13 @@ const EchoListener = () => {
         const transcript = event.results[i][0].transcript.toLowerCase();
         console.log("Heard:", transcript);
 
-        if (transcript.includes("hey echo") || transcript.includes("echo")) {
-          console.log("Trigger word detected!");
-          setIsOpen(true);
+        if (
+          !openEcho &&
+          (transcript.includes("hey echo") || transcript.includes("echo"))
+        ) {
+          setOpenEcho(true);
           recognition.stop();
+          return;
         }
       }
     };
@@ -30,36 +34,14 @@ const EchoListener = () => {
       console.log("Speech recognition error:", event.error);
       if (event.error === "not-allowed") {
         console.error("Microphone access denied");
-      } else {
-        recognition.stop();
-        setTimeout(() => {
-          console.log("Attempting to restart recognition...");
-          recognition.start();
-        }, 1000);
       }
-    };
-
-    recognition.onstart = () => {
-      console.log("Speech recognition started");
-    };
-
-    recognition.onend = () => {
-      console.log("Speech recognition ended");
-      // Always restart recognition unless there was an error
-      setTimeout(() => {
-        if (!recognition.error) {
-          console.log("Restarting recognition...");
-          try {
-            recognition.start();
-          } catch (err) {
-            console.error("Failed to restart recognition:", err);
-          }
-        }
-      }, 1000);
+      recognition.stop();
     };
 
     try {
-      recognition.start();
+      if (!openEcho) {
+        recognition.start();
+      }
     } catch (err) {
       console.error("Failed to start recognition:", err);
     }
@@ -67,11 +49,9 @@ const EchoListener = () => {
     return () => {
       recognition.stop();
     };
-  }, []); // Remove isOpen dependency
+  }, [openEcho]);
 
-  if (!isOpen) return null;
-
-  return <Echo isOpen={isOpen} setIsOpen={setIsOpen} />;
+  return <Echo />;
 };
 
 export default EchoListener;
