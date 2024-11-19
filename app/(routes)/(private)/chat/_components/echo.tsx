@@ -24,6 +24,7 @@ import { ChartType } from "./chart";
 import TransactionChart from "./transaction-chart";
 import ConfirmTransaction from "@/components/confirm-transaction";
 import { TTS } from "@/actions/voice";
+import { ChatStructure, EchoChat } from "@/actions/voice-chat";
 
 declare global {
   interface Window {
@@ -240,19 +241,12 @@ const Echo = () => {
     }
   };
 
-  const stopAndSendRecording = async () => {
+  const stopAndSendRecording = () => {
     if (isRecording) {
-      // Stop speech recognition
       if (recognitionRef.current) {
         recognitionRef.current.stop();
       }
-
-      setIsRecording(false);
-      setIsPaused(false);
-      setInterimTranscript("");
-
-      // Send the transcript and automatically start new recording cycle
-      await sendTranscript();
+      return sendTranscript();
     }
   };
 
@@ -279,6 +273,7 @@ const Echo = () => {
 
   const sendTranscript = async () => {
     if (!transcript.trim()) {
+      toast.error("Please say something");
       return startRecording();
     }
 
@@ -287,10 +282,15 @@ const Echo = () => {
     }
 
     try {
+      setInterimTranscript("");
+      setIsRecording(false);
+      setIsPaused(false);
       setIsThinking(true);
-      const messages = [
+      const messages: ChatStructure[] = [
         ...[...chats, ...voiceChats].map((chat) => ({
-          role: chat.role === "model" ? "assistant" : "user",
+          role: (chat.role === "model" ? "assistant" : "user") as
+            | "user"
+            | "assistant",
           content: `${chat.content}`,
         })),
         {
@@ -299,7 +299,7 @@ const Echo = () => {
         },
       ];
 
-      const data = JSON.stringify({
+      const data = {
         messages,
         beneficiaries: JSON.stringify(
           beneficiaries.map((b) => `${b.acc_name} - ${b.id} |`)
@@ -313,22 +313,27 @@ const Echo = () => {
           )
         ),
         name: info.fullname,
-        balance: info.balance,
-      });
-
-      const config = {
-        method: "post",
-        maxBodyLength: Infinity,
-        url: "https://raj-assistant-api.vercel.app/api/echopay-models/voice",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        data: data,
+        balance: info.balance | 0,
       };
 
-      const response = await axios.request(config);
-      const jsonData = JSON.parse(response.data);
+      const response = await EchoChat(data);
 
+      // const config = {
+      //   method: "post",
+      //   maxBodyLength: Infinity,
+      //   url: "https://raj-assistant-api.vercel.app/api/echopay-models/voice",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //   },
+      //   data: data,
+      // };
+
+      if (!response) {
+        return toast.error("Something went wrong");
+      }
+
+      // const response = await axios.request(config);
+      const jsonData = JSON.parse(response);
       setIsThinking(false);
 
       if (jsonData.newTransaction) {
