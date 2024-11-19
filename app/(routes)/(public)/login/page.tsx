@@ -99,7 +99,7 @@ const LoginPage = () => {
           </div>
           <Button
             variant="link"
-            onClick={() => {}} // define the function you want
+            onClick={() => {}} 
             className="text-[18px] font-medium py-[24px]"
           >
             Sign Up
