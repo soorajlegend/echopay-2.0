@@ -26,7 +26,6 @@ import ConfirmTransaction from "@/components/confirm-transaction";
 import { TTS } from "@/actions/voice";
 import { ChatStructure, EchoVoiceChat } from "@/actions/voice-chat";
 import { owner } from "@/store";
-import { EchoTextChat } from "@/actions/text-chat";
 
 declare global {
   interface Window {
@@ -272,7 +271,7 @@ const Echo = () => {
           balance: Number(user.balance) || 0,
         };
 
-        const response = await EchoTextChat(data);
+        const response = await EchoVoiceChat(data);
 
         console.log(data, response);
 
