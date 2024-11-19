@@ -78,7 +78,8 @@ const ChatPage = () => {
 
     const messages: ChatStructure[] = [
       ...history.map((chat) => ({
-        role: chat.role as "user" | "assistant",
+        role:
+          chat.role === "user" ? "user" : ("assistant" as "user" | "assistant"),
         content: chat.content,
       })),
       {
@@ -112,6 +113,8 @@ const ChatPage = () => {
       }
 
       const jsonData = JSON.parse(response);
+
+      console.log(data, response);
 
       if (
         !jsonData.message &&

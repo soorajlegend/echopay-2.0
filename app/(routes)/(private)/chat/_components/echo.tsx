@@ -241,7 +241,10 @@ const Echo = () => {
       try {
         const messages: ChatStructure[] = [
           ...[...chats, ...voiceChats].map((chat) => ({
-            role: chat.role,
+            role:
+              chat.role === "user"
+                ? "user"
+                : ("assistant" as "user" | "assistant"),
             content: `${chat.content}`,
           })),
           {
@@ -270,6 +273,8 @@ const Echo = () => {
         };
 
         const response = await EchoTextChat(data);
+
+        console.log(data, response);
 
         if (!response) {
           throw new Error("No response received");
