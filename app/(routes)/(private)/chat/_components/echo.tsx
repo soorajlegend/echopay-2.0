@@ -25,6 +25,7 @@ import TransactionChart from "./transaction-chart";
 import ConfirmTransaction from "@/components/confirm-transaction";
 import { TTS } from "@/actions/voice";
 import { ChatStructure, EchoChat } from "@/actions/voice-chat";
+import { owner } from "@/store";
 
 declare global {
   interface Window {
@@ -89,10 +90,10 @@ const Echo = () => {
   };
 
   useEffect(() => {
-    if (isSpeaking) {
+    if (openEcho) {
       speak("Hello Suraj welcome to echopay");
     }
-  }, []);
+  }, [openEcho]);
 
   useEffect(() => {
     if (openEcho) {
@@ -277,8 +278,11 @@ const Echo = () => {
       return startRecording();
     }
 
-    if (!info) {
-      return toast.error("Unauthorized");
+    const user = info || owner;
+
+    if (!user) {
+      toast.error("Unauthorized");
+      return;
     }
 
     try {
@@ -310,8 +314,8 @@ const Echo = () => {
               } - NGN${t.amount} - ${t.date} |`
           )
         ),
-        name: info.fullname,
-        balance: info.balance | 0,
+        name: user.fullname,
+        balance: Number(user.balance) || 0,
       };
 
       const response = await EchoChat(data);
