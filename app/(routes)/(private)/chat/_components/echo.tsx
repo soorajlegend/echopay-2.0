@@ -138,8 +138,7 @@ const Echo = () => {
 
   const startRecording = async () => {
     try {
-      await speak("Hi");
-
+      // await speak("Hi");
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       streamRef.current = stream;
 
