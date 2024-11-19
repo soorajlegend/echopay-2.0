@@ -113,8 +113,8 @@ const ChatPage = () => {
               } - NGN${t.amount} - ${t.date} |`
           )
         ),
-        name: info.fullname || "",
-        balance: info.balance || 0,
+        name: user.fullname || "",
+        balance: user.balance || 0,
       };
 
       // const config = {
