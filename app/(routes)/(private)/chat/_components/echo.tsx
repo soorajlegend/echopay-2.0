@@ -249,17 +249,19 @@ const Echo = () => {
       const data = {
         messages,
         beneficiaries: JSON.stringify(
-          beneficiaries.map((b) => `${b.acc_name} - ${b.id} |`)
+          beneficiaries?.map(
+            (b) => `${b?.acc_name || ""} - ${b?.id || ""} |`
+          ) || []
         ),
         transactions: JSON.stringify(
-          transactions.map(
-            (t) =>
-              `${t.isCredit ? t.senderName : t.receiverName} - ${
-                t.isCredit ? "Credit" : "Debit"
-              } - NGN${t.amount} - ${t.date} |`
-          )
+          transactions?.map((t) => {
+            if (!t) return "";
+            return `${t.isCredit ? t.senderName : t.receiverName} - ${
+              t.isCredit ? "Credit" : "Debit"
+            } - NGN${t.amount} - ${t.date} |`;
+          }) || []
         ),
-        name: user.fullname,
+        name: user.fullname || "",
         balance: Number(user.balance) || 0,
       };
 
@@ -306,7 +308,7 @@ const Echo = () => {
       setTranscript("");
     } catch (error) {
       console.error("Error sending transcript:", error);
-      toast.error(`Something went wrong. Please try again. ${error}`);
+      toast.error("Something went wrong. Please try again.");
       setIsThinking(false);
       setIsSpeaking(false);
       startRecording();
