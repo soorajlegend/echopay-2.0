@@ -323,6 +323,7 @@ const Echo = () => {
         setVisualizerData([]);
         setTranscript("");
         setIsProcessing(false);
+        setIsThinking(false);
       }
     } catch (error) {
       console.error("Error in stopAndSendRecording:", error);
