@@ -43,9 +43,8 @@ const Echo = () => {
   const [newTransaction, setNewTransaction] =
     useState<NewTransactionType | null>(null);
   const [isSpeaking, setIsSpeaking] = useState(false);
-  const [isThinking, startThinking] = useTransition();
+  const [isThinking, setIsThinking] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [hasPermission, setHasPermission] = useState(false);
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
@@ -91,16 +90,16 @@ const Echo = () => {
     }
   };
 
-  useEffect(() => {
-    if (openEcho) {
-      speak("Hello Suraj");
-    }
-  }, [openEcho]);
+  // useEffect(() => {
+  //   if (openEcho) {
+  //     speak("Hello Suraj");
+  //   }
+  // }, [openEcho]);
 
   useEffect(() => {
     if (openEcho) {
       cleanupAudioResources();
-      checkPermissionAndStart();
+      startRecording();
     }
   }, [openEcho]);
 
@@ -116,22 +115,6 @@ const Echo = () => {
     }
     if (streamRef.current) {
       streamRef.current.getTracks().forEach((track) => track.stop());
-    }
-    if (animationFrameRef.current) {
-      cancelAnimationFrame(animationFrameRef.current);
-    }
-  };
-
-  const checkPermissionAndStart = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      stream.getTracks().forEach((track) => track.stop());
-      setHasPermission(true);
-      startRecording();
-    } catch (err) {
-      console.error("Microphone permission denied:", err);
-      toast.error("Could not access microphone. Please check permissions.");
-      setHasPermission(false);
     }
   };
 
@@ -159,13 +142,8 @@ const Echo = () => {
 
       recognitionRef.current.onerror = (event: any) => {
         console.error("Speech recognition error:", event.error);
-        if (event.error === "not-allowed") {
-          toast.error("Microphone access denied. Please check permissions.");
-        } else {
-          toast.error("Speech recognition error. Please try again.");
-        }
+        toast.error("Speech recognition error. Please try again.");
         setIsRecording(false);
-        cleanupAudioResources();
       };
     }
 
@@ -175,11 +153,6 @@ const Echo = () => {
   }, []);
 
   const startRecording = async () => {
-    if (!hasPermission) {
-      await checkPermissionAndStart();
-      return;
-    }
-
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       streamRef.current = stream;
@@ -193,7 +166,7 @@ const Echo = () => {
       if (recognitionRef.current) {
         recognitionRef.current.start();
       } else {
-        toast.error("Speech recognition not supported in this browser");
+        toast.error("Speech recognition not supported");
         return;
       }
 
@@ -201,9 +174,8 @@ const Echo = () => {
       setTranscript("");
       visualize();
     } catch (err) {
-      console.error("Error starting recording:", err);
-      toast.error("Could not start recording. Please try again.");
-      setIsRecording(false);
+      console.error("Error accessing microphone:", err);
+      toast.error("Could not access microphone. Please check permissions.");
     }
   };
 
@@ -213,9 +185,7 @@ const Echo = () => {
     const dataArray = new Uint8Array(analyserRef.current.frequencyBinCount);
 
     const draw = () => {
-      if (!analyserRef.current) return;
-
-      analyserRef.current.getByteFrequencyData(dataArray);
+      analyserRef.current!.getByteFrequencyData(dataArray);
       const normalizedData = Array.from(dataArray)
         .slice(0, 50)
         .map((value) => value / 255)
@@ -251,9 +221,10 @@ const Echo = () => {
         recognitionRef.current.stop();
       }
 
-      const finalTranscript = transcript.trim();
+      const finalTranscript =
+        transcript.trim() || "let me know if you can hear me";
       if (!finalTranscript) {
-        toast.error("No speech detected. Please try again.");
+        toast.error("Please say something");
         return startRecording();
       }
 
@@ -265,86 +236,94 @@ const Echo = () => {
 
       setIsRecording(false);
       setIsPaused(false);
+      setIsThinking(true);
 
-      const messages: ChatStructure[] = [
-        ...[...chats, ...voiceChats].map((chat) => ({
-          role: chat.role,
-          content: `${chat.content}`,
-        })),
-        {
-          role: "user",
-          content: finalTranscript,
-        },
-      ];
+      try {
+        const messages: ChatStructure[] = [
+          ...[...chats, ...voiceChats].map((chat) => ({
+            role: chat.role,
+            content: `${chat.content}`,
+          })),
+          {
+            role: "user",
+            content: finalTranscript,
+          },
+        ];
 
-      const data = {
-        messages,
-        beneficiaries: JSON.stringify(
-          beneficiaries?.map(
-            (b) => `${b?.acc_name || ""} - ${b?.id || ""} |`
-          ) || []
-        ),
-        transactions: JSON.stringify(
-          transactions?.map((t) => {
-            if (!t) return "";
-            return `${t.isCredit ? t.senderName : t.receiverName} - ${
-              t.isCredit ? "Credit" : "Debit"
-            } - NGN${t.amount} - ${t.date} |`;
-          }) || []
-        ),
-        name: user.fullname || "",
-        balance: Number(user.balance) || 0,
-      };
+        const data = {
+          messages,
+          beneficiaries: JSON.stringify(
+            beneficiaries?.map(
+              (b) => `${b?.acc_name || ""} - ${b?.id || ""} |`
+            ) || []
+          ),
+          transactions: JSON.stringify(
+            transactions?.map((t) => {
+              if (!t) return "";
+              return `${t.isCredit ? t.senderName : t.receiverName} - ${
+                t.isCredit ? "Credit" : "Debit"
+              } - NGN${t.amount} - ${t.date} |`;
+            }) || []
+          ),
+          name: user.fullname || "",
+          balance: Number(user.balance) || 0,
+        };
 
-      startThinking(async () => {
-        try {
-          const response = await EchoTextChat(data);
+        const response = await EchoTextChat(data);
 
-          if (!response) {
-            toast.error("No response received from server");
-            throw new Error("No response received");
-          }
-
-          const jsonData = JSON.parse(response);
-
-          if (jsonData.newTransaction) {
-            setNewTransaction(jsonData.newTransaction);
-          }
-
-          if (jsonData.message) {
-            setIsSpeaking(true);
-            await speak(jsonData.message);
-            setIsSpeaking(false);
-
-            const userMessage: Chat = {
-              id: nanoid(),
-              role: "user",
-              content: finalTranscript,
-              createdAt: new Date(),
-            };
-            const modelMessage: Chat = {
-              id: nanoid(),
-              role: "assistant",
-              content: jsonData.message,
-              createdAt: new Date(),
-            };
-
-            setVoiceChats((state) => [...state, userMessage, modelMessage]);
-          }
-
-          if (jsonData.transactionChart) {
-            setChartType("TRANSACTIONS");
-          }
-        } catch (error) {
-          console.error("Error processing response:", error);
-          toast.error("Failed to process response. Please try again.");
-          startRecording();
-        } finally {
-          setVisualizerData([]);
-          setTranscript("");
-          setIsProcessing(false);
+        if (!response) {
+          throw new Error("No response received");
         }
-      });
+
+        const jsonData = JSON.parse(response);
+
+        if (
+          !jsonData.message &&
+          !jsonData.newTransaction &&
+          !jsonData.transactionChart
+        ) {
+          throw new Error("Invalid response format");
+        }
+
+        if (jsonData.newTransaction) {
+          setNewTransaction(jsonData.newTransaction);
+        }
+
+        if (jsonData.message) {
+          // setIsSpeaking(true);
+          // await speak(jsonData.message);
+          // setIsSpeaking(false);
+
+          toast.success(jsonData.message);
+
+          const userMessage: Chat = {
+            id: nanoid(),
+            role: "user",
+            content: finalTranscript,
+            createdAt: new Date(),
+          };
+          const modelMessage: Chat = {
+            id: nanoid(),
+            role: "assistant",
+            content: jsonData.message,
+            createdAt: new Date(),
+          };
+
+          setVoiceChats((state) => [...state, userMessage, modelMessage]);
+        }
+
+        if (jsonData.transactionChart) {
+          setChartType("TRANSACTIONS");
+        }
+      } catch (error) {
+        alert(`Error processing response: ${error}`);
+        toast.error("Failed to process response. Please try again.");
+        startRecording();
+      } finally {
+        setVisualizerData([]);
+        setTranscript("");
+        setIsProcessing(false);
+      }
     } catch (error) {
       console.error("Error in stopAndSendRecording:", error);
       toast.error("Something went wrong. Please try again.");
@@ -464,4 +443,5 @@ const Echo = () => {
   );
 };
 
+export default Echo;
 export default Echo;
