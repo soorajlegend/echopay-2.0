@@ -294,11 +294,9 @@ const Echo = () => {
         }
 
         if (jsonData.message) {
-          // setIsSpeaking(true);
-          // await speak(jsonData.message);
-          // setIsSpeaking(false);
-
-          toast.success(jsonData.message);
+          setIsSpeaking(true);
+          await speak(jsonData.message);
+          setIsSpeaking(false);
 
           const userMessage: Chat = {
             id: nanoid(),
