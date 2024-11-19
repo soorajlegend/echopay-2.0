@@ -327,17 +327,6 @@ const OnboardingPage = () => {
           </SlideContainer>
         )}
 
-        {/* 
-        {stage === 4 && (
-          <SlideContainer custom={stage}>
-            <LanguageSelector
-              selectedLanguage={selectedLanguage}
-              setSelectedLanguage={setSelectedLanguage}
-              onContinue={() => setStage(5)}
-            />
-          </SlideContainer>
-        )} */}
-
         {/* mobile input stage */}
 
         {stage === 10 && (
