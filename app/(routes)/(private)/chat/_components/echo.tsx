@@ -32,8 +32,8 @@ declare global {
   }
 }
 
-const SpeechRecognition =
-  window.webkitSpeechRecognition || window.SpeechRecognition;
+// const SpeechRecognition =
+//   window.webkitSpeechRecognition || window.SpeechRecognition;
 
 const Echo = () => {
   const [isRecording, setIsRecording] = useState(false);
