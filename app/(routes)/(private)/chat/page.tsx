@@ -127,11 +127,14 @@ const ChatPage = () => {
 
       const response = await EchoChatText(data);
 
+      console.log(response);
+
       if (!response) {
         return toast.error("Something went wrong");
       }
 
       const jsonData = JSON.parse(response);
+      console.log(jsonData);
 
       if (
         !jsonData.message &&
