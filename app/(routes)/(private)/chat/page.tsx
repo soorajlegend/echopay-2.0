@@ -127,7 +127,7 @@ const ChatPage = () => {
 
       const response = await EchoChatText(data);
 
-      console.log(response);
+      console.log(data, response);
 
       if (!response) {
         return toast.error("Something went wrong");
