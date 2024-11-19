@@ -66,6 +66,8 @@ const ChatPage = () => {
 
     if (!messageToSend) return;
 
+    console.log("messageToSend", messageToSend);
+
     const history = [...chats];
     setIsLoading(true);
     setShowRetry(false);
@@ -196,17 +198,18 @@ const ChatPage = () => {
           </div>
         )}
 
-        {showRetry && (
-          <div className="flex items-center justify-center gap-2">
-            <button
-              onClick={handleSubmit}
-              className="flex items-center gap-2 px-4 py-2 text-sm text-white bg-blue-500 rounded-lg hover:bg-blue-600"
-            >
-              <RefreshCw className="w-4 h-4" />
-              Retry
-            </button>
-          </div>
-        )}
+        {showRetry ||
+          (chats[chats.length - 1].role === "user" && (
+            <div className="flex items-center justify-center gap-2">
+              <button
+                onClick={handleSubmit}
+                className="flex items-center gap-2 px-4 py-2 text-sm text-white bg-blue-500 rounded-lg hover:bg-blue-600"
+              >
+                <RefreshCw className="w-4 h-4" />
+                Retry
+              </button>
+            </div>
+          ))}
 
         <div ref={messagesEndRef} />
       </div>
