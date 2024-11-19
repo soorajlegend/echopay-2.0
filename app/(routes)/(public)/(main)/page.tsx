@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import axios from "axios";
+import LoginPage from "../login/page";
 import useUserInfo from "@/hooks/use-userinfo";
 import MobileInput from "./_components/mobile-input";
 import SplashSlides from "./_components/splash-slides";
@@ -19,7 +20,6 @@ import { Inbox, Eye } from "lucide-react";
 import { InputWithIcon } from "@/components/ui/input-with-icon";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
 
 const OnboardingPage = () => {
   const [stage, setStage] = useState(0);
@@ -39,12 +39,22 @@ const OnboardingPage = () => {
   const [password, setPassword] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
+  const [isMounted, setIsMounted] = useState(false);
 
+ 
+  // const newUser = true;
 
   const router = useRouter();
   const { setInfo, info } = useUserInfo();
 
   useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+
+  useEffect(() => {
+    if (!isMounted) return;
+    console.log(info, "from useeffect")
     const timer1 = setTimeout(() => setZoomLogo(true), 2000);
     const timer2 = setTimeout(() => {
       setShowLogo(false);
@@ -59,7 +69,7 @@ const OnboardingPage = () => {
       clearTimeout(timer1);
       clearTimeout(timer2);
     };
-  }, []);
+  }, [isMounted]);
 
   const handleContinue = async () => {
     console.log("handleContinue called", stage);
@@ -85,7 +95,6 @@ const OnboardingPage = () => {
         }
       } catch (error) {
         console.error("Error sending OTP:", error);
-        toast.error("Failed to send OTP. Please try again.");
         setLoading(false);
       }
     } else {
@@ -107,9 +116,10 @@ const OnboardingPage = () => {
         }
       );
 
+      console.log(response.data.responseBody, "fom otp");
+
       if (response.status === 200) {
         setIsVerifying(false);
-        toast.success("OTP verified successfully.");
         setIsVerified(true);
         if (response.data.responseBody === null) {
           setIsNewUser(true);
@@ -126,7 +136,6 @@ const OnboardingPage = () => {
       }
     } catch (error) {
       setOtpError("Incorrect OTP. Please check and try again.");
-      toast.error("Incorrect OTP. Please check and try again.");
       console.error("Error during OTP verification:", error);
       setIsVerifying(false);
     }
@@ -144,7 +153,7 @@ const OnboardingPage = () => {
       );
 
       if (response.status === 200) {
-        toast.success("Registration successful.");
+        console.log("User registered successfully");
         console.log(response.data, "from register");
 
         // Store user info in Zustand
@@ -193,21 +202,6 @@ const OnboardingPage = () => {
       if (response.status === 200) {
         console.log("Login successful");
         console.log(response.data, " from login");
-        setInfo({
-          id: response.data.responseBody.id || "",
-          fullname: response.data.responseBody.fullname || "",
-          email: response.data.responseBody.email || "",
-          phone: response.data.responseBody.phone,
-          password: response.data.responseBody.language,
-          pin: response.data.responseBody.pin || null,
-          image: response.data.responseBody.image || "",
-          language: response.data.responseBody.language,
-          balance: Number(response.data.responseBody.balance) | 0,
-          isVerified: response.data.responseBody.isVerified,
-          createdAt: response.data.responseBody.createdAt || "",
-          updatedAt: response.data.responseBody.updatedAt || "",
-          status: response.data.responseBody.status || "",
-        });
         router.push("/dashboard"); // Redirect to dashboard
       } else {
         console.error("Login failed");
@@ -233,29 +227,12 @@ const OnboardingPage = () => {
 
       if (response.status === 200) {
         console.log("Login successful", response.data);
-        setInfo({
-          id: response.data.responseBody.id || "",
-          fullname: response.data.responseBody.fullname || "",
-          email: response.data.responseBody.email || "",
-          phone: response.data.responseBody.phone,
-          password: response.data.responseBody.language,
-          pin: response.data.responseBody.pin || null,
-          image: response.data.responseBody.image || "",
-          language: response.data.responseBody.language,
-          balance: Number(response.data.responseBody.balance) | 0,
-          isVerified: response.data.responseBody.isVerified,
-          createdAt: response.data.responseBody.createdAt || "",
-          updatedAt: response.data.responseBody.updatedAt || "",
-          status: response.data.responseBody.status || "",
-        });
         router.push("/dashboard"); // Redirect to dashboard
       } else {
         setError("Login failed. Please check your credentials.");
-        toast.error("Login failed. Please check your credentials.");
       }
     } catch (err) {
       setError("An error occurred while logging in. Please try again.");
-      toast.error("An error occurred while logging in. Please try again.");
       console.error("Error logging in:", err);
     } finally {
       setIsLoading(false);
