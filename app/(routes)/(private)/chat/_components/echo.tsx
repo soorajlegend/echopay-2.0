@@ -293,7 +293,7 @@ const Echo = () => {
         })),
         {
           role: "user",
-          content: `${transcript} respond in JSON format`,
+          content: `${transcript}`,
         },
       ];
 

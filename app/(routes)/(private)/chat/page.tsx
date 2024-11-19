@@ -95,7 +95,7 @@ const ChatPage = () => {
       })),
       {
         role: "user",
-        content: `${filteredPrompt} respond in JSON format`,
+        content: `${filteredPrompt}`,
       },
     ];
 
