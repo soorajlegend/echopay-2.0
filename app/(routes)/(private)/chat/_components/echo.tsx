@@ -1,6 +1,6 @@
 "use client";
 
-import React, { use, useEffect, useRef, useState } from "react";
+import React, { use, useEffect, useRef, useState, useTransition } from "react";
 import {
   Mic,
   Pause,
@@ -42,8 +42,8 @@ const Echo = () => {
   const [transcript, setTranscript] = useState("");
   const [newTransaction, setNewTransaction] =
     useState<NewTransactionType | null>(null);
-  const [isThinking, setIsThinking] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
+  const [isThinking, startThinking] = useTransition();
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
@@ -232,7 +232,7 @@ const Echo = () => {
 
     setIsRecording(false);
     setIsPaused(false);
-    setIsThinking(true);
+    // setIsThinking(true);
 
     try {
       const messages: ChatStructure[] = [
@@ -265,53 +265,58 @@ const Echo = () => {
         balance: Number(user.balance) || 0,
       };
 
-      const response = await EchoTextChat(data);
+      startThinking(async () => {
+        await EchoTextChat(data)
+          .then((response) => {
+            console.log(data);
+            alert(response);
 
-      alert(response);
+            if (!response) {
+              throw new Error("No response received");
+            }
 
-      if (!response) {
-        throw new Error("No response received");
-      }
+            const jsonData = JSON.parse(response);
+            // setIsThinking(false);
 
-      const jsonData = JSON.parse(response);
-      setIsThinking(false);
+            if (jsonData.newTransaction) {
+              setNewTransaction(jsonData.newTransaction);
+            }
 
-      if (jsonData.newTransaction) {
-        setNewTransaction(jsonData.newTransaction);
-      }
+            if (jsonData.message) {
+              setIsSpeaking(true);
+              speak(jsonData.message);
+              setIsSpeaking(false);
 
-      if (jsonData.message) {
-        setIsSpeaking(true);
-        await speak(jsonData.message);
-        setIsSpeaking(false);
+              const userMessage: Chat = {
+                id: nanoid(),
+                role: "user",
+                content: finalTranscript,
+                createdAt: new Date(),
+              };
+              const modelMessage: Chat = {
+                id: nanoid(),
+                role: "assistant",
+                content: jsonData.message,
+                createdAt: new Date(),
+              };
 
-        const userMessage: Chat = {
-          id: nanoid(),
-          role: "user",
-          content: finalTranscript,
-          createdAt: new Date(),
-        };
-        const modelMessage: Chat = {
-          id: nanoid(),
-          role: "assistant",
-          content: jsonData.message,
-          createdAt: new Date(),
-        };
+              setVoiceChats((state) => [...state, userMessage, modelMessage]);
+            }
 
-        setVoiceChats((state) => [...state, userMessage, modelMessage]);
-      }
-
-      if (jsonData.transactionChart) {
-        setChartType("TRANSACTIONS");
-      }
-
-      setVisualizerData([]);
-      setTranscript("");
+            if (jsonData.transactionChart) {
+              setChartType("TRANSACTIONS");
+            }
+          })
+          .finally(() => {
+            setVisualizerData([]);
+            setTranscript("");
+          });
+      });
     } catch (error) {
       console.error("Error sending transcript:", error);
       alert(error);
       toast.error("Something went wrong. Please try again.");
-      setIsThinking(false);
+      // setIsThinking(false);
       setIsSpeaking(false);
       startRecording();
     }
