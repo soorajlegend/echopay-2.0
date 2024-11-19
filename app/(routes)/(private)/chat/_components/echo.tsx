@@ -111,7 +111,7 @@ const Echo = () => {
       }
       startRecording();
     } else {
-      stopRecording();
+      stopAndSendRecording();
     }
   }, [openEcho]);
 
@@ -244,7 +244,7 @@ const Echo = () => {
     }
   };
 
-  const stopRecording = () => {
+  const stopAndSendRecording = () => {
     if (isRecording) {
       // Stop speech recognition
       if (recognitionRef.current) {
@@ -278,7 +278,7 @@ const Echo = () => {
     if (recognitionRef.current) {
       recognitionRef.current.stop();
     }
-    stopRecording();
+    stopAndSendRecording();
     setVisualizerData([]);
     setTranscript("");
     setInterimTranscript("");
@@ -461,7 +461,7 @@ const Echo = () => {
                 </button>
 
                 <button
-                  onClick={}
+                  onClick={stopAndSendRecording}
                   className="w-16 h-16 rounded-full bg-theme-primary hover:opacity-90 flex items-center justify-center aspect-square"
                 >
                   <SendHorizonal className="w-8 h-8 text-white" />
