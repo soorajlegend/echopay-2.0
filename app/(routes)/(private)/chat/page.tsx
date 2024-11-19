@@ -5,7 +5,6 @@ import { Chat, NewTransactionType } from "@/types";
 import React, { useEffect, useState, useRef } from "react";
 import { nanoid } from "nanoid";
 import ChatItem from "@/components/chat-item";
-import axios from "axios";
 import useChat from "@/hooks/use-chat";
 import ConfirmTransaction from "@/components/confirm-transaction";
 import useBeneficiary from "@/hooks/use-beneficiary";
@@ -16,6 +15,10 @@ import useTransaction from "@/hooks/use-transaction";
 import Echo from "./_components/echo";
 import useEcho from "@/hooks/use-echo";
 import useUserInfo from "@/hooks/use-userinfo";
+import { EchoTextChat } from "@/actions/text-chat";
+import { ChatStructure, EchoVoiceChat } from "@/actions/voice-chat";
+import { toast } from "sonner";
+import { owner } from "@/store";
 
 const ChatPage = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -42,53 +45,50 @@ const ChatPage = () => {
     scrollToBottom();
   }, [chats]);
 
-  // useEffect(() => {
-  //   if (newTransaction) {
-  //     // Reset transaction after handling
-  //     setNewTransaction(null);
-  //   }
-  // }, [newTransaction]);
-
   const handleSubmit = async () => {
-    let messageToSend = newMessage;
-    const lastMessage = chats[chats.length - 1];
+    // Get the message to send - either new message or last attempted message for retry
+    const messageToSend = showRetry ? lastAttemptedMessage : newMessage.trim();
 
-    if (lastMessage.role === "user") {
-      messageToSend = lastAttemptedMessage;
+    const user = info || owner;
+
+    if (!user) {
+      toast.error("Unauthorized");
+      return;
     }
 
-    if (!messageToSend) return;
+    if (!messageToSend) {
+      toast.error("Please enter a message");
+      return;
+    }
 
     const history = [...chats];
     setIsLoading(true);
     setShowRetry(false);
-
-    const filteredPrompt = messageToSend;
     setLastAttemptedMessage(messageToSend);
 
     const userMessage: Chat = {
       id: nanoid(),
       role: "user",
-      content: filteredPrompt,
+      content: messageToSend,
       createdAt: new Date(),
     };
 
     addChat(userMessage);
     setNewMessage("");
 
-    const messages = [
+    const messages: ChatStructure[] = [
       ...history.map((chat) => ({
-        role: chat.role === "model" ? "assistant" : "user",
-        content: `${chat.content}`,
+        role: chat.role as "user" | "assistant",
+        content: chat.content,
       })),
       {
         role: "user",
-        content: `${filteredPrompt}`,
+        content: messageToSend,
       },
     ];
 
     try {
-      const data = JSON.stringify({
+      const data = {
         messages,
         beneficiaries: JSON.stringify(
           beneficiaries.map((b) => `${b.acc_name} - ${b.id} |`)
@@ -101,30 +101,24 @@ const ChatPage = () => {
               } - NGN${t.amount} - ${t.date} |`
           )
         ),
-        name: info?.fullname,
-        balance: info?.balance,
-      });
-
-      const config = {
-        method: "post",
-        maxBodyLength: Infinity,
-        url: "https://raj-assistant-api.vercel.app/api/echopay-models/chat",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        data: data,
+        name: user.fullname || "",
+        balance: Number(user.balance) || 0,
       };
 
-      const response = await axios.request(config);
-      const jsonData = JSON.parse(response.data);
+      const response = await EchoVoiceChat(data);
+
+      if (!response) {
+        throw new Error("No response from server");
+      }
+
+      const jsonData = JSON.parse(response);
 
       if (
         !jsonData.message &&
         !jsonData.newTransaction &&
         !jsonData.transactionChart
       ) {
-        setShowRetry(true);
-        return;
+        throw new Error("Invalid response format");
       }
 
       if (jsonData.newTransaction) {
@@ -134,7 +128,7 @@ const ChatPage = () => {
       if (jsonData.message) {
         const modelMessage: Chat = {
           id: nanoid(),
-          role: "model",
+          role: "assistant",
           content: jsonData.message,
           createdAt: new Date(),
         };
@@ -147,6 +141,7 @@ const ChatPage = () => {
     } catch (error) {
       console.error("API request failed:", error);
       setShowRetry(true);
+      toast.error("Failed to send message. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -184,7 +179,8 @@ const ChatPage = () => {
           <div className="flex items-center justify-center gap-2">
             <button
               onClick={handleSubmit}
-              className="flex items-center gap-2 px-4 py-2 text-sm text-white bg-blue-500 rounded-lg hover:bg-blue-600"
+              disabled={isLoading}
+              className="flex items-center gap-2 px-4 py-2 text-sm text-white bg-blue-500 rounded-lg hover:bg-blue-600 disabled:opacity-50"
             >
               <RefreshCw className="w-4 h-4" />
               Retry

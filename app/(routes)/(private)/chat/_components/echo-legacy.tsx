@@ -295,7 +295,7 @@ const Echo = () => {
       setIsThinking(true);
       const messages = [
         ...[...chats, ...voiceChats].map((chat) => ({
-          role: chat.role === "model" ? "assistant" : "user",
+          role: chat.role,
           content: `${chat.content}`,
         })),
         {
@@ -354,7 +354,7 @@ const Echo = () => {
         };
         const modelMessage: Chat = {
           id: nanoid(),
-          role: "model",
+          role: "assistant",
           content: jsonData.message,
           createdAt: new Date(),
         };
