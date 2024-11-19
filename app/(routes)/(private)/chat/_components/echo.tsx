@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { use, useEffect, useRef, useState } from "react";
 import {
   Mic,
   Pause,
@@ -31,6 +31,9 @@ declare global {
     webkitSpeechRecognition: any;
   }
 }
+
+const SpeechRecognition =
+  window.webkitSpeechRecognition || window.SpeechRecognition;
 
 const Echo = () => {
   const [isRecording, setIsRecording] = useState(false);
@@ -66,11 +69,13 @@ const Echo = () => {
 
       return new Promise<void>((resolve) => {
         audio.onended = () => {
+          startRecording();
           resolve();
         };
 
         audio.onerror = (error) => {
           console.error("Error playing audio:", error);
+          startRecording();
           resolve();
         };
 
@@ -83,6 +88,12 @@ const Echo = () => {
       console.error("Error in text-to-speech:", error);
     }
   };
+
+  useEffect(() => {
+    if (isSpeaking) {
+      speak("Hello Suraj welcome to echopay");
+    }
+  }, []);
 
   useEffect(() => {
     if (openEcho) {
@@ -275,7 +286,9 @@ const Echo = () => {
   };
 
   const sendTranscript = async () => {
-    if (!transcript.trim()) return;
+    if (!transcript.trim()) {
+      return startRecording();
+    }
 
     if (!info) {
       return toast.error("Unauthorized");
@@ -283,7 +296,6 @@ const Echo = () => {
 
     try {
       setIsThinking(true);
-
       const messages = [
         ...[...chats, ...voiceChats].map((chat) => ({
           role: chat.role === "model" ? "assistant" : "user",
@@ -449,7 +461,7 @@ const Echo = () => {
                 </button>
 
                 <button
-                  onClick={stopRecording}
+                  onClick={}
                   className="w-16 h-16 rounded-full bg-theme-primary hover:opacity-90 flex items-center justify-center aspect-square"
                 >
                   <SendHorizonal className="w-8 h-8 text-white" />
