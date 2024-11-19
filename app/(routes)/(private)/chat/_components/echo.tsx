@@ -288,9 +288,7 @@ const Echo = () => {
       setIsThinking(true);
       const messages: ChatStructure[] = [
         ...[...chats, ...voiceChats].map((chat) => ({
-          role: (chat.role === "model" ? "assistant" : "user") as
-            | "user"
-            | "assistant",
+          role: chat.role,
           content: `${chat.content}`,
         })),
         {
@@ -353,7 +351,7 @@ const Echo = () => {
         };
         const modelMessage: Chat = {
           id: nanoid(),
-          role: "model",
+          role: "assistant",
           content: jsonData.message,
           createdAt: new Date(),
         };

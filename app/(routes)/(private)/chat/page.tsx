@@ -5,7 +5,6 @@ import { Chat, NewTransactionType } from "@/types";
 import React, { useEffect, useState, useRef } from "react";
 import { nanoid } from "nanoid";
 import ChatItem from "@/components/chat-item";
-import axios from "axios";
 import useChat from "@/hooks/use-chat";
 import ConfirmTransaction from "@/components/confirm-transaction";
 import useBeneficiary from "@/hooks/use-beneficiary";
@@ -87,9 +86,7 @@ const ChatPage = () => {
 
     const messages: ChatStructure[] = [
       ...history.map((chat) => ({
-        role: (chat.role === "model" ? "assistant" : "user") as
-          | "user"
-          | "assistant",
+        role: chat.role,
         content: `${chat.content}`,
       })),
       {
@@ -152,7 +149,7 @@ const ChatPage = () => {
       if (jsonData.message) {
         const modelMessage: Chat = {
           id: nanoid(),
-          role: "model",
+          role: "assistant",
           content: jsonData.message,
           createdAt: new Date(),
         };

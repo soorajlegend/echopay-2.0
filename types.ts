@@ -1,6 +1,6 @@
 export interface Chat {
   id: string;
-  role: "user" | "model";
+  role: "user" | "assistant";
   content: string;
   createdAt: Date;
 }
