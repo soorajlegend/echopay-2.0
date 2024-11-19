@@ -1,6 +1,6 @@
 "use server";
 
-import { EchopayVoiceAssistantPrompt } from "@/prompts/echopay-voice-assistant";
+import { EchopayTextAssistantPrompt } from "@/prompts/echopay-text-assistant";
 import OpenAI from "openai";
 // import Groq from "groq-sdk";
 
@@ -26,7 +26,7 @@ type ChatData = {
   balance: number;
 };
 
-export async function EchoChat(data: ChatData) {
+export async function EchoChatText(data: ChatData) {
   try {
     const { messages, beneficiaries, transactions, name, balance } = data;
 
@@ -35,7 +35,7 @@ export async function EchoChat(data: ChatData) {
       messages: [
         {
           role: "system",
-          content: EchopayVoiceAssistantPrompt({
+          content: EchopayTextAssistantPrompt({
             name,
             balance: balance.toString(),
             transactions,
