@@ -55,7 +55,7 @@ const ChatPage = () => {
     let messageToSend = newMessage;
     const lastMessage = chats[chats.length - 1];
 
-    if (lastMessage.role === "user") {
+    if (lastMessage?.role === "user") {
       messageToSend = lastAttemptedMessage;
     }
 
@@ -195,8 +195,9 @@ const ChatPage = () => {
           </div>
         )}
 
-        {showRetry ||
-          (chats[chats.length - 1].role === "user" && (
+        {showRetry &&
+          chats.length > 0 &&
+          chats[chats.length - 1]?.role === "user" && (
             <div className="flex items-center justify-center gap-2">
               <button
                 onClick={handleSubmit}
@@ -206,7 +207,7 @@ const ChatPage = () => {
                 Retry
               </button>
             </div>
-          ))}
+          )}
 
         <div ref={messagesEndRef} />
       </div>
