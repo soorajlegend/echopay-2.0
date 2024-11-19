@@ -45,6 +45,7 @@ const Echo = () => {
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [isThinking, startThinking] = useTransition();
   const [isProcessing, setIsProcessing] = useState(false);
+  const [hasPermission, setHasPermission] = useState(false);
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
@@ -99,7 +100,7 @@ const Echo = () => {
   useEffect(() => {
     if (openEcho) {
       cleanupAudioResources();
-      startRecording();
+      checkPermissionAndStart();
     }
   }, [openEcho]);
 
@@ -115,6 +116,22 @@ const Echo = () => {
     }
     if (streamRef.current) {
       streamRef.current.getTracks().forEach((track) => track.stop());
+    }
+    if (animationFrameRef.current) {
+      cancelAnimationFrame(animationFrameRef.current);
+    }
+  };
+
+  const checkPermissionAndStart = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      stream.getTracks().forEach((track) => track.stop());
+      setHasPermission(true);
+      startRecording();
+    } catch (err) {
+      console.error("Microphone permission denied:", err);
+      toast.error("Could not access microphone. Please check permissions.");
+      setHasPermission(false);
     }
   };
 
@@ -142,8 +159,13 @@ const Echo = () => {
 
       recognitionRef.current.onerror = (event: any) => {
         console.error("Speech recognition error:", event.error);
-        toast.error("Speech recognition error. Please try again.");
+        if (event.error === "not-allowed") {
+          toast.error("Microphone access denied. Please check permissions.");
+        } else {
+          toast.error("Speech recognition error. Please try again.");
+        }
         setIsRecording(false);
+        cleanupAudioResources();
       };
     }
 
@@ -153,6 +175,11 @@ const Echo = () => {
   }, []);
 
   const startRecording = async () => {
+    if (!hasPermission) {
+      await checkPermissionAndStart();
+      return;
+    }
+
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       streamRef.current = stream;
@@ -166,7 +193,7 @@ const Echo = () => {
       if (recognitionRef.current) {
         recognitionRef.current.start();
       } else {
-        toast.error("Speech recognition not supported");
+        toast.error("Speech recognition not supported in this browser");
         return;
       }
 
@@ -174,8 +201,9 @@ const Echo = () => {
       setTranscript("");
       visualize();
     } catch (err) {
-      console.error("Error accessing microphone:", err);
-      toast.error("Could not access microphone. Please check permissions.");
+      console.error("Error starting recording:", err);
+      toast.error("Could not start recording. Please try again.");
+      setIsRecording(false);
     }
   };
 
@@ -185,7 +213,9 @@ const Echo = () => {
     const dataArray = new Uint8Array(analyserRef.current.frequencyBinCount);
 
     const draw = () => {
-      analyserRef.current!.getByteFrequencyData(dataArray);
+      if (!analyserRef.current) return;
+
+      analyserRef.current.getByteFrequencyData(dataArray);
       const normalizedData = Array.from(dataArray)
         .slice(0, 50)
         .map((value) => value / 255)
@@ -221,10 +251,9 @@ const Echo = () => {
         recognitionRef.current.stop();
       }
 
-      const finalTranscript =
-        transcript.trim() || "let me know if you can hear me";
+      const finalTranscript = transcript.trim();
       if (!finalTranscript) {
-        toast.error("Please say something");
+        toast.error("No speech detected. Please try again.");
         return startRecording();
       }
 
@@ -272,6 +301,7 @@ const Echo = () => {
           const response = await EchoTextChat(data);
 
           if (!response) {
+            toast.error("No response received from server");
             throw new Error("No response received");
           }
 
@@ -306,7 +336,7 @@ const Echo = () => {
             setChartType("TRANSACTIONS");
           }
         } catch (error) {
-          alert(`Error processing response: ${error}`);
+          console.error("Error processing response:", error);
           toast.error("Failed to process response. Please try again.");
           startRecording();
         } finally {
