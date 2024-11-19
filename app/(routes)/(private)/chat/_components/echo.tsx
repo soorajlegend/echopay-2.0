@@ -24,7 +24,7 @@ import { ChartType } from "./chart";
 import TransactionChart from "./transaction-chart";
 import ConfirmTransaction from "@/components/confirm-transaction";
 import { TTS } from "@/actions/voice";
-import { ChatStructure, EchoChat } from "@/actions/voice-chat";
+import { ChatStructure, EchoVoiceChat } from "@/actions/voice-chat";
 import { owner } from "@/store";
 
 declare global {
@@ -90,7 +90,7 @@ const Echo = () => {
 
   useEffect(() => {
     if (openEcho) {
-      speak("Hello Suraj welcome to echopay");
+      speak("Hello Suraj");
     }
   }, [openEcho]);
 
@@ -126,7 +126,9 @@ const Echo = () => {
 
         for (let i = event.resultIndex; i < event.results.length; i++) {
           if (event.results[i].isFinal) {
-            setTranscript(prev => prev + " " + event.results[i][0].transcript);
+            setTranscript(
+              (prev) => prev + " " + event.results[i][0].transcript
+            );
           } else {
             currentTranscript += event.results[i][0].transcript;
           }
@@ -214,7 +216,8 @@ const Echo = () => {
       recognitionRef.current.stop();
     }
 
-    const finalTranscript = transcript.trim();
+    const finalTranscript =
+      transcript.trim() || "let me know if you can hear me";
     if (!finalTranscript) {
       toast.error("Please say something");
       return startRecording();
@@ -259,7 +262,7 @@ const Echo = () => {
         balance: Number(user.balance) || 0,
       };
 
-      const response = await EchoChat(data);
+      const response = await EchoVoiceChat(data);
 
       if (!response) {
         throw new Error("No response received");
@@ -273,6 +276,7 @@ const Echo = () => {
       }
 
       if (jsonData.message) {
+        toast.success("Response received");
         setIsSpeaking(true);
         await speak(jsonData.message);
         setIsSpeaking(false);
@@ -299,7 +303,6 @@ const Echo = () => {
 
       setVisualizerData([]);
       setTranscript("");
-
     } catch (error) {
       console.error("Error sending transcript:", error);
       toast.error("Something went wrong. Please try again.");

@@ -15,7 +15,7 @@ import useTransaction from "@/hooks/use-transaction";
 import Echo from "./_components/echo";
 import useEcho from "@/hooks/use-echo";
 import useUserInfo from "@/hooks/use-userinfo";
-import { EchoChatText } from "@/actions/text-chat";
+import { EchoTextChat } from "@/actions/text-chat";
 import { ChatStructure } from "@/actions/voice-chat";
 import { toast } from "sonner";
 import { owner } from "@/store";
@@ -105,7 +105,7 @@ const ChatPage = () => {
         balance: Number(user.balance) || 0,
       };
 
-      const response = await EchoChatText(data);
+      const response = await EchoTextChat(data);
 
       if (!response) {
         throw new Error("No response from server");
