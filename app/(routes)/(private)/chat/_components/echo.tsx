@@ -57,6 +57,23 @@ const Echo = () => {
   const { transactions } = useTransaction();
   const { openEcho, setOpenEcho } = useEcho();
 
+  const speak = async (text: string): Promise<void> => {
+    if ("speechSynthesis" in window) {
+      window.speechSynthesis.cancel();
+
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = "en-US";
+      utterance.rate = 1;
+      utterance.pitch = 1;
+      utterance.volume = 1;
+
+      return new Promise<void>((resolve) => {
+        utterance.onend = () => resolve();
+        window.speechSynthesis.speak(utterance);
+      });
+    }
+  };
+
   useEffect(() => {
     if (openEcho) {
       if (mediaRecorderRef.current) {
@@ -121,23 +138,7 @@ const Echo = () => {
 
   const startRecording = async () => {
     try {
-      // Request microphone access
-      if ("speechSynthesis" in window) {
-        // Cancel any ongoing speech
-        window.speechSynthesis.cancel();
-
-        const greeting = new SpeechSynthesisUtterance("Hi");
-        greeting.lang = "en-US";
-        greeting.rate = 1;
-        greeting.pitch = 1;
-        greeting.volume = 1;
-
-        // Wait for greeting to finish before starting recording
-        await new Promise((resolve) => {
-          greeting.onend = resolve;
-          window.speechSynthesis.speak(greeting);
-        });
-      }
+      await speak("Hi");
 
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       streamRef.current = stream;
@@ -323,32 +324,10 @@ const Echo = () => {
       }
 
       if (jsonData.message) {
-        if ("speechSynthesis" in window) {
-          setIsSpeaking(true);
-
-          // Cancel any ongoing speech
-          window.speechSynthesis.cancel();
-
-          const utterance = new SpeechSynthesisUtterance(jsonData.message);
-          utterance.lang = "en-US";
-          utterance.rate = 1;
-          utterance.pitch = 1;
-          utterance.volume = 1;
-
-          utterance.onend = () => {
-            setIsSpeaking(false);
-            // Restart recording after speech ends
-            startRecording();
-          };
-
-          utterance.onerror = (event) => {
-            console.error("Speech synthesis error:", event);
-            setIsSpeaking(false);
-            startRecording();
-          };
-
-          window.speechSynthesis.speak(utterance);
-        }
+        setIsSpeaking(true);
+        await speak(jsonData.message);
+        setIsSpeaking(false);
+        startRecording();
 
         const userMessage: Chat = {
           id: nanoid(),
