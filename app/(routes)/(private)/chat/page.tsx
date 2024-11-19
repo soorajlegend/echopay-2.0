@@ -18,6 +18,7 @@ import useUserInfo from "@/hooks/use-userinfo";
 import { EchoChatText } from "@/actions/text-chat";
 import { ChatStructure } from "@/actions/voice-chat";
 import { toast } from "sonner";
+import { owner } from "@/store";
 
 const ChatPage = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -60,8 +61,11 @@ const ChatPage = () => {
     }
 
     if (!info) {
-      return toast.error("Unauthorized");
+      toast.error("Unauthorized");
+      // return;
     }
+
+    const user = info || owner;
 
     if (!messageToSend) return;
 
