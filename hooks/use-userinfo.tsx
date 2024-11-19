@@ -57,7 +57,7 @@ const useUserInfo = create(
       },
     }),
     {
-      name: "fintech-gpt-user-storage",
+      name: "echopay-user-storage",
       storage: createJSONStorage(() => localStorage),
     }
   )
