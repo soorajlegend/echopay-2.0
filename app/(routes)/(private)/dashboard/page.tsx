@@ -30,12 +30,12 @@ const features = [
   {
     image: "/invoice-01.svg",
     title: "Buy Airtime",
-    url: "buy-airtime",
+    url: "/airtime",
   },
   {
     image: "/coins-01.svg",
     title: "Get Loans",
-    url: "get-loan",
+    url: "/loan",
   },
 ];
 
@@ -75,7 +75,7 @@ const DashboardView = () => {
     console.log("navigate to kyc");
   };
   return (
-    <div className="mt-[48px] h-auto  h[calc(100vh-100px)] overflow-y-auto">
+    <div className="mt-[48px]  mb-[10rem] h-auto  h[calc(100vh-100px)] overflow-y-auto">
       {/* {showPopup &&  ( */}
       <div className="mb-5">
         <Card className=" shadow-none">
@@ -102,7 +102,7 @@ const DashboardView = () => {
       {/* )} */}
       <Link
         href="/chat"
-        className="h-[224px] border-2 rounded-[8px] bg-[#D1DCE5] p-4 flex flex-col justify-between"
+        className="h-[224px] rounded-[8px] bg-[#D1DCE5] p-4 flex flex-col justify-between"
       >
         <div className=" h-[48px] rounded-full mt-[35px] flex justify-center items-center">
           <Image
@@ -391,12 +391,10 @@ const DashboardPage = () => {
         {activeView === "ai" && <AiView />}
         {activeView === "more" && <MoreView />}
 
-        <nav className="absolute bottom-0 left-0 right-0 bg-white border-t border-gray-200 mb-3">
-          <div className="max-w-md mx-auto flex justify-around items-center h-16">
-            {/* <div className="w-[60px] h-[60px] absolute -top-10 rounded-full bg-[#003056]">
 
-          <Image className=" w-full h-full rounded-full" src="/ico.svg" alt="icon" width={24} height={24} />
-          </div> */}
+        <nav className="absolute w-[88%] mx-auto bottom-0 left-0 right-0 min-w-0 bg-white border-t border-gray-200 py-5">
+          <div className="maxw-md mxauto flex justify-around min-w-0 items-center h-16">
+  
             <button
               onClick={() => setActiveView("home")}
               className={`flex flex-col items-center ${

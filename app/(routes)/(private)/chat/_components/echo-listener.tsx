@@ -9,7 +9,7 @@ const EchoListener = () => {
 
   useEffect(() => {
     const recognition = new (window.SpeechRecognition ||
-      window.webkitSpeechRecognition)();
+    window.webkitSpeechRecognition)();
     recognition.continuous = true;
     recognition.interimResults = true;
     recognition.lang = "en-US";
