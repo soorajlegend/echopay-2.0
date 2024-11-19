@@ -44,6 +44,7 @@ const Echo = () => {
     useState<NewTransactionType | null>(null);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [isThinking, startThinking] = useTransition();
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
@@ -63,7 +64,6 @@ const Echo = () => {
   const speak = async (text: string) => {
     try {
       const audioSource = await TTS(text);
-
       const audio = new Audio(audioSource);
 
       return new Promise<void>((resolve) => {
@@ -80,6 +80,7 @@ const Echo = () => {
 
         audio.play().catch((error) => {
           console.error("Error playing audio:", error);
+          startRecording();
           resolve();
         });
       });
@@ -97,21 +98,25 @@ const Echo = () => {
 
   useEffect(() => {
     if (openEcho) {
-      if (mediaRecorderRef.current) {
-        mediaRecorderRef.current.stop();
-      }
-      if (recognitionRef.current) {
-        recognitionRef.current.stop();
-      }
-      if (audioContextRef.current) {
-        audioContextRef.current.close();
-      }
-      if (streamRef.current) {
-        streamRef.current.getTracks().forEach((track) => track.stop());
-      }
+      cleanupAudioResources();
       startRecording();
     }
   }, [openEcho]);
+
+  const cleanupAudioResources = () => {
+    if (mediaRecorderRef.current) {
+      mediaRecorderRef.current.stop();
+    }
+    if (recognitionRef.current) {
+      recognitionRef.current.stop();
+    }
+    if (audioContextRef.current) {
+      audioContextRef.current.close();
+    }
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach((track) => track.stop());
+    }
+  };
 
   useEffect(() => {
     if ("SpeechRecognition" in window || "webkitSpeechRecognition" in window) {
@@ -124,7 +129,6 @@ const Echo = () => {
 
       recognitionRef.current.onresult = (event: any) => {
         let currentTranscript = "";
-
         for (let i = event.resultIndex; i < event.results.length; i++) {
           if (event.results[i].isFinal) {
             setTranscript(
@@ -135,21 +139,16 @@ const Echo = () => {
           }
         }
       };
+
+      recognitionRef.current.onerror = (event: any) => {
+        console.error("Speech recognition error:", event.error);
+        toast.error("Speech recognition error. Please try again.");
+        setIsRecording(false);
+      };
     }
 
     return () => {
-      if (animationFrameRef.current) {
-        cancelAnimationFrame(animationFrameRef.current);
-      }
-      if (audioContextRef.current) {
-        audioContextRef.current.close();
-      }
-      if (streamRef.current) {
-        streamRef.current.getTracks().forEach((track) => track.stop());
-      }
-      if (recognitionRef.current) {
-        recognitionRef.current.stop();
-      }
+      cleanupAudioResources();
     };
   }, []);
 
@@ -167,7 +166,8 @@ const Echo = () => {
       if (recognitionRef.current) {
         recognitionRef.current.start();
       } else {
-        console.error("Speech recognition not supported");
+        toast.error("Speech recognition not supported");
+        return;
       }
 
       setIsRecording(true);
@@ -175,6 +175,7 @@ const Echo = () => {
       visualize();
     } catch (err) {
       console.error("Error accessing microphone:", err);
+      toast.error("Could not access microphone. Please check permissions.");
     }
   };
 
@@ -211,30 +212,31 @@ const Echo = () => {
   };
 
   const stopAndSendRecording = async () => {
-    if (!isRecording) return;
-
-    if (recognitionRef.current) {
-      recognitionRef.current.stop();
-    }
-
-    const finalTranscript =
-      transcript.trim() || "let me know if you can hear me";
-    if (!finalTranscript) {
-      toast.error("Please say something");
-      return startRecording();
-    }
-
-    const user = info || owner;
-    if (!user) {
-      toast.error("Unauthorized");
-      return;
-    }
-
-    setIsRecording(false);
-    setIsPaused(false);
-    // setIsThinking(true);
+    if (!isRecording || isProcessing) return;
 
     try {
+      setIsProcessing(true);
+
+      if (recognitionRef.current) {
+        recognitionRef.current.stop();
+      }
+
+      const finalTranscript =
+        transcript.trim() || "let me know if you can hear me";
+      if (!finalTranscript) {
+        toast.error("Please say something");
+        return startRecording();
+      }
+
+      const user = info || owner;
+      if (!user) {
+        toast.error("Unauthorized");
+        return;
+      }
+
+      setIsRecording(false);
+      setIsPaused(false);
+
       const messages: ChatStructure[] = [
         ...[...chats, ...voiceChats].map((chat) => ({
           role: chat.role,
@@ -266,75 +268,64 @@ const Echo = () => {
       };
 
       startThinking(async () => {
-        await EchoTextChat(data)
-          .then((response) => {
-            console.log(data);
-            alert(response);
+        try {
+          const response = await EchoTextChat(data);
 
-            if (!response) {
-              throw new Error("No response received");
-            }
+          if (!response) {
+            throw new Error("No response received");
+          }
 
-            const jsonData = JSON.parse(response);
-            // setIsThinking(false);
+          const jsonData = JSON.parse(response);
 
-            if (jsonData.newTransaction) {
-              setNewTransaction(jsonData.newTransaction);
-            }
+          if (jsonData.newTransaction) {
+            setNewTransaction(jsonData.newTransaction);
+          }
 
-            if (jsonData.message) {
-              setIsSpeaking(true);
-              speak(jsonData.message);
-              setIsSpeaking(false);
+          if (jsonData.message) {
+            setIsSpeaking(true);
+            await speak(jsonData.message);
+            setIsSpeaking(false);
 
-              const userMessage: Chat = {
-                id: nanoid(),
-                role: "user",
-                content: finalTranscript,
-                createdAt: new Date(),
-              };
-              const modelMessage: Chat = {
-                id: nanoid(),
-                role: "assistant",
-                content: jsonData.message,
-                createdAt: new Date(),
-              };
+            const userMessage: Chat = {
+              id: nanoid(),
+              role: "user",
+              content: finalTranscript,
+              createdAt: new Date(),
+            };
+            const modelMessage: Chat = {
+              id: nanoid(),
+              role: "assistant",
+              content: jsonData.message,
+              createdAt: new Date(),
+            };
 
-              setVoiceChats((state) => [...state, userMessage, modelMessage]);
-            }
+            setVoiceChats((state) => [...state, userMessage, modelMessage]);
+          }
 
-            if (jsonData.transactionChart) {
-              setChartType("TRANSACTIONS");
-            }
-          })
-          .finally(() => {
-            setVisualizerData([]);
-            setTranscript("");
-          });
+          if (jsonData.transactionChart) {
+            setChartType("TRANSACTIONS");
+          }
+        } catch (error) {
+          console.error("Error processing response:", error);
+          toast.error("Failed to process response. Please try again.");
+          startRecording();
+        } finally {
+          setVisualizerData([]);
+          setTranscript("");
+          setIsProcessing(false);
+        }
       });
     } catch (error) {
-      console.error("Error sending transcript:", error);
-      alert(error);
+      console.error("Error in stopAndSendRecording:", error);
       toast.error("Something went wrong. Please try again.");
-      // setIsThinking(false);
       setIsSpeaking(false);
+      setIsProcessing(false);
       startRecording();
     }
   };
 
   const cancelRecording = () => {
-    if (recognitionRef.current) {
-      recognitionRef.current.stop();
-    }
-    if (animationFrameRef.current) {
-      cancelAnimationFrame(animationFrameRef.current);
-    }
-    if (audioContextRef.current) {
-      audioContextRef.current.close();
-    }
-    if (streamRef.current) {
-      streamRef.current.getTracks().forEach((track) => track.stop());
-    }
+    cleanupAudioResources();
     setVisualizerData([]);
     setTranscript("");
     setIsRecording(false);
@@ -418,7 +409,10 @@ const Echo = () => {
 
                 <button
                   onClick={stopAndSendRecording}
-                  className="w-16 h-16 rounded-full bg-theme-primary hover:opacity-90 flex items-center justify-center aspect-square"
+                  disabled={isProcessing}
+                  className={`w-16 h-16 rounded-full ${
+                    isProcessing ? "opacity-50" : "hover:opacity-90"
+                  } bg-theme-primary flex items-center justify-center aspect-square`}
                 >
                   <SendHorizonal className="w-8 h-8 text-white" />
                 </button>
