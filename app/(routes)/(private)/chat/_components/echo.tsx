@@ -39,7 +39,6 @@ const Echo = () => {
   const [isPaused, setIsPaused] = useState(false);
   const [visualizerData, setVisualizerData] = useState<number[]>([]);
   const [transcript, setTranscript] = useState("");
-  const [interimTranscript, setInterimTranscript] = useState("");
   const [newTransaction, setNewTransaction] =
     useState<NewTransactionType | null>(null);
   const [isThinking, setIsThinking] = useState(false);
@@ -120,22 +119,18 @@ const Echo = () => {
       recognitionRef.current = new SpeechRecognition();
       recognitionRef.current.continuous = true;
       recognitionRef.current.interimResults = true;
-      recognitionRef.current.lang = "en-US"; // Set language to English
+      recognitionRef.current.lang = "en-US";
 
       recognitionRef.current.onresult = (event: any) => {
-        let finalTranscript = "";
-        let currentInterim = "";
+        let currentTranscript = "";
 
-        for (let i = 0; i < event.results.length; i++) {
+        for (let i = event.resultIndex; i < event.results.length; i++) {
           if (event.results[i].isFinal) {
-            finalTranscript += event.results[i][0].transcript;
+            setTranscript(prev => prev + " " + event.results[i][0].transcript);
           } else {
-            currentInterim += event.results[i][0].transcript;
+            currentTranscript += event.results[i][0].transcript;
           }
         }
-
-        setTranscript(finalTranscript);
-        setInterimTranscript(currentInterim);
       };
     }
 
@@ -160,43 +155,12 @@ const Echo = () => {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       streamRef.current = stream;
 
-      // Set up audio context and analyzer
       audioContextRef.current = new AudioContext();
       analyserRef.current = audioContextRef.current.createAnalyser();
       const source = audioContextRef.current.createMediaStreamSource(stream);
       source.connect(analyserRef.current);
       analyserRef.current.fftSize = 256;
 
-      // Initialize speech recognition if not already initialized
-      if (
-        !recognitionRef.current &&
-        ("SpeechRecognition" in window || "webkitSpeechRecognition" in window)
-      ) {
-        const SpeechRecognition =
-          window.SpeechRecognition || window.webkitSpeechRecognition;
-        recognitionRef.current = new SpeechRecognition();
-        recognitionRef.current.continuous = true;
-        recognitionRef.current.interimResults = true;
-        recognitionRef.current.lang = "en-US"; // Set language to English
-
-        recognitionRef.current.onresult = (event: any) => {
-          let finalTranscript = "";
-          let currentInterim = "";
-
-          for (let i = 0; i < event.results.length; i++) {
-            if (event.results[i].isFinal) {
-              finalTranscript += event.results[i][0].transcript;
-            } else {
-              currentInterim += event.results[i][0].transcript;
-            }
-          }
-
-          setTranscript(finalTranscript);
-          setInterimTranscript(currentInterim);
-        };
-      }
-
-      // Start speech recognition
       if (recognitionRef.current) {
         recognitionRef.current.start();
       } else {
@@ -204,6 +168,7 @@ const Echo = () => {
       }
 
       setIsRecording(true);
+      setTranscript("");
       visualize();
     } catch (err) {
       console.error("Error accessing microphone:", err);
@@ -242,54 +207,30 @@ const Echo = () => {
     }
   };
 
-  const stopAndSendRecording = () => {
-    if (isRecording) {
-      if (recognitionRef.current) {
-        recognitionRef.current.stop();
-      }
-      return sendTranscript();
-    }
-  };
+  const stopAndSendRecording = async () => {
+    if (!isRecording) return;
 
-  const cancelRecording = () => {
     if (recognitionRef.current) {
       recognitionRef.current.stop();
     }
-    if (animationFrameRef.current) {
-      cancelAnimationFrame(animationFrameRef.current);
-    }
-    if (audioContextRef.current) {
-      audioContextRef.current.close();
-    }
-    if (streamRef.current) {
-      streamRef.current.getTracks().forEach((track) => track.stop());
-    }
-    setVisualizerData([]);
-    setTranscript("");
-    setInterimTranscript("");
-    setIsRecording(false);
-    setIsPaused(false);
-    setOpenEcho(false);
-  };
 
-  const sendTranscript = async () => {
-    if (!transcript.trim()) {
+    const finalTranscript = transcript.trim();
+    if (!finalTranscript) {
       toast.error("Please say something");
       return startRecording();
     }
 
     const user = info || owner;
-
     if (!user) {
       toast.error("Unauthorized");
       return;
     }
 
+    setIsRecording(false);
+    setIsPaused(false);
+    setIsThinking(true);
+
     try {
-      setInterimTranscript("");
-      setIsRecording(false);
-      setIsPaused(false);
-      setIsThinking(true);
       const messages: ChatStructure[] = [
         ...[...chats, ...voiceChats].map((chat) => ({
           role: chat.role,
@@ -297,7 +238,7 @@ const Echo = () => {
         })),
         {
           role: "user",
-          content: `${transcript}`,
+          content: finalTranscript,
         },
       ];
 
@@ -320,21 +261,10 @@ const Echo = () => {
 
       const response = await EchoChat(data);
 
-      // const config = {
-      //   method: "post",
-      //   maxBodyLength: Infinity,
-      //   url: "https://raj-assistant-api.vercel.app/api/echopay-models/voice",
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //   },
-      //   data: data,
-      // };
-
       if (!response) {
-        return toast.error("Something went wrong");
+        throw new Error("No response received");
       }
 
-      // const response = await axios.request(config);
       const jsonData = JSON.parse(response);
       setIsThinking(false);
 
@@ -350,7 +280,7 @@ const Echo = () => {
         const userMessage: Chat = {
           id: nanoid(),
           role: "user",
-          content: transcript,
+          content: finalTranscript,
           createdAt: new Date(),
         };
         const modelMessage: Chat = {
@@ -367,20 +297,36 @@ const Echo = () => {
         setChartType("TRANSACTIONS");
       }
 
-      // Reset transcript but don't close the drawer
       setVisualizerData([]);
       setTranscript("");
-      setInterimTranscript("");
 
-      // Automatically start recording again
-      startRecording();
     } catch (error) {
       console.error("Error sending transcript:", error);
+      toast.error("Something went wrong. Please try again.");
       setIsThinking(false);
       setIsSpeaking(false);
-      // Restart recording even if there's an error
       startRecording();
     }
+  };
+
+  const cancelRecording = () => {
+    if (recognitionRef.current) {
+      recognitionRef.current.stop();
+    }
+    if (animationFrameRef.current) {
+      cancelAnimationFrame(animationFrameRef.current);
+    }
+    if (audioContextRef.current) {
+      audioContextRef.current.close();
+    }
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach((track) => track.stop());
+    }
+    setVisualizerData([]);
+    setTranscript("");
+    setIsRecording(false);
+    setIsPaused(false);
+    setOpenEcho(false);
   };
 
   return (
@@ -425,12 +371,9 @@ const Echo = () => {
                 ))}
               </div>
             )}
-            {(transcript || interimTranscript) && (
+            {transcript && (
               <div className="mt-4 p-4 bg-gray-100 rounded-lg max-w-xs text-sm">
                 {transcript}
-                <span className="text-gray-500 text-center">
-                  {interimTranscript}
-                </span>
               </div>
             )}
           </div>
