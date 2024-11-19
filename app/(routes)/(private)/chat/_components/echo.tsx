@@ -23,6 +23,7 @@ import { nanoid } from "nanoid";
 import { ChartType } from "./chart";
 import TransactionChart from "./transaction-chart";
 import ConfirmTransaction from "@/components/confirm-transaction";
+import { TTS } from "@/actions/voice";
 
 declare global {
   interface Window {
@@ -57,20 +58,29 @@ const Echo = () => {
   const { transactions } = useTransaction();
   const { openEcho, setOpenEcho } = useEcho();
 
-  const speak = async (text: string): Promise<void> => {
-    if ("speechSynthesis" in window) {
-      window.speechSynthesis.cancel();
+  const speak = async (text: string) => {
+    try {
+      const audioSource = await TTS(text);
 
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = "en-US";
-      utterance.rate = 1;
-      utterance.pitch = 1;
-      utterance.volume = 1;
+      const audio = new Audio(audioSource);
 
       return new Promise<void>((resolve) => {
-        utterance.onend = () => resolve();
-        window.speechSynthesis.speak(utterance);
+        audio.onended = () => {
+          resolve();
+        };
+
+        audio.onerror = (error) => {
+          console.error("Error playing audio:", error);
+          resolve();
+        };
+
+        audio.play().catch((error) => {
+          console.error("Error playing audio:", error);
+          resolve();
+        });
       });
+    } catch (error) {
+      console.error("Error in text-to-speech:", error);
     }
   };
 
@@ -138,7 +148,6 @@ const Echo = () => {
 
   const startRecording = async () => {
     try {
-      // await speak("Hi");
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       streamRef.current = stream;
 
