@@ -290,6 +290,7 @@ const DashboardPage = () => {
   // const [showPopup, setShowPopup] = useState(true);
 
   const { info } = useUserInfo();
+  console.log(info)
 
   // const isVerified = info?.isVerified
 
@@ -311,13 +312,12 @@ const DashboardPage = () => {
         <div>
           <div className="flex justify-between items-center">
             <div className="flex md:w-1/2 gap-[16px] items-center">
-              <Image
-                className="bg-[#003056] rounded-full object-cover w-[40px] h-[40px]"
-                src="/avater.png"
-                width={40}
-                height={40}
-                alt="user avater"
-              />
+            <div 
+              className="bg-[#003056] rounded-full w-[40px] cursor-pointer h-[40px] flex items-center justify-center text-white font-medium text-lg"
+              >
+            {info?.email ? info.email.charAt(0).toUpperCase() : 'U'}
+          </div>
+
               <div>
                 <p className="text-[#434343]">Good morning</p>
                 <p className="text-[#1A1A1A] font-medium text-[20px]">

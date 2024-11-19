@@ -227,7 +227,12 @@ const OnboardingPage = () => {
 
       if (response.status === 200) {
         console.log("Login successful", response.data);
+        console.log(response.data.responseBody.user, " from login");
+        // check if info is null and set it to setinfo then redirect to dashboard else just redirect to dashboard
+        setInfo(response.data.responseBody.user);
         router.push("/dashboard"); // Redirect to dashboard
+        setIsLoading(false);
+        console.log("Login successful from login");
       } else {
         setError("Login failed. Please check your credentials.");
       }
@@ -415,7 +420,7 @@ const OnboardingPage = () => {
       {/*
        loader 
        */}
-      {isVerifying && (
+      {isVerifying || isLoading && (
         <div className="fixed z-50 inset-0 w-full h-full bg-black/70 flex items-center justify-center">
           <Loader2 className="w-12 h-12 text-white/90 animate-spin" />
         </div>
