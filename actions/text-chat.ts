@@ -48,7 +48,7 @@ export async function EchoChatText(data: ChatData) {
         type: "json_object",
       },
       stream: false,
-      temperature: 5,
+      temperature: 1.5,
     });
 
     return completion.choices[0].message.content;
