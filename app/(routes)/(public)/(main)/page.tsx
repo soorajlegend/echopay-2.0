@@ -189,28 +189,6 @@ const OnboardingPage = () => {
     }
   };
 
-  const handleExistingUserLogin = async (password: string) => {
-    try {
-      const response = await axios.post(
-        "https://echo-pay.onrender.com/api/login",
-        {
-          phone: mobile,
-          password,
-        }
-      );
-
-      if (response.status === 200) {
-        console.log("Login successful");
-        console.log(response.data, " from login");
-        router.push("/dashboard"); // Redirect to dashboard
-      } else {
-        console.error("Login failed");
-      }
-    } catch (error) {
-      console.error("Error logging in:", error);
-    }
-  };
-
   // sigin in function
   const handleSignIn = async () => {
     setIsLoading(true);
@@ -227,7 +205,11 @@ const OnboardingPage = () => {
 
       if (response.status === 200) {
         console.log("Login successful", response.data);
+        console.log(response.data.responseBody.user, " from login");
+        setInfo(response.data.responseBody.user);
         router.push("/dashboard"); // Redirect to dashboard
+        setIsLoading(false);
+        console.log("Login successful from login");
       } else {
         setError("Login failed. Please check your credentials.");
       }
@@ -392,11 +374,73 @@ const OnboardingPage = () => {
       {/* if verified and is new user */}
       {stage === 7 && !isNewUser && isVerified && (
         <SlideContainer custom={stage}>
-          <ExistingUserLogin
-            mobile={mobile}
-            isLoading={loading}
-            onLogin={handleExistingUserLogin}
-          />
+          <div>
+              <div className="p-4 h-screen w-full relative">
+                <div className="w-full mt-[77px] mb-[88px]">
+                  <h2 className="text-2xl font-medium text-start text-[#1A1A1A]">
+                    Welcome Back!
+                  </h2>
+                  <p className="text-base text-start  mt-2">
+                    Log in to your EchoPay account to access your funds and
+                    manage your finances
+                  </p>
+                </div>
+
+                <div className="w-full flex flex-col gap-3 items-start">
+                  <Label htmlFor="email" className="w-full text-left text-xl">
+                    Email
+                  </Label>
+                  <InputWithIcon
+                    icon={Inbox}
+                    type="text"
+                    placeholder="Enter your phone number"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                  />
+                </div>
+
+                <div className="w-full flex  mt-6 flex-col gap-3 items-start">
+                  <Label
+                    htmlFor="password"
+                    className="w-full text-left text-xl"
+                  >
+                    Password
+                  </Label>
+                  <InputWithIcon
+                    icon={Eye}
+                    type="password"
+                    placeholder="Enter your password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                </div>
+
+                <div className="w-full flex flex-col gap-8">
+                  <Button
+                    className="mt-[48px] bottom-0 text-[18px] font-medium text-white w-full py-[24px]"
+                    onClick={handleSignIn}
+                    disabled={isLoading}
+                  >
+                    {isLoading ? "Signing in..." : "Sign In"}
+                  </Button>
+
+                  <div className="w-full flex justify-center items-center">
+                    <div className="">
+                      <p className="text-center w-full">
+                        Don&apos;t have an account?
+                      </p>
+                    </div>
+                    <Button
+                      variant="link"
+                      onClick={() => setStage(6)}
+                      className="text-[18px] font-medium py-[24px]"
+                    >
+                      Sign Up
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </div>
         </SlideContainer>
       )}
 
@@ -415,7 +459,7 @@ const OnboardingPage = () => {
       {/*
        loader 
        */}
-      {isVerifying && (
+      {isVerifying || isLoading && (
         <div className="fixed z-50 inset-0 w-full h-full bg-black/70 flex items-center justify-center">
           <Loader2 className="w-12 h-12 text-white/90 animate-spin" />
         </div>
