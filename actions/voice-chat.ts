@@ -26,7 +26,7 @@ type ChatData = {
   balance: number;
 };
 
-export async function EchoChat(data: ChatData) {
+export async function EchoVoiceChat(data: ChatData) {
   try {
     const { messages, beneficiaries, transactions, name, balance } = data;
 
