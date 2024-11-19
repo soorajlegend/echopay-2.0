@@ -1,6 +1,6 @@
 "use client";
 
-import React, { use, useEffect, useRef, useState } from "react";
+import React, { use, useEffect, useRef, useState, useTransition } from "react";
 import {
   Mic,
   Pause,
@@ -24,6 +24,9 @@ import { ChartType } from "./chart";
 import TransactionChart from "./transaction-chart";
 import ConfirmTransaction from "@/components/confirm-transaction";
 import { TTS } from "@/actions/voice";
+import { ChatStructure, EchoVoiceChat } from "@/actions/voice-chat";
+import { owner } from "@/store";
+import { EchoTextChat } from "@/actions/text-chat";
 
 declare global {
   interface Window {
@@ -37,11 +40,11 @@ const Echo = () => {
   const [isPaused, setIsPaused] = useState(false);
   const [visualizerData, setVisualizerData] = useState<number[]>([]);
   const [transcript, setTranscript] = useState("");
-  const [interimTranscript, setInterimTranscript] = useState("");
   const [newTransaction, setNewTransaction] =
     useState<NewTransactionType | null>(null);
-  const [isThinking, setIsThinking] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
+  const [isThinking, startThinking] = useTransition();
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
@@ -61,7 +64,6 @@ const Echo = () => {
   const speak = async (text: string) => {
     try {
       const audioSource = await TTS(text);
-
       const audio = new Audio(audioSource);
 
       return new Promise<void>((resolve) => {
@@ -78,39 +80,43 @@ const Echo = () => {
 
         audio.play().catch((error) => {
           console.error("Error playing audio:", error);
+          startRecording();
           resolve();
         });
       });
     } catch (error) {
       console.error("Error in text-to-speech:", error);
+      startRecording();
     }
   };
 
   useEffect(() => {
-    if (isSpeaking) {
-      speak("Hello Suraj welcome to echopay");
+    if (openEcho) {
+      speak("Hello Suraj");
     }
-  }, []);
+  }, [openEcho]);
 
   useEffect(() => {
     if (openEcho) {
-      if (mediaRecorderRef.current) {
-        mediaRecorderRef.current.stop();
-      }
-      if (recognitionRef.current) {
-        recognitionRef.current.stop();
-      }
-      if (audioContextRef.current) {
-        audioContextRef.current.close();
-      }
-      if (streamRef.current) {
-        streamRef.current.getTracks().forEach((track) => track.stop());
-      }
+      cleanupAudioResources();
       startRecording();
-    } else {
-      stopAndSendRecording();
     }
   }, [openEcho]);
+
+  const cleanupAudioResources = () => {
+    if (mediaRecorderRef.current) {
+      mediaRecorderRef.current.stop();
+    }
+    if (recognitionRef.current) {
+      recognitionRef.current.stop();
+    }
+    if (audioContextRef.current) {
+      audioContextRef.current.close();
+    }
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach((track) => track.stop());
+    }
+  };
 
   useEffect(() => {
     if ("SpeechRecognition" in window || "webkitSpeechRecognition" in window) {
@@ -119,38 +125,30 @@ const Echo = () => {
       recognitionRef.current = new SpeechRecognition();
       recognitionRef.current.continuous = true;
       recognitionRef.current.interimResults = true;
-      recognitionRef.current.lang = "en-US"; // Set language to English
+      recognitionRef.current.lang = "en-US";
 
       recognitionRef.current.onresult = (event: any) => {
-        let finalTranscript = "";
-        let currentInterim = "";
-
-        for (let i = 0; i < event.results.length; i++) {
+        let currentTranscript = "";
+        for (let i = event.resultIndex; i < event.results.length; i++) {
           if (event.results[i].isFinal) {
-            finalTranscript += event.results[i][0].transcript;
+            setTranscript(
+              (prev) => prev + " " + event.results[i][0].transcript
+            );
           } else {
-            currentInterim += event.results[i][0].transcript;
+            currentTranscript += event.results[i][0].transcript;
           }
         }
+      };
 
-        setTranscript(finalTranscript);
-        setInterimTranscript(currentInterim);
+      recognitionRef.current.onerror = (event: any) => {
+        console.error("Speech recognition error:", event.error);
+        toast.error("Speech recognition error. Please try again.");
+        setIsRecording(false);
       };
     }
 
     return () => {
-      if (animationFrameRef.current) {
-        cancelAnimationFrame(animationFrameRef.current);
-      }
-      if (audioContextRef.current) {
-        audioContextRef.current.close();
-      }
-      if (streamRef.current) {
-        streamRef.current.getTracks().forEach((track) => track.stop());
-      }
-      if (recognitionRef.current) {
-        recognitionRef.current.stop();
-      }
+      cleanupAudioResources();
     };
   }, []);
 
@@ -159,53 +157,25 @@ const Echo = () => {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       streamRef.current = stream;
 
-      // Set up audio context and analyzer
       audioContextRef.current = new AudioContext();
       analyserRef.current = audioContextRef.current.createAnalyser();
       const source = audioContextRef.current.createMediaStreamSource(stream);
       source.connect(analyserRef.current);
       analyserRef.current.fftSize = 256;
 
-      // Initialize speech recognition if not already initialized
-      if (
-        !recognitionRef.current &&
-        ("SpeechRecognition" in window || "webkitSpeechRecognition" in window)
-      ) {
-        const SpeechRecognition =
-          window.SpeechRecognition || window.webkitSpeechRecognition;
-        recognitionRef.current = new SpeechRecognition();
-        recognitionRef.current.continuous = true;
-        recognitionRef.current.interimResults = true;
-        recognitionRef.current.lang = "en-US"; // Set language to English
-
-        recognitionRef.current.onresult = (event: any) => {
-          let finalTranscript = "";
-          let currentInterim = "";
-
-          for (let i = 0; i < event.results.length; i++) {
-            if (event.results[i].isFinal) {
-              finalTranscript += event.results[i][0].transcript;
-            } else {
-              currentInterim += event.results[i][0].transcript;
-            }
-          }
-
-          setTranscript(finalTranscript);
-          setInterimTranscript(currentInterim);
-        };
-      }
-
-      // Start speech recognition
       if (recognitionRef.current) {
         recognitionRef.current.start();
       } else {
-        console.error("Speech recognition not supported");
+        toast.error("Speech recognition not supported");
+        return;
       }
 
       setIsRecording(true);
+      setTranscript("");
       visualize();
     } catch (err) {
       console.error("Error accessing microphone:", err);
+      toast.error("Could not access microphone. Please check permissions.");
     }
   };
 
@@ -241,143 +211,126 @@ const Echo = () => {
     }
   };
 
-  const stopAndSendRecording = () => {
-    if (isRecording) {
-      // Stop speech recognition
+  const stopAndSendRecording = async () => {
+    if (!isRecording || isProcessing) return;
+
+    try {
+      setIsProcessing(true);
+
       if (recognitionRef.current) {
         recognitionRef.current.stop();
       }
 
-      // Stop animation frame
-      if (animationFrameRef.current) {
-        cancelAnimationFrame(animationFrameRef.current);
+      const finalTranscript =
+        transcript.trim() || "let me know if you can hear me";
+      if (!finalTranscript) {
+        toast.error("Please say something");
+        return startRecording();
       }
 
-      // Stop all tracks from media stream
-      if (streamRef.current) {
-        streamRef.current.getTracks().forEach((track) => {
-          track.stop();
-          track.enabled = false;
-        });
-        streamRef.current = null;
+      const user = info || owner;
+      if (!user) {
+        toast.error("Unauthorized");
+        return;
       }
 
       setIsRecording(false);
       setIsPaused(false);
-      setInterimTranscript("");
 
-      // Send the transcript instead of audio
-      sendTranscript();
-    }
-  };
-
-  const cancelRecording = () => {
-    if (recognitionRef.current) {
-      recognitionRef.current.stop();
-    }
-    stopAndSendRecording();
-    setVisualizerData([]);
-    setTranscript("");
-    setInterimTranscript("");
-    setOpenEcho(false);
-  };
-
-  const sendTranscript = async () => {
-    if (!transcript.trim()) {
-      return startRecording();
-    }
-
-    if (!info) {
-      return toast.error("Unauthorized");
-    }
-
-    try {
-      setIsThinking(true);
-      const messages = [
+      const messages: ChatStructure[] = [
         ...[...chats, ...voiceChats].map((chat) => ({
           role: chat.role,
           content: `${chat.content}`,
         })),
         {
           role: "user",
-          content: `${transcript}`,
+          content: finalTranscript,
         },
       ];
 
-      const data = JSON.stringify({
+      const data = {
         messages,
         beneficiaries: JSON.stringify(
-          beneficiaries.map((b) => `${b.acc_name} - ${b.id} |`)
+          beneficiaries?.map(
+            (b) => `${b?.acc_name || ""} - ${b?.id || ""} |`
+          ) || []
         ),
         transactions: JSON.stringify(
-          transactions.map(
-            (t) =>
-              `${t.isCredit ? t.senderName : t.receiverName} - ${
-                t.isCredit ? "Credit" : "Debit"
-              } - NGN${t.amount} - ${t.date} |`
-          )
+          transactions?.map((t) => {
+            if (!t) return "";
+            return `${t.isCredit ? t.senderName : t.receiverName} - ${
+              t.isCredit ? "Credit" : "Debit"
+            } - NGN${t.amount} - ${t.date} |`;
+          }) || []
         ),
-        name: info.fullname,
-        balance: info.balance,
-      });
-
-      const config = {
-        method: "post",
-        maxBodyLength: Infinity,
-        url: "https://raj-assistant-api.vercel.app/api/echopay-models/voice",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        data: data,
+        name: user.fullname || "",
+        balance: Number(user.balance) || 0,
       };
 
-      const response = await axios.request(config);
-      const jsonData = JSON.parse(response.data);
+      startThinking(async () => {
+        try {
+          const response = await EchoTextChat(data);
 
-      setIsThinking(false);
+          if (!response) {
+            throw new Error("No response received");
+          }
 
-      if (jsonData.newTransaction) {
-        setNewTransaction(jsonData.newTransaction);
-      }
+          const jsonData = JSON.parse(response);
 
-      if (jsonData.message) {
-        setIsSpeaking(true);
-        await speak(jsonData.message);
-        setIsSpeaking(false);
-        startRecording();
+          if (jsonData.newTransaction) {
+            setNewTransaction(jsonData.newTransaction);
+          }
 
-        const userMessage: Chat = {
-          id: nanoid(),
-          role: "user",
-          content: transcript,
-          createdAt: new Date(),
-        };
-        const modelMessage: Chat = {
-          id: nanoid(),
-          role: "assistant",
-          content: jsonData.message,
-          createdAt: new Date(),
-        };
+          if (jsonData.message) {
+            setIsSpeaking(true);
+            await speak(jsonData.message);
+            setIsSpeaking(false);
 
-        setVoiceChats((state) => [...state, userMessage, modelMessage]);
-      }
+            const userMessage: Chat = {
+              id: nanoid(),
+              role: "user",
+              content: finalTranscript,
+              createdAt: new Date(),
+            };
+            const modelMessage: Chat = {
+              id: nanoid(),
+              role: "assistant",
+              content: jsonData.message,
+              createdAt: new Date(),
+            };
 
-      if (jsonData.transactionChart) {
-        setChartType("TRANSACTIONS");
-      }
+            setVoiceChats((state) => [...state, userMessage, modelMessage]);
+          }
 
-      // Reset after successful send
-      setVisualizerData([]);
-      setTranscript("");
-      setInterimTranscript("");
-      setOpenEcho(false);
+          if (jsonData.transactionChart) {
+            setChartType("TRANSACTIONS");
+          }
+        } catch (error) {
+          alert(`Error processing response: ${error}`);
+          toast.error("Failed to process response. Please try again.");
+          startRecording();
+        } finally {
+          setVisualizerData([]);
+          setTranscript("");
+          setIsProcessing(false);
+        }
+      });
     } catch (error) {
-      console.error("Error sending transcript:", error);
-      setIsThinking(false);
+      console.error("Error in stopAndSendRecording:", error);
+      toast.error("Something went wrong. Please try again.");
       setIsSpeaking(false);
-      // Restart recording even if there's an error
+      setIsProcessing(false);
       startRecording();
     }
+  };
+
+  const cancelRecording = () => {
+    cleanupAudioResources();
+    setVisualizerData([]);
+    setTranscript("");
+    setIsRecording(false);
+    setIsPaused(false);
+    setOpenEcho(false);
   };
 
   return (
@@ -422,12 +375,9 @@ const Echo = () => {
                 ))}
               </div>
             )}
-            {(transcript || interimTranscript) && (
+            {transcript && (
               <div className="mt-4 p-4 bg-gray-100 rounded-lg max-w-xs text-sm">
                 {transcript}
-                <span className="text-gray-500 text-center">
-                  {interimTranscript}
-                </span>
               </div>
             )}
           </div>
@@ -459,7 +409,10 @@ const Echo = () => {
 
                 <button
                   onClick={stopAndSendRecording}
-                  className="w-16 h-16 rounded-full bg-theme-primary hover:opacity-90 flex items-center justify-center aspect-square"
+                  disabled={isProcessing}
+                  className={`w-16 h-16 rounded-full ${
+                    isProcessing ? "opacity-50" : "hover:opacity-90"
+                  } bg-theme-primary flex items-center justify-center aspect-square`}
                 >
                   <SendHorizonal className="w-8 h-8 text-white" />
                 </button>
