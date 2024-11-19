@@ -16,6 +16,9 @@ import useTransaction from "@/hooks/use-transaction";
 import Echo from "./_components/echo";
 import useEcho from "@/hooks/use-echo";
 import useUserInfo from "@/hooks/use-userinfo";
+import { EchoChatText } from "@/actions/text-chat";
+import { ChatStructure } from "@/actions/voice-chat";
+import { toast } from "sonner";
 
 const ChatPage = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -57,6 +60,10 @@ const ChatPage = () => {
       messageToSend = lastAttemptedMessage;
     }
 
+    if (!info) {
+      return toast.error("Unauthorized");
+    }
+
     if (!messageToSend) return;
 
     const history = [...chats];
@@ -76,9 +83,11 @@ const ChatPage = () => {
     addChat(userMessage);
     setNewMessage("");
 
-    const messages = [
+    const messages: ChatStructure[] = [
       ...history.map((chat) => ({
-        role: chat.role === "model" ? "assistant" : "user",
+        role: (chat.role === "model" ? "assistant" : "user") as
+          | "user"
+          | "assistant",
         content: `${chat.content}`,
       })),
       {
@@ -88,7 +97,7 @@ const ChatPage = () => {
     ];
 
     try {
-      const data = JSON.stringify({
+      const data = {
         messages,
         beneficiaries: JSON.stringify(
           beneficiaries.map((b) => `${b.acc_name} - ${b.id} |`)
@@ -101,22 +110,29 @@ const ChatPage = () => {
               } - NGN${t.amount} - ${t.date} |`
           )
         ),
-        name: info?.fullname,
-        balance: info?.balance,
-      });
-
-      const config = {
-        method: "post",
-        maxBodyLength: Infinity,
-        url: "https://raj-assistant-api.vercel.app/api/echopay-models/chat",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        data: data,
+        name: info.fullname || "",
+        balance: info.balance || 0,
       };
 
-      const response = await axios.request(config);
-      const jsonData = JSON.parse(response.data);
+      // const config = {
+      //   method: "post",
+      //   maxBodyLength: Infinity,
+      //   url: "https://raj-assistant-api.vercel.app/api/echopay-models/chat",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //   },
+      //   data: data,
+      // };
+
+      // const response = await axios.request(config);
+
+      const response = await EchoChatText(data);
+
+      if (!response) {
+        return toast.error("Something went wrong");
+      }
+
+      const jsonData = JSON.parse(response);
 
       if (
         !jsonData.message &&
