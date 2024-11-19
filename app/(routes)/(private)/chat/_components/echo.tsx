@@ -267,6 +267,8 @@ const Echo = () => {
 
       const response = await EchoTextChat(data);
 
+      alert(response);
+
       if (!response) {
         throw new Error("No response received");
       }
@@ -279,7 +281,6 @@ const Echo = () => {
       }
 
       if (jsonData.message) {
-        toast.success("Response received");
         setIsSpeaking(true);
         await speak(jsonData.message);
         setIsSpeaking(false);
