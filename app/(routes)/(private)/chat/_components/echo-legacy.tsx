@@ -83,7 +83,6 @@ const Echo = () => {
       });
     } catch (error) {
       console.error("Error in text-to-speech:", error);
-      startRecording();
     }
   };
 
@@ -108,6 +107,8 @@ const Echo = () => {
         streamRef.current.getTracks().forEach((track) => track.stop());
       }
       startRecording();
+    } else {
+      stopAndSendRecording();
     }
   }, [openEcho]);
 
@@ -240,19 +241,33 @@ const Echo = () => {
     }
   };
 
-  const stopAndSendRecording = async () => {
+  const stopAndSendRecording = () => {
     if (isRecording) {
       // Stop speech recognition
       if (recognitionRef.current) {
         recognitionRef.current.stop();
       }
 
+      // Stop animation frame
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
+
+      // Stop all tracks from media stream
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach((track) => {
+          track.stop();
+          track.enabled = false;
+        });
+        streamRef.current = null;
+      }
+
       setIsRecording(false);
       setIsPaused(false);
       setInterimTranscript("");
 
-      // Send the transcript and automatically start new recording cycle
-      await sendTranscript();
+      // Send the transcript instead of audio
+      sendTranscript();
     }
   };
 
@@ -260,20 +275,10 @@ const Echo = () => {
     if (recognitionRef.current) {
       recognitionRef.current.stop();
     }
-    if (animationFrameRef.current) {
-      cancelAnimationFrame(animationFrameRef.current);
-    }
-    if (audioContextRef.current) {
-      audioContextRef.current.close();
-    }
-    if (streamRef.current) {
-      streamRef.current.getTracks().forEach((track) => track.stop());
-    }
+    stopAndSendRecording();
     setVisualizerData([]);
     setTranscript("");
     setInterimTranscript("");
-    setIsRecording(false);
-    setIsPaused(false);
     setOpenEcho(false);
   };
 
@@ -339,6 +344,7 @@ const Echo = () => {
         setIsSpeaking(true);
         await speak(jsonData.message);
         setIsSpeaking(false);
+        startRecording();
 
         const userMessage: Chat = {
           id: nanoid(),
@@ -360,13 +366,11 @@ const Echo = () => {
         setChartType("TRANSACTIONS");
       }
 
-      // Reset transcript but don't close the drawer
+      // Reset after successful send
       setVisualizerData([]);
       setTranscript("");
       setInterimTranscript("");
-
-      // Automatically start recording again
-      startRecording();
+      setOpenEcho(false);
     } catch (error) {
       console.error("Error sending transcript:", error);
       setIsThinking(false);
