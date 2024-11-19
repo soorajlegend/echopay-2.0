@@ -308,6 +308,7 @@ const Echo = () => {
       setTranscript("");
     } catch (error) {
       console.error("Error sending transcript:", error);
+      alert(error);
       toast.error("Something went wrong. Please try again.");
       setIsThinking(false);
       setIsSpeaking(false);
