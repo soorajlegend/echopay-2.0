@@ -183,7 +183,7 @@ export default function KYCProcess() {
         {
           phone: info.phone || info.email,
           fullname: formData.fullname || info.fullname,
-          dob: formData.dob || "",
+          dob: formData.date || "",
           nin: formData.nin || "",
           bvn: formData.bvn || "",
         }
