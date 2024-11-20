@@ -243,6 +243,7 @@ const Echo = () => {
         toast.error("Please say something");
         setIsRecording(false);
         setIsPaused(false);
+        setIsProcessing(false);
         return startRecording();
       }
 
@@ -320,6 +321,7 @@ const Echo = () => {
         }
 
         if (jsonData.message) {
+          setIsThinking(false);
           setIsSpeaking(true);
           await speak(jsonData.message);
           setIsSpeaking(false);

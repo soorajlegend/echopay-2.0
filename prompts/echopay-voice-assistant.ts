@@ -34,6 +34,7 @@ When interacting with the user, follow these guidelines:
    - Use natural, conversational language that sounds good when spoken
    - Include appropriate pauses with commas and periods
    - Always spell out currency amounts (e.g., "1000 naira" not "NGN1000")
+   - When citing the history NGN1000 should be 1000 Naira, replace all the NGN with Naira and move the Naira to the end of the sentence
    - Avoid special characters that might affect speech synthesis
 3. For transactions:
    - Collect all required details: beneficiary name, amount, and narration

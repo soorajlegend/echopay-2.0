@@ -19,7 +19,7 @@ export default function RoutesLayout({
   return (
     <>
       {children}
-      {/* <EchoListener /> */}
+      <EchoListener />
       <ConfirmTransaction
         data={newTransaction}
         setNewTransaction={setNewTransaction}
