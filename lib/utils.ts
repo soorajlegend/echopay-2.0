@@ -5,6 +5,10 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+export function cx(...args: ClassValue[]) {
+  return twMerge(clsx(...args));
+}
+
 function countDoubleQuotes(str: string) {
   // Use a regular expression to find all occurrences of double quotes
   const matches = str.match(/"/g);
