@@ -59,7 +59,7 @@ export const IncomeVersusSpendingChart = () => {
   }, [transactions]);
 
   return (
-    <div className="flex flex-col gap-4 max-w-0 py-4 px-2">
+    <div className="flex flex-col gap-4 max-w-xl mx-auto py-4 px-2">
       <p className="mx-auto font-mono text-sm font-medium">
         Income vs Spending (Daily)
       </p>
