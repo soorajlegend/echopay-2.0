@@ -49,9 +49,8 @@ const Echo = () => {
   const animationFrameRef = useRef<number>();
   const streamRef = useRef<MediaStream | null>(null);
   const recognitionRef = useRef<Window["SpeechRecognition"] | null>(null);
-  const [voiceChats, setVoiceChats] = useState<Chat[]>([]);
 
-  const { chats } = useChat();
+  const { chats, addChat } = useChat();
   const { info } = useUserInfo();
   const { beneficiaries } = useBeneficiary();
   const { transactions } = useTransaction();
@@ -158,7 +157,9 @@ const Echo = () => {
       recognitionRef.current.onerror = (event: any) => {
         console.error("Speech recognition error:", event.error);
         if (event.error !== "no-speech") {
-          toast.error("Speech recognition error. Please try again.");
+          toast.loading("Reconnecting");
+          cleanupAudioResources();
+          toast.dismiss();
           setIsRecording(false);
         }
       };
@@ -261,7 +262,7 @@ const Echo = () => {
 
       try {
         const messages: ChatStructure[] = [
-          ...[...chats, ...voiceChats].map((chat) => ({
+          ...chats.map((chat) => ({
             role:
               chat.role === "user"
                 ? "user"
@@ -339,7 +340,8 @@ const Echo = () => {
             createdAt: new Date(),
           };
 
-          setVoiceChats((state) => [...state, userMessage, modelMessage]);
+          addChat(userMessage);
+          addChat(modelMessage);
         }
 
         if (jsonData.transactionChart) {
