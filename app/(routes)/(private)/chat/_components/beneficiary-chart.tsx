@@ -24,9 +24,11 @@ export const BeneficiaryChart = () => {
       (acc, transaction) => {
         // For credits show sender, for debits show receiver
         const beneficiary = transaction.isCredit
-          ? transaction.senderName
+          ? transaction.receiverName
           : transaction.receiverName || "Unknown";
-        const amount = Math.abs(transaction.amount);
+        const amount = transaction.isCredit
+          ? Math.abs(transaction.amount)
+          : -Math.abs(transaction.amount); // Make debits negative
 
         if (!acc[beneficiary]) {
           acc[beneficiary] = 0;

@@ -115,7 +115,7 @@ const useTransaction = create(
           date: "2024-11-01T08:00:00.000Z",
           createdAt: "2024-11-01T08:00:00.000Z",
           updatedAt: "2024-11-01T08:00:00.000Z",
-          isCredit: true,
+          isCredit: false,
         },
         {
           id: 7,
