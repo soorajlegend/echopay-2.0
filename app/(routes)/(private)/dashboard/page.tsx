@@ -1,8 +1,8 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import Image from "next/image";
 import { useState } from "react";
-import { Home, Wallet, MessageSquare, Menu } from "lucide-react";
+import { Home, Wallet, MessageSquare, Menu, MoveLeft, Router } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import useUserInfo from "@/hooks/use-userinfo";
@@ -14,6 +14,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { ArrowDownIcon, ArrowUpIcon, ClockIcon } from 'lucide-react'
 import { Button } from "@/components/ui/button";
 
 const features = [
@@ -136,35 +138,22 @@ const DashboardView = () => {
 };
 
 const TransactionView = () => (
+
   <div className="mt-[48px] justify-between mb-10">
-    <div className="h-[224px] rounded-[8px] bg-[#D1DCE5] p-4 flex flex-col justify-between">
-      <div className=" h-[48px] rounded-full mt-[35px] flex justify-center items-center">
-        <Image
-          className="w-[68px] h-[68px] -rotate-[35deg]"
-          src="/mic-01.svg"
-          alt="mic"
-          width={32}
-          height={32}
-        />
-        <Image
-          className="w-[68px] h-[68px]"
-          src="/chatting.svg"
-          alt="mic"
-          width={32}
-          height={32}
-        />
-      </div>
-      <Link href="/chat" className="flex justify-between items-center">
-        <p className=" text-[18px] text-[#1A1A1A] font-medium">Echo Ai</p>
-        <Image
-          className="w-[6px] h-[12px]"
-          src="/right.svg"
-          width={6}
-          height={12}
-          alt="icon"
-        />
-      </Link>
+    <div className="flex justify-between items-center">
+      <MoveLeft className="w-[24px] h-[24px] cursor-pointer text-[#003056]" />
+    <h2>Transction history</h2>
+    <Image
+                src="/notification.svg"
+                width={24}
+                height={24}
+                alt="notification icon"
+              />
     </div>
+    <div className="">
+      
+    </div>
+
     <div className="mt-[48px]">
       <div>
         <div className="flex justify-between items-center">
@@ -193,6 +182,7 @@ const TransactionView = () => (
       </div>
     </div>
   </div>
+
 );
 
 const AiView = () => (
@@ -290,7 +280,12 @@ const DashboardPage = () => {
   // const [showPopup, setShowPopup] = useState(true);
 
   const { info } = useUserInfo();
+  const router = useRouter();
   console.log(info)
+
+  useEffect(() => {
+    router.push(`/dashboard/${activeView}`);
+  }, [activeView, router]);
 
   // const isVerified = info?.isVerified
 
@@ -307,7 +302,7 @@ const DashboardPage = () => {
   // };
 
   return (
-    <div className="w-full relative h-screen flex flex-col max-w-md mx-auto p-6 pb-10 md:pb-0">
+    <div className="w-full border-2 border-red-500 relative h-screen flex flex-col max-w-md mx-auto p-6 pb-10 md:pb-0">
       <div className="flex-1 overflow-y-auto">
         <div>
           <div className="flex justify-between items-center">
@@ -335,7 +330,8 @@ const DashboardPage = () => {
             </div>
           </div>
 
-          <div className="h-[111px] w-full text-white mt-[60px] flex p-4 justify-between rounded-[8px] bg-[#003056]">
+          {activeView === "home" && (
+            <div className="h-[111px] border-2 border-red-500 w-full text-white mt-[60px] flex p-4 justify-between rounded-[8px] bg-[#003056]">
             <div className="flex flex-col justify-between">
               <p className="">Balance</p>
               <p className="text-[22px] md:text-[24px] font-semibold">
@@ -361,6 +357,8 @@ const DashboardPage = () => {
               </div>
             </div>
           </div>
+          )} 
+
         </div>
 
         {activeView === "home" && (
@@ -396,7 +394,7 @@ const DashboardPage = () => {
           <div className="maxw-md mxauto flex justify-around min-w-0 items-center h-16">
   
             <button
-              onClick={() => setActiveView("home")}
+              onClick={() => {setActiveView("home"); router.push("/dashoard/home")}}
               className={`flex flex-col items-center ${
                 activeView === "home" ? "text-[#003056]" : "text-gray-500"
               }`}
@@ -405,7 +403,7 @@ const DashboardPage = () => {
               <span className="text-xs mt-1">Home</span>
             </button>
             <button
-              onClick={() => setActiveView("transaction")}
+              onClick={() => {setActiveView("transaction"); router.push("/dashboard/transaction")}}
               className={`flex flex-col items-center ${
                 activeView === "wallet" ? "text-[#003056]" : "text-gray-500"
               }`}
@@ -414,7 +412,7 @@ const DashboardPage = () => {
               <span className="text-xs mt-1">Transaction</span>
             </button>
             <button
-              onClick={() => setActiveView("ai")}
+              onClick={() => {setActiveView("ai"); router.push("/dashoard/ai")}}
               className={`flex flex-col items-center ${
                 activeView === "ai" ? "text-[#003056]" : "text-gray-500"
               }`}
@@ -423,7 +421,7 @@ const DashboardPage = () => {
               <span className="text-xs mt-1">Ai</span>
             </button>
             <button
-              onClick={() => setActiveView("more")}
+              onClick={() => {setActiveView("more"); router.push("/dashoard/more")}}
               className={`flex flex-col items-center ${
                 activeView === "more" ? "text-[#003056]" : "text-gray-500"
               }`}
