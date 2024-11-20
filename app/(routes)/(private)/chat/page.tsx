@@ -19,6 +19,7 @@ import { EchoTextChat } from "@/actions/text-chat";
 import { ChatStructure } from "@/actions/voice-chat";
 import { toast } from "sonner";
 import { owner } from "@/store";
+import useNewTransaction from "@/hooks/use-new-transaction";
 
 const ChatPage = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -27,8 +28,6 @@ const ChatPage = () => {
   const [showRetry, setShowRetry] = useState(false);
 
   const [isLoading, setIsLoading] = useState(false);
-  const [newTransaction, setNewTransaction] =
-    useState<NewTransactionType | null>(null);
   const [chartType, setChartType] = useState<ChartType>(null);
 
   const { info } = useUserInfo();
@@ -36,6 +35,7 @@ const ChatPage = () => {
   const { chats, addChat } = useChat();
   const { beneficiaries } = useBeneficiary();
   const { transactions } = useTransaction();
+  const { newTransaction, setNewTransaction } = useNewTransaction();
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -203,12 +203,7 @@ const ChatPage = () => {
         disabled={isLoading}
       />
 
-      <ConfirmTransaction
-        data={newTransaction}
-        setNewTransaction={setNewTransaction}
-      />
       {chartType && <Chart type={chartType} setType={setChartType} />}
-      {openEcho && <Echo />}
     </div>
   );
 };
