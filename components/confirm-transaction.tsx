@@ -69,37 +69,42 @@ const ConfirmTransaction = ({
     }
 
     setIsLoading(true);
-    const response = await axios.post(
-      "https://echo-pay.onrender.com/api/transfer",
-      {
-        sender: info.phone,
-        receiver: cleanPhoneNumber(beneficiary.acc_num),
-        amount: data.amount,
-        narration: data.description,
-        pin: password,
-      }
-    );
+    try {
+      const response = await axios.post(
+        "https://echo-pay.onrender.com/api/transfer",
+        {
+          sender: info.phone,
+          receiver: cleanPhoneNumber(beneficiary.acc_num),
+          amount: data.amount,
+          narration: data.description,
+          pin: password,
+        }
+      );
 
-    if (response.status === 200) {
-      toast.success("Transaction completed successfully");
-      addTransaction(response.data.responseBody);
+      if (response.status === 200) {
+        toast.success("Transaction completed successfully");
+        addTransaction(response.data.responseBody);
 
-      if (info) {
-        setInfo({
-          ...info,
-          balance: info.balance - data.amount,
-        });
-      }
+        if (info) {
+          setInfo({
+            ...info,
+            balance: info.balance - data.amount,
+          });
+        }
 
-      if (closeRef.current) {
-        closeRef.current.click();
+        if (closeRef.current) {
+          closeRef.current.click();
+        }
+        setNewTransaction(null);
+      } else {
+        toast.error(response.data.message || "Something went wrong");
+        setShowPinInput(false);
       }
-      setNewTransaction(null);
-      setIsLoading(false);
-    } else {
-      toast.error(response.data.message);
-      setIsLoading(false);
+    } catch (error) {
+      toast.error("Failed to complete transaction");
       setShowPinInput(false);
+    } finally {
+      setIsLoading(false);
     }
   };
 

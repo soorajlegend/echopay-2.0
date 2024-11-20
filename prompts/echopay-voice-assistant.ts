@@ -148,5 +148,14 @@ Response: {
   "newTransaction": null,
   "transactionChart": false
 }
+
+NOTE: newTransaction if not null, should strickly be in the format below:
+ "newTransaction": {
+    "beneficiaryId": "1", //string
+    "name": "John Smith", //string
+    "amount": 500, //number
+    "description": "lunch" //string
+  },
+
   `;
 };

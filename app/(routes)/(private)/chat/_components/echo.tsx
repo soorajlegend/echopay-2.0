@@ -257,7 +257,7 @@ const Echo = () => {
           messages,
           beneficiaries: JSON.stringify(
             beneficiaries?.map(
-              (b) => `${b?.acc_name || ""} - ${b?.id || ""} |`
+              (b) => `id:${b?.id || ""} - name:${b?.acc_name || ""}  |`
             ) || []
           ),
           transactions: JSON.stringify(
