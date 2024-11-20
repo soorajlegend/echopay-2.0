@@ -26,7 +26,8 @@ export default function RoutesLayout({
       />
 
       {openEcho && <Echo />}
-      {showChart && <Chart />}
+      {/* {showChart && <Chart />} */}
+      <Chart />
     </>
   );
 }
