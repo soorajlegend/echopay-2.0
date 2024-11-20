@@ -3,21 +3,17 @@
 import React from "react";
 import TransactionChart from "./transaction-chart";
 import { Drawer, DrawerContent } from "@/components/ui/drawer";
+import useShowChart, { ChartType } from "@/hooks/use-show-chart";
 
-export type ChartType = "TRANSACTIONS" | null;
+const Chart = () => {
+  const { showChart, setShowChart } = useShowChart();
 
-interface ChartProps {
-  type: ChartType;
-  setType: (value: ChartType) => void;
-}
-
-const Chart = ({ type, setType }: ChartProps) => {
-  if (type === null) return;
+  if (showChart === null) return;
 
   return (
-    <Drawer open onClose={() => setType(null)}>
+    <Drawer open onClose={() => setShowChart(null)}>
       <DrawerContent>
-        {type === "TRANSACTIONS" && <TransactionChart />}
+        {showChart === "TRANSACTIONS" && <TransactionChart />}
       </DrawerContent>
     </Drawer>
   );

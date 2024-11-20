@@ -81,6 +81,8 @@ const ConfirmTransaction = ({
         }
       );
 
+      setPassword("")
+
       if (response.status === 200) {
         toast.success("Transaction completed successfully");
         addTransaction(response.data.responseBody);

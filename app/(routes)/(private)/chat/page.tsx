@@ -6,13 +6,10 @@ import React, { useEffect, useState, useRef } from "react";
 import { nanoid } from "nanoid";
 import ChatItem from "@/components/chat-item";
 import useChat from "@/hooks/use-chat";
-import ConfirmTransaction from "@/components/confirm-transaction";
 import useBeneficiary from "@/hooks/use-beneficiary";
 import { AudioLines, ChevronLeft, RefreshCw } from "lucide-react";
 import Link from "next/link";
-import Chart, { ChartType } from "./_components/chart";
 import useTransaction from "@/hooks/use-transaction";
-import Echo from "./_components/echo";
 import useEcho from "@/hooks/use-echo";
 import useUserInfo from "@/hooks/use-userinfo";
 import { EchoTextChat } from "@/actions/text-chat";
@@ -20,6 +17,7 @@ import { ChatStructure } from "@/actions/voice-chat";
 import { toast } from "sonner";
 import { owner } from "@/store";
 import useNewTransaction from "@/hooks/use-new-transaction";
+import useShowChart from "@/hooks/use-show-chart";
 
 const ChatPage = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -28,7 +26,6 @@ const ChatPage = () => {
   const [showRetry, setShowRetry] = useState(false);
 
   const [isLoading, setIsLoading] = useState(false);
-  const [chartType, setChartType] = useState<ChartType>(null);
 
   const { info } = useUserInfo();
   const { openEcho, setOpenEcho } = useEcho();
@@ -36,6 +33,7 @@ const ChatPage = () => {
   const { beneficiaries } = useBeneficiary();
   const { transactions } = useTransaction();
   const { newTransaction, setNewTransaction } = useNewTransaction();
+  const { setShowChart } = useShowChart();
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -139,7 +137,7 @@ const ChatPage = () => {
       }
 
       if (jsonData.transactionChart) {
-        setChartType("TRANSACTIONS");
+        setShowChart("TRANSACTIONS");
       }
     } catch (error) {
       console.error("API request failed:", error);
@@ -202,8 +200,6 @@ const ChatPage = () => {
         onSubmit={handleSubmit}
         disabled={isLoading}
       />
-
-      {chartType && <Chart type={chartType} setType={setChartType} />}
     </div>
   );
 };

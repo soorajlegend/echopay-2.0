@@ -9,9 +9,7 @@ import {
   SendHorizonal,
   Loader,
   Volume2,
-  CloudCog,
 } from "lucide-react";
-import axios from "axios";
 import { Drawer, DrawerContent } from "@/components/ui/drawer";
 import useEcho from "@/hooks/use-echo";
 import useChat from "@/hooks/use-chat";
@@ -19,15 +17,14 @@ import useTransaction from "@/hooks/use-transaction";
 import useBeneficiary from "@/hooks/use-beneficiary";
 import useUserInfo from "@/hooks/use-userinfo";
 import { toast } from "sonner";
-import { Chat, NewTransactionType } from "@/types";
+import { Chat } from "@/types";
 import { nanoid } from "nanoid";
-import { ChartType } from "./chart";
-import TransactionChart from "./transaction-chart";
 import ConfirmTransaction from "@/components/confirm-transaction";
 import { TTS } from "@/actions/voice";
 import { ChatStructure, EchoVoiceChat } from "@/actions/voice-chat";
 import { owner } from "@/store";
 import useNewTransaction from "@/hooks/use-new-transaction";
+import useShowChart from "@/hooks/use-show-chart";
 
 declare global {
   interface Window {
@@ -53,7 +50,6 @@ const Echo = () => {
   const streamRef = useRef<MediaStream | null>(null);
   const recognitionRef = useRef<Window["SpeechRecognition"] | null>(null);
   const [voiceChats, setVoiceChats] = useState<Chat[]>([]);
-  const [chartType, setChartType] = useState<ChartType>(null);
 
   const { chats } = useChat();
   const { info } = useUserInfo();
@@ -61,6 +57,7 @@ const Echo = () => {
   const { transactions } = useTransaction();
   const { openEcho, setOpenEcho } = useEcho();
   const { newTransaction, setNewTransaction } = useNewTransaction();
+  const { setShowChart } = useShowChart();
 
   const speak = async (text: string) => {
     try {
@@ -321,7 +318,7 @@ const Echo = () => {
         }
 
         if (jsonData.transactionChart) {
-          setChartType("TRANSACTIONS");
+          setShowChart("TRANSACTIONS");
         }
       } catch (error) {
         alert(`Error processing response: ${error}`);
@@ -358,21 +355,45 @@ const Echo = () => {
       <DrawerContent className="min-h-[60%] w-full">
         <div className="flex-1 flex flex-col items-center justify-between">
           <div className="flex-1 flex flex-col items-center justify-center w-full max-w-lg mx-auto">
-            {chartType === "TRANSACTIONS" && <TransactionChart />}
             <ConfirmTransaction
               data={newTransaction}
               setNewTransaction={setNewTransaction}
             />
             {isThinking && (
-              <div className="flex items-center gap-2 mb-4">
-                <Loader className="w-6 h-6 animate-spin text-theme-primary" />
-                <span className="text-sm text-gray-600">Thinking...</span>
+              <div className="flex flex-col items-center gap-4 mb-4">
+                <div className="flex gap-2">
+                  {[1, 2, 3].map((i) => (
+                    <div
+                      key={i}
+                      className="w-4 h-4 rounded-full bg-theme-primary animate-pulse"
+                      style={{
+                        animationDelay: `${i * 0.15}s`
+                      }}
+                    />
+                  ))}
+                </div>
+                <span className="text-sm text-gray-600 animate-pulse">
+                  Thinking...
+                </span>
               </div>
             )}
             {isSpeaking && (
-              <div className="flex items-center gap-2 mb-4">
-                <Volume2 className="w-6 h-6 animate-pulse text-theme-primary" />
-                <span className="text-sm text-gray-600">Speaking...</span>
+              <div className="flex flex-col items-center gap-4 mb-4">
+                <div className="flex gap-1 h-8 items-center">
+                  {[1, 2, 3, 4, 5].map((i) => (
+                    <div
+                      key={i}
+                      className="w-1 bg-theme-primary rounded-full animate-[speaking_0.5s_ease-in-out_infinite]"
+                      style={{
+                        height: `${Math.random() * 100}%`,
+                        animationDelay: `${i * 0.1}s`
+                      }}
+                    />
+                  ))}
+                </div>
+                <span className="text-sm text-gray-600">
+                  Speaking...
+                </span>
               </div>
             )}
             {!isThinking && !isSpeaking && (
