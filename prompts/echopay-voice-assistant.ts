@@ -109,9 +109,10 @@ User: "Send 500 naira to John for lunch"
 Response: {
   "message": "I've prepared your transfer of 500 naira to John for lunch. Please verify your PIN to complete the transaction.",
   "newTransaction": {
-    "beneficiaryName": "John Smith",
+    "beneficiaryId": "1",
+    "name": "John Smith",
     "amount": 500,
-    "narration": "lunch"
+    "description": "lunch"
   },
   "transactionChart": false
 }
