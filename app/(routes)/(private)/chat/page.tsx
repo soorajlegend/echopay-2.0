@@ -213,6 +213,7 @@ const ChatPage = () => {
         className="flex-1 border-none rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
         onSubmit={handleSubmit}
         disabled={isLoading}
+        autoFocus={!isLoading}
       />
     </div>
   );
