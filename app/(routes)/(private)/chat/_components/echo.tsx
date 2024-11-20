@@ -219,8 +219,7 @@ const Echo = () => {
         recognitionRef.current.stop();
       }
 
-      const finalTranscript =
-        transcript.trim();
+      const finalTranscript = transcript;
       if (!finalTranscript) {
         toast.error("Please say something");
         return startRecording();
