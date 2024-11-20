@@ -4,7 +4,7 @@ import { AreaChart } from "@/components/ui/area-chart";
 import useTransaction from "@/hooks/use-transaction";
 import React from "react";
 
-interface MonthlyTotal {
+interface DailyTotal {
   date: string;
   Credits: number;
   Debits: number;
@@ -14,26 +14,26 @@ export const IncomeVersusSpendingChart = () => {
   const { transactions } = useTransaction();
 
   const chartData = React.useMemo(() => {
-    // Group transactions by month and calculate totals
-    const monthlyTotals = transactions.reduce<Record<string, MonthlyTotal>>(
+    // Group transactions by day and calculate totals
+    const dailyTotals = transactions.reduce<Record<string, DailyTotal>>(
       (acc, transaction) => {
         const date = new Date(transaction.createdAt);
-        const monthYear = `${date.toLocaleString("default", {
+        const dayFormat = `${date.getDate()} ${date.toLocaleString("default", {
           month: "short",
-        })} ${date.getFullYear().toString().slice(2)}`;
+        })}`;
 
-        if (!acc[monthYear]) {
-          acc[monthYear] = {
-            date: monthYear,
+        if (!acc[dayFormat]) {
+          acc[dayFormat] = {
+            date: dayFormat,
             Credits: 0,
             Debits: 0,
           };
         }
 
         if (transaction.isCredit) {
-          acc[monthYear].Credits += transaction.amount;
+          acc[dayFormat].Credits += transaction.amount;
         } else {
-          acc[monthYear].Debits += transaction.amount;
+          acc[dayFormat].Debits += transaction.amount;
         }
 
         return acc;
@@ -42,20 +42,26 @@ export const IncomeVersusSpendingChart = () => {
     );
 
     // Convert to array and sort by date
-    return Object.values(monthlyTotals).sort((a, b) => {
-      const [aMonth, aYear] = a.date.split(" ");
-      const [bMonth, bYear] = b.date.split(" ");
-      return (
-        new Date(`${aMonth} 20${aYear}`).getTime() -
-        new Date(`${bMonth} 20${bYear}`).getTime()
-      );
+    const sortedData = Object.values(dailyTotals).sort((a, b) => {
+      const dateA = new Date(a.date + " " + new Date().getFullYear());
+      const dateB = new Date(b.date + " " + new Date().getFullYear());
+      return dateA.getTime() - dateB.getTime();
     });
+
+    // Ensure first and last labels are always visible
+    if (sortedData.length > 0) {
+      sortedData[0].date = "📅 " + sortedData[0].date;
+      sortedData[sortedData.length - 1].date =
+        "📅 " + sortedData[sortedData.length - 1].date;
+    }
+
+    return sortedData;
   }, [transactions]);
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 max-w-0 py-4 px-2">
       <p className="mx-auto font-mono text-sm font-medium">
-        Income vs Spending
+        Income vs Spending (Daily)
       </p>
       <AreaChart
         className="h-72"
@@ -64,6 +70,8 @@ export const IncomeVersusSpendingChart = () => {
         categories={["Credits", "Debits"]}
         colors={["emerald", "pink"]}
         showLegend={true}
+        showGridLines={true}
+        startEndOnly={true}
         valueFormatter={(number: number) =>
           `₦${Intl.NumberFormat("en-US").format(number).toString()}`
         }
