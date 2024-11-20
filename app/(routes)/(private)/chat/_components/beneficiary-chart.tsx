@@ -15,14 +15,17 @@ export const BeneficiaryChart = () => {
     if (!transactions) return [];
 
     const filteredTransactions = transactions.filter((transaction) => {
-      if (filter === "credit") return transaction.amount > 0;
-      if (filter === "debit") return transaction.amount < 0;
+      if (filter === "credit") return transaction.isCredit;
+      if (filter === "debit") return !transaction.isCredit;
       return true;
     });
 
     const beneficiaryGroups = filteredTransactions.reduce(
       (acc, transaction) => {
-        const beneficiary = transaction.senderName || "Unknown";
+        // For credits show sender, for debits show receiver
+        const beneficiary = transaction.isCredit
+          ? transaction.senderName
+          : transaction.receiverName || "Unknown";
         const amount = Math.abs(transaction.amount);
 
         if (!acc[beneficiary]) {
@@ -41,7 +44,7 @@ export const BeneficiaryChart = () => {
   }, [transactions, filter]);
 
   return (
-    <div className="min-h-60 flex flex-col gap-y-4">
+    <div className="min-h-60 flex flex-col gap-y-4 py-4 px-2 lg:px-5">
       <div className="flex gap-2">
         <Button
           variant={filter === "all" ? "default" : "outline"}
