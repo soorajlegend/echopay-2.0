@@ -5,7 +5,7 @@ import EchoListener from "./chat/_components/echo-listener";
 import useNewTransaction from "@/hooks/use-new-transaction";
 import Echo from "./chat/_components/echo";
 import useEcho from "@/hooks/use-echo";
-import Chart from "./chat/_components/chart";
+import Chart from "./chat/_components/charts";
 import useShowChart from "@/hooks/use-show-chart";
 
 export default function RoutesLayout({
@@ -26,7 +26,8 @@ export default function RoutesLayout({
       />
 
       {openEcho && <Echo />}
-      {showChart && <Chart />}
+      {/* {showChart && <Chart />} */}
+      <Chart />
     </>
   );
 }
