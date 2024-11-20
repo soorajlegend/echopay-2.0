@@ -324,13 +324,15 @@ const Echo = () => {
           setNewTransaction(jsonData.newTransaction);
         }
 
+        // Only add record once if it exists in response
         if (jsonData.newRecord) {
-          addRecord({
+          const record = {
             id: nanoid(),
             amount: jsonData.newRecord.amount,
             narration: jsonData.newRecord.narration,
             date: new Date().toISOString(),
-          });
+          };
+          addRecord(record);
         }
 
         if (jsonData.message) {
