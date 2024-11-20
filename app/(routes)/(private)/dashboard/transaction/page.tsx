@@ -1,6 +1,5 @@
 "use client"
 import React from 'react'
-import { Image } from 'lucide-react'
 import { MoveLeft, Bell } from 'lucide-react'
 import { useRouter } from 'next/navigation';
 import useUserInfo from '@/hooks/use-userinfo';
