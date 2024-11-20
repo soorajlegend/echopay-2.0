@@ -25,6 +25,7 @@ import { ChatStructure, EchoVoiceChat } from "@/actions/voice-chat";
 import { owner } from "@/store";
 import useNewTransaction from "@/hooks/use-new-transaction";
 import useShowChart from "@/hooks/use-show-chart";
+import useBookKeeping from "@/hooks/use-book-keeping";
 
 declare global {
   interface Window {
@@ -57,6 +58,7 @@ const Echo = () => {
   const { openEcho, setOpenEcho } = useEcho();
   const { newTransaction, setNewTransaction } = useNewTransaction();
   const { setShowChart } = useShowChart();
+  const { addRecord, records } = useBookKeeping();
 
   const speak = async (text: string) => {
     try {
@@ -288,6 +290,9 @@ const Echo = () => {
               } - NGN${t.amount} - ${t.date} |`;
             }) || []
           ),
+          records: JSON.stringify(
+            records.map((r) => `${r.narration} - NGN${r.amount} - ${r.date} |`)
+          ),
           name: user.fullname || "",
           balance: Number(user.balance) || 0,
         };
@@ -317,6 +322,15 @@ const Echo = () => {
         if (jsonData.newTransaction) {
           console.log("newTransaction", jsonData.newTransaction);
           setNewTransaction(jsonData.newTransaction);
+        }
+
+        if (jsonData.newRecord) {
+          addRecord({
+            id: nanoid(),
+            amount: jsonData.newRecord.amount,
+            narration: jsonData.newRecord.narration,
+            date: new Date().toISOString(),
+          });
         }
 
         if (jsonData.message) {

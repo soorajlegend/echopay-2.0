@@ -18,6 +18,7 @@ import { toast } from "sonner";
 import { owner } from "@/store";
 import useNewTransaction from "@/hooks/use-new-transaction";
 import useShowChart from "@/hooks/use-show-chart";
+import useBookKeeping from "@/hooks/use-book-keeping";
 
 const ChatPage = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -28,12 +29,13 @@ const ChatPage = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const { info } = useUserInfo();
-  const { openEcho, setOpenEcho } = useEcho();
+  const { setOpenEcho } = useEcho();
   const { chats, addChat } = useChat();
   const { beneficiaries } = useBeneficiary();
   const { transactions } = useTransaction();
-  const { newTransaction, setNewTransaction } = useNewTransaction();
+  const { setNewTransaction } = useNewTransaction();
   const { setShowChart } = useShowChart();
+  const { records, addRecord } = useBookKeeping();
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -100,6 +102,9 @@ const ChatPage = () => {
               } - NGN${t.amount} - ${t.date} |`
           )
         ),
+        records: JSON.stringify(
+          records.map((r) => `${r.narration} - NGN${r.amount} - ${r.date} |`)
+        ),
         name: user.fullname || "",
         balance: Number(user.balance) || 0,
       };
@@ -134,6 +139,15 @@ const ChatPage = () => {
           createdAt: new Date(),
         };
         addChat(modelMessage);
+      }
+
+      if (jsonData.newRecord) {
+        addRecord({
+          id: nanoid(),
+          amount: jsonData.newRecord.amount,
+          narration: jsonData.newRecord.narration,
+          date: new Date().toISOString(),
+        });
       }
 
       if (jsonData.transactionChart) {
