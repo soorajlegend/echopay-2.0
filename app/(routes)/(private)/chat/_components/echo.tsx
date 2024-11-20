@@ -158,7 +158,7 @@ const Echo = () => {
         console.error("Speech recognition error:", event.error);
         if (event.error !== "no-speech") {
           setIsRecording(false);
-          startRecording();
+          toast.warning("tap to continue");
         }
       };
     }
