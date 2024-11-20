@@ -1,5 +1,5 @@
 import { create } from "zustand";
-export type ChartType = "TRANSACTIONS" | null;
+export type ChartType = "TRANSACTIONS" | "INCOME_VS_SPENDING" | "BENEFICIARY_CHART" | null;
 
 interface ShowChartPropsType {
   showChart: ChartType;
