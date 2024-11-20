@@ -90,6 +90,7 @@ function BarListInner<T>(
                 onValueChange
                   ? "group-hover:bg-blue-300 group-hover:dark:bg-blue-800"
                   : "",
+                item.value < 0 && "bg-rose-200 dark:bg-rose-900",
                 // margin and duration
                 {
                   "mb-0": index === sortedData.length - 1,
