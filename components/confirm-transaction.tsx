@@ -77,7 +77,7 @@ const ConfirmTransaction = ({
 
     if (response.status === 200) {
       toast.success("Transaction completed successfully");
-      addTransaction(response.data.transaction);
+      addTransaction(response.data.responseBody);
 
       if (info) {
         setInfo({
