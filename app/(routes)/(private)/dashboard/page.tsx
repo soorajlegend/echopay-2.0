@@ -393,7 +393,7 @@ const DashboardPage = () => {
         {activeView === "ai" && <AiView />}
         {activeView === "more" && <MoreView />}
 
-        <nav className="absolute w-[88%] mx-auto bottom-0 left-0 right-0 min-w-0 bg-white border-t border-gray-200 py-5">
+        <nav className="absolute w-[88%] mx-auto bottom-0 left-0 right-0 min-w-0 bg-white border-t border-gray-200 pb-5 lg:pb-0">
           <div className="maxw-md mxauto flex justify-around min-w-0 items-center h-16">
             <button
               onClick={() => setActiveView("home")}
