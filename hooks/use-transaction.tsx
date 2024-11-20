@@ -17,7 +17,7 @@ const useTransaction = create(
       transactions: [
         {
           id: 1,
-          userid: "2",
+          userid: "25415",
           sender: "2",
           senderName: "Suraj Muhammad",
           senderPic: "",
@@ -51,7 +51,7 @@ const useTransaction = create(
         },
         {
           id: 3,
-          userid: "2",
+          userid: "232435",
           sender: "2",
           senderName: "Suraj Muhammad",
           senderPic: "",
@@ -85,7 +85,7 @@ const useTransaction = create(
         },
         {
           id: 5,
-          userid: "2",
+          userid: "9878",
           sender: "2",
           senderName: "Suraj Muhammad",
           senderPic: "",
@@ -102,8 +102,8 @@ const useTransaction = create(
         },
         {
           id: 6,
-          userid: "2",
-          sender: "user3",
+          userid: "user3",
+          sender: "2",
           senderName: "Muhammad Ali",
           senderPic: "",
           receiver: "2",
@@ -115,11 +115,11 @@ const useTransaction = create(
           date: "2024-11-01T08:00:00.000Z",
           createdAt: "2024-11-01T08:00:00.000Z",
           updatedAt: "2024-11-01T08:00:00.000Z",
-          isCredit: false,
+          isCredit: true,
         },
         {
           id: 7,
-          userid: "2",
+          userid: "433",
           sender: "2",
           senderName: "Suraj Muhammad",
           senderPic: "",
@@ -153,7 +153,7 @@ const useTransaction = create(
         },
         {
           id: 9,
-          userid: "2",
+          userid: "22",
           sender: "2",
           senderName: "Suraj Muhammad",
           senderPic: "",
@@ -289,7 +289,7 @@ const useTransaction = create(
         },
         {
           id: 17,
-          userid: "2",
+          userid: "23",
           sender: "2",
           senderName: "Suraj Muhammad",
           senderPic: "",
