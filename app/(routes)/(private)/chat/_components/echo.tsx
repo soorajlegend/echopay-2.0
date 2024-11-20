@@ -419,9 +419,9 @@ const Echo = () => {
 
                 <button
                   onClick={stopAndSendRecording}
-                  disabled={isProcessing}
+                  // disabled={isProcessing}
                   className={`w-16 h-16 rounded-full ${
-                    isProcessing ? "opacity-50" : "hover:opacity-90"
+                    isProcessing ? "opacity-100" : "hover:opacity-90"
                   } bg-theme-primary flex items-center justify-center aspect-square`}
                 >
                   <SendHorizonal className="w-8 h-8 text-white" />
