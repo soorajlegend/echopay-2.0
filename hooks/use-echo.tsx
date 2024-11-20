@@ -1,6 +1,4 @@
 import { create } from "zustand";
-import { createJSONStorage, persist } from "zustand/middleware";
-import { UserType } from "@/types";
 
 interface EchoSetupType {
   openEcho: boolean;

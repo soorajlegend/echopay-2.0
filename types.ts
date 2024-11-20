@@ -52,6 +52,13 @@ export interface Transaction {
   isCredit: boolean;
 }
 
+export interface BookKeeping {
+  id: string;
+  amount: number;
+  narration: string;
+  date: string;
+}
+
 export interface NewTransactionType {
   beneficiaryId: string;
   name: string;

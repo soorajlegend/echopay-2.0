@@ -69,7 +69,7 @@ const ChatItem = ({ data, isLast }: Chatcontent) => {
         >
           {data.role === "assistant" && (
             <Avatar
-              className={cn("w-9 h-9 aspect-square dark:bg-gray-900/40 ")}
+              className={cn("w-12 h-12 aspect-square dark:bg-gray-900/40 ")}
             >
               <AvatarImage src="/apple-touch-icon.png" />
               <AvatarFallback>E</AvatarFallback>

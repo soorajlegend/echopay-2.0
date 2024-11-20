@@ -50,7 +50,7 @@ const ConfirmTransaction = ({
   );
 
   if (!beneficiary) {
-    return toast.error("No beneficiary found");
+    console.log("No beneficiary found", data);
   }
 
   const createTransaction = async () => {
@@ -63,38 +63,50 @@ const ConfirmTransaction = ({
       return;
     }
 
+    if (!beneficiary) {
+      console.log("No beneficiary found", data);
+      return;
+    }
+
     setIsLoading(true);
-    const response = await axios.post(
-      "https://echo-pay.onrender.com/api/transfer",
-      {
-        sender: info.phone,
-        receiver: cleanPhoneNumber(beneficiary.acc_num),
-        amount: data.amount,
-        narration: data.description,
-        pin: password,
-      }
-    );
+    try {
+      const response = await axios.post(
+        "https://echo-pay.onrender.com/api/transfer",
+        {
+          sender: info.phone,
+          receiver: cleanPhoneNumber(beneficiary.acc_num),
+          amount: data.amount,
+          narration: data.description,
+          pin: password,
+        }
+      );
 
-    if (response.status === 200) {
-      toast.success("Transaction completed successfully");
-      addTransaction(response.data.transaction);
+      setPassword("")
 
-      if (info) {
-        setInfo({
-          ...info,
-          balance: info.balance - data.amount,
-        });
-      }
+      if (response.status === 200) {
+        toast.success("Transaction completed successfully");
+        addTransaction(response.data.responseBody);
 
-      if (closeRef.current) {
-        closeRef.current.click();
+        if (info) {
+          setInfo({
+            ...info,
+            balance: info.balance - data.amount,
+          });
+        }
+
+        if (closeRef.current) {
+          closeRef.current.click();
+        }
+        setNewTransaction(null);
+      } else {
+        toast.error(response.data.message || "Something went wrong");
+        setShowPinInput(false);
       }
-      setNewTransaction(null);
-      setIsLoading(false);
-    } else {
-      toast.error(response.data.message);
-      setIsLoading(false);
+    } catch (error) {
+      toast.error("Failed to complete transaction");
       setShowPinInput(false);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -112,12 +124,12 @@ const ConfirmTransaction = ({
             <Avatar className="w-10 h-10">
               <AvatarImage src={beneficiary?.avatar} />
               <AvatarFallback className="font-bold">
-                {beneficiary.acc_name[0]}
+                {beneficiary?.acc_name[0]}
               </AvatarFallback>
             </Avatar>
             <div className="flex flex-1 flex-col gap-1">
               <div className="text-sm font-bold text-gray-900">
-                {beneficiary.acc_name}
+                {beneficiary?.acc_name}
               </div>
               <div className="text-sm">{data.description}</div>
             </div>
