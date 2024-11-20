@@ -9,6 +9,15 @@ export function cx(...args: ClassValue[]) {
   return twMerge(clsx(...args));
 }
 
+// Tremor Raw focusRing [v0.0.1]
+
+export const focusRing = [
+  // base
+  "outline outline-offset-2 outline-0 focus-visible:outline-2",
+  // outline color
+  "outline-blue-500 dark:outline-blue-500",
+];
+
 function countDoubleQuotes(str: string) {
   // Use a regular expression to find all occurrences of double quotes
   const matches = str.match(/"/g);

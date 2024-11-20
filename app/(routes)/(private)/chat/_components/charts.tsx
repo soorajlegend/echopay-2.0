@@ -11,13 +11,13 @@ const Chart = () => {
 
   // if (showChart === null) return;
 
-  const sample = "INCOME_VS_SPENDING";
+  const sample = "BENEFICIARY_CHART";
 
   return (
     <Drawer open onClose={() => setShowChart(null)}>
       <DrawerContent>
         {showChart === "TRANSACTIONS" && <TransactionChart />}
-        {sample === "INCOME_VS_SPENDING" && <IncomeVersusSpendingChart />}
+        {showChart === "INCOME_VS_SPENDING" && <IncomeVersusSpendingChart />}
       </DrawerContent>
     </Drawer>
   );
