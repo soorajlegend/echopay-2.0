@@ -9,6 +9,7 @@ import {
   SendHorizonal,
   Loader,
   Volume2,
+  CloudCog,
 } from "lucide-react";
 import axios from "axios";
 import { Drawer, DrawerContent } from "@/components/ui/drawer";
@@ -26,6 +27,7 @@ import ConfirmTransaction from "@/components/confirm-transaction";
 import { TTS } from "@/actions/voice";
 import { ChatStructure, EchoVoiceChat } from "@/actions/voice-chat";
 import { owner } from "@/store";
+import useNewTransaction from "@/hooks/use-new-transaction";
 
 declare global {
   interface Window {
@@ -39,9 +41,7 @@ const Echo = () => {
   const [isPaused, setIsPaused] = useState(false);
   const [visualizerData, setVisualizerData] = useState<number[]>([]);
   const [transcript, setTranscript] = useState("");
-  const [tempTranscript, setTempTranscript] = useState(""); // Add temporary transcript
-  const [newTransaction, setNewTransaction] =
-    useState<NewTransactionType | null>(null);
+  const [tempTranscript, setTempTranscript] = useState("");
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [isThinking, setIsThinking] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -60,6 +60,7 @@ const Echo = () => {
   const { beneficiaries } = useBeneficiary();
   const { transactions } = useTransaction();
   const { openEcho, setOpenEcho } = useEcho();
+  const { newTransaction, setNewTransaction } = useNewTransaction();
 
   const speak = async (text: string) => {
     try {
@@ -286,6 +287,7 @@ const Echo = () => {
         }
 
         if (jsonData.newTransaction) {
+          console.log("newTransaction", jsonData.newTransaction);
           setNewTransaction(jsonData.newTransaction);
         }
 
