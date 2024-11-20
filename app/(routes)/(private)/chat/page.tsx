@@ -150,8 +150,16 @@ const ChatPage = () => {
         addRecord(record);
       }
 
-      if (jsonData.transactionChart) {
+      if (jsonData?.transactionChart) {
         setShowChart("TRANSACTIONS");
+      }
+
+      if (jsonData?.incomeVsSpendingChart) {
+        setShowChart("INCOME_VS_SPENDING");
+      }
+
+      if (jsonData?.beneficiaryChart) {
+        setShowChart("BENEFICIARY_CHART");
       }
     } catch (error) {
       console.error("API request failed:", error);
