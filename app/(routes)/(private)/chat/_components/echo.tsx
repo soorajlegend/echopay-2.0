@@ -64,6 +64,29 @@ const Echo = () => {
       const audioSource = await TTS(text);
       const audio = new Audio(audioSource);
 
+      // Set audio output to use bluetooth/headphones if available
+      if (audio.setSinkId && typeof audio.setSinkId === "function") {
+        try {
+          const devices = await navigator.mediaDevices.enumerateDevices();
+          const audioOutputs = devices.filter(
+            (device) => device.kind === "audiooutput"
+          );
+
+          // Find bluetooth/headphone device
+          const bluetoothDevice = audioOutputs.find(
+            (device) =>
+              device.label.toLowerCase().includes("bluetooth") ||
+              device.label.toLowerCase().includes("headphone")
+          );
+
+          if (bluetoothDevice) {
+            await audio.setSinkId(bluetoothDevice.deviceId);
+          }
+        } catch (err) {
+          console.warn("Unable to set audio output device:", err);
+        }
+      }
+
       return new Promise<void>((resolve) => {
         audio.onended = () => {
           startRecording();
@@ -367,7 +390,7 @@ const Echo = () => {
                       key={i}
                       className="w-4 h-4 rounded-full bg-theme-primary animate-pulse"
                       style={{
-                        animationDelay: `${i * 0.15}s`
+                        animationDelay: `${i * 0.15}s`,
                       }}
                     />
                   ))}
@@ -386,14 +409,12 @@ const Echo = () => {
                       className="w-1 bg-theme-primary rounded-full animate-[speaking_0.5s_ease-in-out_infinite]"
                       style={{
                         height: `${Math.random() * 100}%`,
-                        animationDelay: `${i * 0.1}s`
+                        animationDelay: `${i * 0.1}s`,
                       }}
                     />
                   ))}
                 </div>
-                <span className="text-sm text-gray-600">
-                  Speaking...
-                </span>
+                <span className="text-sm text-gray-600">Speaking...</span>
               </div>
             )}
             {!isThinking && !isSpeaking && (
