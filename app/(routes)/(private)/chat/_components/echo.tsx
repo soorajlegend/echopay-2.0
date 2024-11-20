@@ -346,7 +346,7 @@ const Echo = () => {
           setShowChart("TRANSACTIONS");
         }
       } catch (error) {
-        alert(`Error processing response: ${error}`);
+        console.log(`Error processing response: ${error}`);
         toast.error("Failed to process response. Please try again.");
         startRecording();
       } finally {
