@@ -191,7 +191,7 @@ useEffect(() => {
           <div className="flex justify-around">
   
             <button
-              onClick={() => {setActiveView("home"); router.push("/dashoard/home")}}
+              onClick={() => {setActiveView("home"); router.push("/dashoard")}}
               className={`flex flex-col items-center ${
                 activeView === "home" ? "text-[#003056]" : "text-gray-500"
               }`}
