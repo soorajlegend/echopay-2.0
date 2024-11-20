@@ -174,7 +174,6 @@ const Echo = () => {
       visualize();
     } catch (err) {
       console.error("Error accessing microphone:", err);
-      toast.error("Could not access microphone. Please check permissions.");
     }
   };
 
