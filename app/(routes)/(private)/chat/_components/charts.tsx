@@ -10,16 +10,14 @@ import { BeneficiaryChart } from "./beneficiary-chart";
 const Chart = () => {
   const { showChart, setShowChart } = useShowChart();
 
-  // if (showChart === null) return;
-
-  const sample = "BENEFICIARY_CHART";
+  if (showChart === null) return;
 
   return (
     <Drawer open onClose={() => setShowChart(null)}>
       <DrawerContent>
         {showChart === "TRANSACTIONS" && <TransactionChart />}
         {showChart === "INCOME_VS_SPENDING" && <IncomeVersusSpendingChart />}
-        {sample === "BENEFICIARY_CHART" && <BeneficiaryChart />}
+        {showChart === "BENEFICIARY_CHART" && <BeneficiaryChart />}
       </DrawerContent>
     </Drawer>
   );
