@@ -221,12 +221,16 @@ const Echo = () => {
       const finalTranscript = transcript + " " + tempTranscript; // Combine both transcripts
       if (!finalTranscript.trim()) {
         toast.error("Please say something");
+        setIsRecording(false);
+        setIsPaused(false);
         return startRecording();
       }
 
       const user = info || owner;
       if (!user) {
         toast.error("Unauthorized");
+        setIsRecording(false);
+        setIsPaused(false);
         return;
       }
 
@@ -273,6 +277,8 @@ const Echo = () => {
         console.log(data, response);
 
         if (!response) {
+          setIsRecording(false);
+          setIsPaused(false);
           throw new Error("No response received");
         }
 
@@ -283,6 +289,8 @@ const Echo = () => {
           !jsonData.newTransaction &&
           !jsonData.transactionChart
         ) {
+          setIsRecording(false);
+          setIsPaused(false);
           throw new Error("Invalid response format");
         }
 
