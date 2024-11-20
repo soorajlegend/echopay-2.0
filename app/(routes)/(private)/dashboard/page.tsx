@@ -69,6 +69,7 @@ const transactions = [
 
 const DashboardView = () => {
   const router = useRouter();
+  const { info } = useUserInfo();
 
   const navigateToKyc = () => {
     router.push("/kyc");
@@ -76,30 +77,33 @@ const DashboardView = () => {
   };
   return (
     <div className="mt-[48px]  mb-[10rem] h-auto  h[calc(100vh-100px)] overflow-y-auto">
-      {/* {showPopup &&  ( */}
-      <div className="mb-5">
-        <Card className=" shadow-none">
-          <CardHeader>
-            <CardTitle className="border-b pb-[10px]">Verify Account</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p>
-              To ensure the security of your account and enable full access to
-              EchoPay&apos;s features, please complete the verification process
-            </p>
-          </CardContent>
-          <CardFooter>
-            <Button
-              onClick={navigateToKyc}
-              size="lg"
-              className="text-[18px] py-[24px] font-medium bg-[#003056] hover:bg-[#0c2941] text-[#FAFAFA] w-full"
-            >
-              Verify
-            </Button>
-          </CardFooter>
-        </Card>
-      </div>
-      {/* )} */}
+      {info?.isVerified === false && (
+        <div className="mb-5">
+          <Card className=" shadow-none">
+            <CardHeader>
+              <CardTitle className="border-b pb-[10px]">
+                Verify Account
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p>
+                To ensure the security of your account and enable full access to
+                EchoPay&apos;s features, please complete the verification
+                process
+              </p>
+            </CardContent>
+            <CardFooter>
+              <Button
+                onClick={navigateToKyc}
+                size="lg"
+                className="text-[18px] py-[24px] font-medium bg-[#003056] hover:bg-[#0c2941] text-[#FAFAFA] w-full"
+              >
+                Verify
+              </Button>
+            </CardFooter>
+          </Card>
+        </div>
+      )}
       <Link
         href="/chat"
         className="h-[224px] rounded-[8px] bg-[#D1DCE5] p-4 flex flex-col justify-between"
@@ -290,7 +294,7 @@ const DashboardPage = () => {
   // const [showPopup, setShowPopup] = useState(true);
 
   const { info } = useUserInfo();
-  console.log(info)
+  console.log(info);
 
   // const isVerified = info?.isVerified
 
@@ -312,11 +316,9 @@ const DashboardPage = () => {
         <div>
           <div className="flex justify-between items-center">
             <div className="flex md:w-1/2 gap-[16px] items-center">
-            <div 
-              className="bg-[#003056] rounded-full w-[40px] cursor-pointer h-[40px] flex items-center justify-center text-white font-medium text-lg"
-              >
-            {info?.email ? info.email.charAt(0).toUpperCase() : 'U'}
-          </div>
+              <div className="bg-[#003056] rounded-full w-[40px] cursor-pointer h-[40px] flex items-center justify-center text-white font-medium text-lg">
+                {info?.email ? info.email.charAt(0).toUpperCase() : "U"}
+              </div>
 
               <div>
                 <p className="text-[#434343]">Good morning</p>
@@ -391,10 +393,8 @@ const DashboardPage = () => {
         {activeView === "ai" && <AiView />}
         {activeView === "more" && <MoreView />}
 
-
         <nav className="absolute w-[88%] mx-auto bottom-0 left-0 right-0 min-w-0 bg-white border-t border-gray-200 py-5">
           <div className="maxw-md mxauto flex justify-around min-w-0 items-center h-16">
-  
             <button
               onClick={() => setActiveView("home")}
               className={`flex flex-col items-center ${
