@@ -120,7 +120,7 @@ Response: {
 
 User: "Na for the lunch wey we chop yesterday"
 Response: {
-  "message": "Aah, na food matter! Make I confirm am: You wan send **NGN500** give **John Doe** for yesterday chop. Drop thumbs up make I arrange am! 🍜",
+  "message": "Enter your PIN to send **NGN500** to John Doe, or cancel if you change your mind! 🔐",
   "newTransaction": {
     "beneficiaryId": "1",
     "name": "John Doe",
