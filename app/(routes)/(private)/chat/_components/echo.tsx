@@ -221,7 +221,7 @@ const Echo = () => {
       }
 
       const finalTranscript =
-        transcript.trim() || "let me know if you can hear me";
+        transcript.trim();
       if (!finalTranscript) {
         toast.error("Please say something");
         return startRecording();
