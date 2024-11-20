@@ -22,7 +22,7 @@ export const BeneficiaryChart = () => {
 
     const beneficiaryGroups = filteredTransactions.reduce(
       (acc, transaction) => {
-        const beneficiary = transaction.beneficiary || "Unknown";
+        const beneficiary = transaction.senderName || "Unknown";
         const amount = Math.abs(transaction.amount);
 
         if (!acc[beneficiary]) {
