@@ -191,6 +191,7 @@ export default function KYCProcess() {
       console.log("KYC verification response:", response.data);
       setInfo({ ...info, isVerified: true });
       setVerificationStatus("success");
+      setIsProcessing(false);
     } catch (error) {
       console.error("Error verifying KYC:", error);
     }
