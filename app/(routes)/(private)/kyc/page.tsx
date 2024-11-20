@@ -9,11 +9,15 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import Webcam from "react-webcam";
+import axios from "axios";
+import useUserInfo from "@/hooks/use-userinfo";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 function FileIcon({ ...props }) {
   return (
     <svg
-    {...props}
+      {...props}
       width="24"
       height="24"
       viewBox="0 0 24 24"
@@ -117,6 +121,8 @@ export default function KYCProcess() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleCameraOpen = () => setShowCamera(true);
+  const { info, setInfo } = useUserInfo();
+  const router = useRouter();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -155,19 +161,51 @@ export default function KYCProcess() {
     setShowCamera(true);
   };
 
-  const handleProceed = () => {
+  const handleProceed = async () => {
     setIsProcessing(true);
-    // Simulate processing
-    setTimeout(() => {
+    if (!info) {
+      toast.error("User not found");
+      return;
+    }
+    // Make API call to verify KYC
+
+    try {
+      console.log({
+        phone: info.phone || info.email,
+        fullname: formData.fullname || info.fullname,
+        dob: formData.dob || "",
+        nin: formData.nin || "",
+        bvn: formData.bvn || "",
+      });
+
+      const response = await axios.post(
+        "https://echo-pay.onrender.com/api/add-kyc",
+        {
+          phone: info.phone || info.email,
+          fullname: formData.fullname || info.fullname,
+          dob: formData.date || "",
+          nin: formData.nin || "",
+          bvn: formData.bvn || "",
+        }
+      );
+      console.log("KYC verification response:", response.data);
+      setInfo({ ...info, isVerified: true });
+      setVerificationStatus("success");
       setIsProcessing(false);
-      // Randomly set success or fail for demo purposes
-      setVerificationStatus(Math.random() > 0.5 ? "success" : "fail");
-    }, 3000);
+    } catch (error) {
+      console.error("Error verifying KYC:", error);
+    }
+    // setTimeout(() => {
+    //   setIsProcessing(false);
+    //   // Randomly set success or fail for demo purposes
+    //   setVerificationStatus("success");
+    // }, 3000);
   };
   const handleHome = () => {
     // Implement navigation to home page
-    console.log("Navigating to home page");
+    router.push("/dashboard");
   };
+
   const stageVariants = {
     hidden: { opacity: 0, x: 50 },
     visible: { opacity: 1, x: 0 },
@@ -177,7 +215,8 @@ export default function KYCProcess() {
   return (
     <div className="w-full max-w-md mx-auto p-6">
       <AnimatePresence mode="wait">
-        <motion.div className="m-0 p-0 inset-0"
+        <motion.div
+          className="m-0 p-0 inset-0"
           key={currentStage}
           variants={stageVariants}
           initial="hidden"
@@ -312,185 +351,152 @@ export default function KYCProcess() {
           {currentStage === 3 && (
             <div className="absolute inset-0 wfull h-full w-full max-w-md mx-auto p-6 p4 flex flex-col justify-between">
               <div className="flex-1 w-full h-full">
-              {!isProcessing && !verificationStatus && (
-                <div className="flex items-center justify-between mb-6">
-                  <ArrowLeft onClick={handleBack} className="cursor-pointer" />
-                  <h2 className="text-2xl font-semibold text-[#1A1A1A]">
-                    {showCamera ? "Take Selfie" : "Step 4 of 4"}
-                  </h2>
-                  <div className="w-6" /> {/* Spacer for alignment */}
-                </div>
-              )}
+                {!isProcessing && !verificationStatus && (
+                  <div className="flex items-center justify-between mb-6">
+                    <ArrowLeft
+                      onClick={handleBack}
+                      className="cursor-pointer"
+                    />
+                    <h2 className="text-2xl font-semibold text-[#1A1A1A]">
+                      {showCamera ? "Take Selfie" : "Step 4 of 4"}
+                    </h2>
+                    <div className="w-6" /> {/* Spacer for alignment */}
+                  </div>
+                )}
 
-              {!showCamera &&
-                !capturedImage &&
-                !isProcessing &&
-                !verificationStatus && (
-                  <div>
-                    <div className="flex mt-[24px] md:mt-[10px] items-center gap-[16px] mb-4">
-                      <Image
-                        src="/user.svg"
-                        alt="user"
-                        height={24}
-                        width={24}
-                      />
-                      <p className="text-[#434343]">
-                        Face forward and make sure your face is clearly visible
-                      </p>
+                {!showCamera &&
+                  !capturedImage &&
+                  !isProcessing &&
+                  !verificationStatus && (
+                    <div>
+                      <div className="flex mt-[24px] md:mt-[10px] items-center gap-[16px] mb-4">
+                        <Image
+                          src="/user.svg"
+                          alt="user"
+                          height={24}
+                          width={24}
+                        />
+                        <p className="text-[#434343]">
+                          Face forward and make sure your face is clearly
+                          visible
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-[16px] mb-6">
+                        <Image
+                          src="/anonymous.svg"
+                          alt="anonymous"
+                          height={24}
+                          width={24}
+                        />
+                        <p className="text-[#434343]">
+                          Remove anything covering your face, eyeglasses are
+                          allowed
+                        </p>
+                      </div>
+                      <Button
+                        className="w-full mt-[200px] py-6 bg-[#003056]"
+                        onClick={handleCameraOpen}
+                      >
+                        Take Selfie
+                      </Button>
                     </div>
-                    <div className="flex items-center gap-[16px] mb-6">
-                      <Image
-                        src="/anonymous.svg"
-                        alt="anonymous"
-                        height={24}
-                        width={24}
+                  )}
+
+                {showCamera && (
+                  <div className="relative my-[4px]">
+                    <div className="flex items-center justify-center">
+                      <Webcam
+                        audio={false}
+                        ref={webcamRef}
+                        screenshotFormat="image/jpeg"
+                        className="h-[250px] w-[200px] mt-[43px] rounded-full object-cover"
                       />
-                      <p className="text-[#434343]">
-                        Remove anything covering your face, eyeglasses are
-                        allowed
-                      </p>
                     </div>
+                    <p className="text-[#434343] mt-[40px] text-[18px] text-center">
+                      Position your face in the oval shape
+                    </p>
                     <Button
-                      className="w-full mt-[200px] py-6 bg-[#003056]"
-                      onClick={handleCameraOpen}
+                      className="mt-[100px] w-full py-6 bg-[#003056]"
+                      onClick={handleCapture}
                     >
                       Take Selfie
                     </Button>
                   </div>
                 )}
 
-              {showCamera && (
-                <div className="relative my-[4px]">
-                  <div className="flex items-center justify-center">
-                    <Webcam
-                      audio={false}
-                      ref={webcamRef}
-                      screenshotFormat="image/jpeg"
-                      className="h-[250px] w-[200px] mt-[43px] rounded-full object-cover"
-                    />
-                  </div>
-                  <p className="text-[#434343] mt-[40px] text-[18px] text-center">
-                    Position your face in the oval shape
-                  </p>
-                  <Button
-                    className="mt-[100px] w-full py-6 bg-[#003056]"
-                    onClick={handleCapture}
-                  >
-                    Take Selfie
-                  </Button>
-                </div>
-              )}
-
-              {capturedImage && !isProcessing && !verificationStatus && (
-                <div className="">
-                  <div className="flex items-center justify-center">
-                    <Image
-                      src={capturedImage}
-                      alt="Captured selfie"
-                      width={160}
-                      height={210}
-                      className="rounded-full object-cover w-40 h-[210px]"
-                    />
-                  </div>
-                  <div className="flex flex-col gap-4 mt-[170px]">
-                    <Button
-                      className="flex-1 py-4 bg-[#003056]"
-                      onClick={handleProceed}
-                    >
-                      My selfie is clear
-                    </Button>
-                    <Button
-                      className="flex-1 py-4 bg-transparent border border-[#003056] text-[#003056] hover:text-white"
-                      onClick={handleRetake}
-                    >
-                      Retake photo
-                    </Button>
-                  </div>
-                </div>
-              )}
-
-              {isProcessing && (
-                <div className="flex flex-col items-center justify-center h-64">
-                  <p className="text-2xl font-semibold text-[#1A1A1A]">
-                    Verification
-                  </p>
-
-                  <p className="text-[#434343] text-center">
-                    Please wait while we process your verification details. This
-                    may take a few minutes. Thank you for your patience
-                  </p>
-                  <Loader2 className="w-16 h-16 mt-20 text-[#003056] animate-spin" />
-                </div>
-              )}
-
-              {verificationStatus && (
-                <div className="flex flex-col h-screen items-center justify-center">
-                  <p className="text-2xl font-semibold mb[60px] text-[#1A1A1A]">
-                    Verification
-                  </p>
-                  {verificationStatus === "success" ? (
-                    <>
-                      <div className="flex justify-center">
-                        <div className="flex justify-center h-[145px] w-[145px] items-center my-[64px] rounded-full text-center bg-[#1B9C12] text-white">
-                          <Check className="w-24 h-24 text-white" />
-                        </div>
-                      </div>
-
-                      <div className="text-center">
-                        <p className="my-4 text-2xl text-[#1A1A1A]">
-                          Verification Successful!
-                        </p>
-                        <p>
-                          Your information has been verified successfully. You
-                          can now enjoy full access to all EchoPay features.
-                          Thank you for your patience
-                        </p>
-                      </div>
+                {capturedImage && !isProcessing && !verificationStatus && (
+                  <div className="">
+                    <div className="flex items-center justify-center">
+                      <Image
+                        src={capturedImage}
+                        alt="Captured selfie"
+                        width={160}
+                        height={210}
+                        className="rounded-full object-cover w-40 h-[210px]"
+                      />
+                    </div>
+                    <div className="flex flex-col gap-4 mt-[170px]">
                       <Button
-                        className="mt-8 w-full py-4 bg-[#003056]"
-                        onClick={handleHome}
+                        className="flex-1 py-4 bg-[#003056]"
+                        onClick={handleProceed}
                       >
-                      Home
+                        My selfie is clear
                       </Button>
-                    </>
-                  ) : (
-                    <div>
-                      <div className="flex justify-center">
-                        <div className="flex justify-center h-[145px] w-[145px] items-center my-[64px] rounded-full text-center bg-[#FB3748] text-white">
-                          <X className="w-24 h-24 mx-auto text-white" />
-                        </div>
-                      </div>
+                      <Button
+                        className="flex-1 py-4 bg-transparent border border-[#003056] text-[#003056] hover:text-white"
+                        onClick={handleRetake}
+                      >
+                        Retake photo
+                      </Button>
+                    </div>
+                  </div>
+                )}
 
-                      <div className="text-center">
-                        <p className="mt-4 text-2xl font-semibold text-[#1A1A1A]">
-                          Verification Failed
-                        </p>
-                        <p className="mt-[16px]">
-                          Your information has been verified successfully. You
-                          can now enjoy full access to all EchoPay features.
-                          Thank you for your patience
-                        </p>
-                      </div>
-                      <div className="flex flex-col gap-4 mt-[100px] w-full">
-                        <Button
-                          className="flex-1 py-4 bg-[#003056]"
-                          onClick={handleRetake}
-                        >
-                          Try Again
-                        </Button>
-                        <Button
-                          className="flex-1 py-4 bg-[#003056]"
-                          onClick={handleHome}
-                        >
-                          <Home className="mr-2 h-4 w-4" /> Home
-                        </Button>
+                {isProcessing && (
+                  <div className="flex flex-col items-center justify-center h-64">
+                    <p className="text-2xl font-semibold text-[#1A1A1A]">
+                      Verification
+                    </p>
+
+                    <p className="text-[#434343] text-center">
+                      Please wait while we process your verification details.
+                      This may take a few minutes. Thank you for your patience
+                    </p>
+                    <Loader2 className="w-16 h-16 mt-20 text-[#003056] animate-spin" />
+                  </div>
+                )}
+
+                {verificationStatus && (
+                  <div className="flex flex-col h-screen items-center justify-center">
+                    <p className="text-2xl font-semibold mb[60px] text-[#1A1A1A]">
+                      Verification
+                    </p>
+                    <div className="flex justify-center">
+                      <div className="flex justify-center h-[145px] w-[145px] items-center my-[64px] rounded-full text-center bg-[#1B9C12] text-white">
+                        <Check className="w-24 h-24 text-white" />
                       </div>
                     </div>
-                  )}
-                </div>
-              )}
+
+                    <div className="text-center">
+                      <p className="my-4 text-2xl text-[#1A1A1A]">
+                        Verification Successful!
+                      </p>
+                      <p>
+                        Your information has been verified successfully. You can
+                        now enjoy full access to all EchoPay features. Thank you
+                        for your patience
+                      </p>
+                    </div>
+                    <Button
+                      className="mt-8 w-full py-4 bg-[#003056]"
+                      onClick={handleHome}
+                    >
+                      Home
+                    </Button>
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
           )}
         </motion.div>
       </AnimatePresence>

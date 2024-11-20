@@ -6,19 +6,19 @@ import React, { useEffect, useState, useRef } from "react";
 import { nanoid } from "nanoid";
 import ChatItem from "@/components/chat-item";
 import useChat from "@/hooks/use-chat";
-import ConfirmTransaction from "@/components/confirm-transaction";
 import useBeneficiary from "@/hooks/use-beneficiary";
 import { AudioLines, ChevronLeft, RefreshCw } from "lucide-react";
 import Link from "next/link";
-import Chart, { ChartType } from "./_components/chart";
 import useTransaction from "@/hooks/use-transaction";
-import Echo from "./_components/echo";
 import useEcho from "@/hooks/use-echo";
 import useUserInfo from "@/hooks/use-userinfo";
 import { EchoTextChat } from "@/actions/text-chat";
-import { ChatStructure, EchoVoiceChat } from "@/actions/voice-chat";
+import { ChatStructure } from "@/actions/voice-chat";
 import { toast } from "sonner";
 import { owner } from "@/store";
+import useNewTransaction from "@/hooks/use-new-transaction";
+import useShowChart from "@/hooks/use-show-chart";
+import useBookKeeping from "@/hooks/use-book-keeping";
 
 const ChatPage = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -27,15 +27,15 @@ const ChatPage = () => {
   const [showRetry, setShowRetry] = useState(false);
 
   const [isLoading, setIsLoading] = useState(false);
-  const [newTransaction, setNewTransaction] =
-    useState<NewTransactionType | null>(null);
-  const [chartType, setChartType] = useState<ChartType>(null);
 
   const { info } = useUserInfo();
-  const { openEcho, setOpenEcho } = useEcho();
+  const { setOpenEcho } = useEcho();
   const { chats, addChat } = useChat();
   const { beneficiaries } = useBeneficiary();
   const { transactions } = useTransaction();
+  const { setNewTransaction } = useNewTransaction();
+  const { setShowChart } = useShowChart();
+  const { records, addRecord } = useBookKeeping();
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -78,7 +78,8 @@ const ChatPage = () => {
 
     const messages: ChatStructure[] = [
       ...history.map((chat) => ({
-        role: chat.role as "user" | "assistant",
+        role:
+          chat.role === "user" ? "user" : ("assistant" as "user" | "assistant"),
         content: chat.content,
       })),
       {
@@ -101,11 +102,14 @@ const ChatPage = () => {
               } - NGN${t.amount} - ${t.date} |`
           )
         ),
+        records: JSON.stringify(
+          records.map((r) => `${r.narration} - NGN${r.amount} - ${r.date} |`)
+        ),
         name: user.fullname || "",
         balance: Number(user.balance) || 0,
       };
 
-      const response = await EchoVoiceChat(data);
+      const response = await EchoTextChat(data);
 
       if (!response) {
         throw new Error("No response from server");
@@ -135,8 +139,19 @@ const ChatPage = () => {
         addChat(modelMessage);
       }
 
+      // Only add record once if it exists in response
+      if (jsonData.newRecord) {
+        const record = {
+          id: nanoid(),
+          amount: jsonData.newRecord.amount,
+          narration: jsonData.newRecord.narration,
+          date: new Date().toISOString(),
+        };
+        addRecord(record);
+      }
+
       if (jsonData.transactionChart) {
-        setChartType("TRANSACTIONS");
+        setShowChart("TRANSACTIONS");
       }
     } catch (error) {
       console.error("API request failed:", error);
@@ -198,14 +213,8 @@ const ChatPage = () => {
         className="flex-1 border-none rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
         onSubmit={handleSubmit}
         disabled={isLoading}
+        autoFocus={!isLoading}
       />
-
-      <ConfirmTransaction
-        data={newTransaction}
-        setNewTransaction={setNewTransaction}
-      />
-      {chartType && <Chart type={chartType} setType={setChartType} />}
-      {openEcho && <Echo />}
     </div>
   );
 };

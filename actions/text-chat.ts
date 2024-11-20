@@ -2,11 +2,16 @@
 
 import { EchopayTextAssistantPrompt } from "@/prompts/echopay-text-assistant";
 import OpenAI from "openai";
-// import Groq from "groq-sdk";
+import Groq from "groq-sdk";
 
-const openai = new OpenAI();
+// const openai = new OpenAI();
 
-// const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+const openai = new OpenAI({
+  apiKey: process.env.GROQ_API_KEY,
+  baseURL: "https://api.groq.com/openai/v1",
+});
+
+const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
 export type ChatStructure = {
   role: "user" | "assistant";
@@ -24,14 +29,15 @@ type ChatData = {
   transactions: string;
   name: string;
   balance: number;
+  records: string;
 };
 
 export async function EchoTextChat(data: ChatData) {
   try {
-    const { messages, beneficiaries, transactions, name, balance } = data;
+    const { messages, beneficiaries, transactions, name, balance, records } =
+      data;
 
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4o",
+    const completion = await groq.chat.completions.create({
       messages: [
         {
           role: "system",
@@ -40,43 +46,22 @@ export async function EchoTextChat(data: ChatData) {
             balance: balance.toString(),
             transactions,
             beneficiaries,
+            records,
           }),
         },
         ...messages,
       ],
+      model: "llama-3.1-70b-versatile",
+      temperature: 1,
+      top_p: 1,
+      stream: false,
       response_format: {
         type: "json_object",
       },
-      stream: false,
-      temperature: 1.5,
+      stop: null,
     });
 
     return completion.choices[0].message.content;
-
-    // const chatCompletion = await groq.chat.completions.create({
-    //   messages: [
-    //     {
-    //       role: "system",
-    //       content: EchopayTextAssistantPrompt({
-    //         name,
-    //         balance,
-    //         transactions,
-    //         beneficiaries,
-    //       }),
-    //     },
-    //     ...messages,
-    //   ],
-    //   model: "llama-3.1-70b-versatile",
-    //   temperature: 1,
-    //   top_p: 1,
-    //   stream: false,
-    //   response_format: {
-    //     type: "json_object",
-    //   },
-    //   stop: null,
-    // });
-
-    // return chatCompletion.choices[0]?.message?.content || "";
   } catch (error) {
     console.log(error);
     return "";
