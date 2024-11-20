@@ -81,11 +81,14 @@ const ConfirmTransaction = ({
         }
       );
 
-      setPassword("")
+      setPassword("");
 
       if (response.status === 200) {
         toast.success("Transaction completed successfully");
-        addTransaction(response.data.responseBody);
+        addTransaction({
+          ...response.data.responseBody,
+          isCredit: false,
+        });
 
         if (info) {
           setInfo({
