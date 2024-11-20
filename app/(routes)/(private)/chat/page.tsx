@@ -19,7 +19,6 @@ import { EchoTextChat } from "@/actions/text-chat";
 import { ChatStructure } from "@/actions/voice-chat";
 import { toast } from "sonner";
 import { owner } from "@/store";
-import VoiceRecorder from "./_components/recorder";
 
 const ChatPage = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -209,7 +208,7 @@ const ChatPage = () => {
         setNewTransaction={setNewTransaction}
       />
       {chartType && <Chart type={chartType} setType={setChartType} />}
-      {openEcho && <VoiceRecorder />}
+      {openEcho && <Echo />}
     </div>
   );
 };
