@@ -10,7 +10,7 @@ const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
 const openai = new OpenAI({
   apiKey: process.env.GROQ_API_KEY,
-  baseURL: "https://api.groq.com/openai/v1"
+  baseURL: "https://api.groq.com/openai/v1",
 });
 
 export type ChatStructure = {
@@ -29,11 +29,13 @@ type ChatData = {
   transactions: string;
   name: string;
   balance: number;
+  records: string;
 };
 
 export async function EchoVoiceChat(data: ChatData) {
   try {
-    const { messages, beneficiaries, transactions, name, balance } = data;
+    const { messages, beneficiaries, transactions, name, balance, records } =
+      data;
 
     const completion = await groq.chat.completions.create({
       messages: [
@@ -44,6 +46,7 @@ export async function EchoVoiceChat(data: ChatData) {
             balance: balance.toString(),
             transactions,
             beneficiaries,
+            records,
           }),
         },
         ...messages,
