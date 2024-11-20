@@ -39,6 +39,7 @@ const Echo = () => {
   const [isPaused, setIsPaused] = useState(false);
   const [visualizerData, setVisualizerData] = useState<number[]>([]);
   const [transcript, setTranscript] = useState("");
+  const [tempTranscript, setTempTranscript] = useState(""); // Add temporary transcript
   const [newTransaction, setNewTransaction] =
     useState<NewTransactionType | null>(null);
   const [isSpeaking, setIsSpeaking] = useState(false);
@@ -89,12 +90,6 @@ const Echo = () => {
     }
   };
 
-  // useEffect(() => {
-  //   if (openEcho) {
-  //     speak("Hello Suraj");
-  //   }
-  // }, [openEcho]);
-
   useEffect(() => {
     if (openEcho) {
       cleanupAudioResources();
@@ -129,20 +124,22 @@ const Echo = () => {
       recognitionRef.current.onresult = (event: any) => {
         let currentTranscript = "";
         for (let i = event.resultIndex; i < event.results.length; i++) {
+          const result = event.results[i][0].transcript;
           if (event.results[i].isFinal) {
-            setTranscript(
-              (prev) => prev + " " + event.results[i][0].transcript
-            );
+            setTranscript((prev) => prev + " " + result);
           } else {
-            currentTranscript += event.results[i][0].transcript;
+            currentTranscript += result;
           }
         }
+        setTempTranscript(currentTranscript); // Update temporary transcript
       };
 
       recognitionRef.current.onerror = (event: any) => {
         console.error("Speech recognition error:", event.error);
-        toast.error("Speech recognition error. Please try again.");
-        setIsRecording(false);
+        if (event.error !== "no-speech") {
+          toast.error("Speech recognition error. Please try again.");
+          setIsRecording(false);
+        }
       };
     }
 
@@ -171,6 +168,7 @@ const Echo = () => {
 
       setIsRecording(true);
       setTranscript("");
+      setTempTranscript(""); // Reset temporary transcript
       visualize();
     } catch (err) {
       console.error("Error accessing microphone:", err);
@@ -219,8 +217,8 @@ const Echo = () => {
         recognitionRef.current.stop();
       }
 
-      const finalTranscript = transcript;
-      if (!finalTranscript) {
+      const finalTranscript = transcript + " " + tempTranscript; // Combine both transcripts
+      if (!finalTranscript.trim()) {
         toast.error("Please say something");
         return startRecording();
       }
@@ -322,6 +320,7 @@ const Echo = () => {
       } finally {
         setVisualizerData([]);
         setTranscript("");
+        setTempTranscript(""); // Reset temporary transcript
         setIsProcessing(false);
         setIsThinking(false);
       }
@@ -338,6 +337,7 @@ const Echo = () => {
     cleanupAudioResources();
     setVisualizerData([]);
     setTranscript("");
+    setTempTranscript(""); // Reset temporary transcript
     setIsRecording(false);
     setIsPaused(false);
     setOpenEcho(false);
@@ -385,9 +385,9 @@ const Echo = () => {
                 ))}
               </div>
             )}
-            {transcript && (
+            {(transcript || tempTranscript) && (
               <div className="mt-4 p-4 bg-gray-100 rounded-lg max-w-xs text-sm">
-                {transcript}
+                {transcript} {tempTranscript}
               </div>
             )}
           </div>
