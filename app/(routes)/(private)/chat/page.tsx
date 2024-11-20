@@ -117,8 +117,6 @@ const ChatPage = () => {
 
       const jsonData = JSON.parse(response);
 
-      console.log(data, response);
-
       if (
         !jsonData.message &&
         !jsonData.newTransaction &&
@@ -141,13 +139,15 @@ const ChatPage = () => {
         addChat(modelMessage);
       }
 
+      // Only add record once if it exists in response
       if (jsonData.newRecord) {
-        addRecord({
+        const record = {
           id: nanoid(),
           amount: jsonData.newRecord.amount,
           narration: jsonData.newRecord.narration,
           date: new Date().toISOString(),
-        });
+        };
+        addRecord(record);
       }
 
       if (jsonData.transactionChart) {
