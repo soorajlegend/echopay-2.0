@@ -44,7 +44,7 @@ export const BeneficiaryChart = () => {
   }, [transactions, filter]);
 
   return (
-    <div className="min-h-60 flex flex-col gap-y-4">
+    <div className="min-h-60 flex flex-col gap-y-4 py-4 px-2 lg:px-5">
       <div className="flex gap-2">
         <Button
           variant={filter === "all" ? "default" : "outline"}
