@@ -157,10 +157,8 @@ const Echo = () => {
       recognitionRef.current.onerror = (event: any) => {
         console.error("Speech recognition error:", event.error);
         if (event.error !== "no-speech") {
-          toast.loading("Reconnecting");
-          cleanupAudioResources();
-          toast.dismiss();
           setIsRecording(false);
+          startRecording();
         }
       };
     }
