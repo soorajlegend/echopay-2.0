@@ -9,12 +9,14 @@ const EchoListener = () => {
 
   useEffect(() => {
     const recognition = new (window.SpeechRecognition ||
-    window.webkitSpeechRecognition)();
+      window.webkitSpeechRecognition)();
     recognition.continuous = true;
     recognition.interimResults = true;
     recognition.lang = "en-US";
 
-    recognition.onresult = (event: any) => {
+    let stream: MediaStream | null = null;
+
+    recognition.onresult = async (event: any) => {
       for (let i = event.resultIndex; i < event.results.length; i++) {
         const transcript = event.results[i][0].transcript.toLowerCase();
         console.log("Heard:", transcript);
@@ -23,8 +25,13 @@ const EchoListener = () => {
           !openEcho &&
           (transcript.includes("hey echo") || transcript.includes("echo"))
         ) {
-          setOpenEcho(true);
+          // Stop recognition and cleanup audio resources
           recognition.stop();
+          if (stream) {
+            stream.getTracks().forEach((track) => track.stop());
+            stream = null;
+          }
+          setOpenEcho(true);
           return;
         }
       }
@@ -36,18 +43,31 @@ const EchoListener = () => {
         console.error("Microphone access denied");
       }
       recognition.stop();
+      if (stream) {
+        stream.getTracks().forEach((track) => track.stop());
+        stream = null;
+      }
     };
 
-    try {
-      if (!openEcho) {
-        recognition.start();
+    const startListening = async () => {
+      try {
+        if (!openEcho) {
+          // Get microphone access
+          stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+          recognition.start();
+        }
+      } catch (err) {
+        console.error("Failed to start recognition:", err);
       }
-    } catch (err) {
-      console.error("Failed to start recognition:", err);
-    }
+    };
+
+    startListening();
 
     return () => {
       recognition.stop();
+      if (stream) {
+        stream.getTracks().forEach((track) => track.stop());
+      }
     };
   }, [openEcho]);
 
