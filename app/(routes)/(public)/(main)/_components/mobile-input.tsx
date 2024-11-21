@@ -7,6 +7,7 @@ import { PhoneCall } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
+import { speak } from "@/lib/utils";
 
 interface MobileInputProps {
   mobile: string;
@@ -49,6 +50,7 @@ const MobileInput = ({
           placeholder="Enter your name"
           value={name}
           onChange={(e) => setName(e.target.value)}
+          onFocus={() => speak("Please enter your full name")}
         />
       </div>
 
@@ -63,6 +65,7 @@ const MobileInput = ({
           placeholder="Enter your mobile number"
           value={mobile}
           onChange={(e) => setMobile(e.target.value)}
+          onFocus={() => speak("Please enter your mobile number")}
         />
       </div>
 
@@ -77,6 +80,7 @@ const MobileInput = ({
           placeholder="Enter your email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          onFocus={() => speak("Please enter your email address")}
         />
       </div>
 
