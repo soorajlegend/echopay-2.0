@@ -143,13 +143,14 @@ const ChatPage = () => {
       }
 
       // Only add record once if it exists in response
-      if (jsonData.newRecord) {
+      if (jsonData?.newRecord) {
         const record = {
           id: nanoid(),
           amount: jsonData.newRecord.amount,
           narration: jsonData.newRecord.narration,
           date: new Date().toISOString(),
         };
+        console.log(record);
         addRecord(record);
       }
 
