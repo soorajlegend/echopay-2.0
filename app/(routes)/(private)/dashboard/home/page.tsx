@@ -58,12 +58,12 @@ const Page = () => {
         <div className="flex mt-[20px] justify-between items-center">
           <div className="flex md:w-1/2 gap-[16px] items-center">
             <div className="bg-[#003056] rounded-full w-[40px] cursor-pointer h-[40px] flex items-center justify-center text-white font-medium text-lg">
-              {info?.email ? info.email.charAt(0).toUpperCase() : "U"}
+              {info?.fullname ? info.fullname.charAt(0).toUpperCase() : "U"}
             </div>
 
             <div>
               <p className="text-[#434343]">Good morning</p>
-              <p className="text-[#1A1A1A] capitalize font-medium text-[20px]">
+              <p className="text-[#1A1A1A] capitalize font-medium text-lg">
                 {info?.fullname}
               </p>
             </div>
