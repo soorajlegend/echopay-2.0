@@ -7,7 +7,6 @@ import Echo from "./chat/_components/echo";
 import useEcho from "@/hooks/use-echo";
 import Chart from "./chat/_components/charts";
 import useShowChart from "@/hooks/use-show-chart";
-import UserMiddleware from "@/components/middleware";
 
 export default function RoutesLayout({
   children,
@@ -29,8 +28,6 @@ export default function RoutesLayout({
       {openEcho && <Echo />}
 
       {showChart && <Chart />}
-
-      <UserMiddleware />
     </>
   );
 }
