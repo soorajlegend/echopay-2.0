@@ -1,12 +1,17 @@
 "use client";
+
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import useUserInfo from "@/hooks/use-userinfo";
 
-export default function DashboardPage() {
+export default function UserMiddleware() {
   const router = useRouter();
+  const { info } = useUserInfo();
 
   useEffect(() => {
-    router.push("/dashboard/home");
+    if (!info) {
+      router.push("/");
+    }
   }, [router]);
 
   return null;
