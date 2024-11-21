@@ -52,13 +52,24 @@ const Page = () => {
     router.push("/kyc");
     console.log("navigate to kyc");
   };
+
   return (
     <div className="min-h-screen flex flex-col overflow-y-auto ">
-      <div className="flex-grow px-4 py-4">
-        <div className="flex mt-[20px] justify-between items-center">
-          <div className="flex md:w-1/2 gap-[16px] items-center">
-            <div className="bg-[#003056] rounded-full w-[40px] cursor-pointer h-[40px] flex items-center justify-center text-white font-medium text-lg">
-              {info?.email ? info.email.charAt(0).toUpperCase() : "U"}
+        <div className="flex-grow px-4 py-4 relative">
+          <div className="flex mt-[20px] justify-between items-center">
+            <div className="flex md:w-1/2 gap-[16px] items-center">
+            <div 
+              className="bg-[#003056] rounded-full w-[40px] cursor-pointer h-[40px] flex items-center justify-center text-white font-medium text-lg"
+              >
+            {info?.email ? info.email.charAt(0).toUpperCase() : 'U'}
+          </div>
+
+              <div>
+                <p className="text-[#434343]">Good morning</p>
+                <p className="text-[#1A1A1A] font-medium text-[20px]">
+                  {info?.fullname}
+                </p>
+              </div>
             </div>
 
             <div>
@@ -119,11 +130,55 @@ const Page = () => {
                   />
                 </Link>
               </div>
-              <p className="text-[14px] font-medium text-[#1A1A1A]">
-                {feature.title}
-              </p>
-            </div>
-          ))}
+            ))}
+          </div>
+      {/* {showPopup &&  ( */}
+      {info?.isVerified === false && (
+         <div className="mt-[24px] mb-5">
+         <Card className=" shadow-none">
+           <CardHeader>
+             <CardTitle className="border-b pb-[10px]">Verify Account</CardTitle>
+           </CardHeader>
+           <CardContent>
+             <p>
+               To ensure the security of your account and enable full access to
+               EchoPay&apos;s features, please complete the verification process
+             </p>
+           </CardContent>
+           <CardFooter>
+             <Button
+               onClick={navigateToKyc}
+               size="lg"
+               className="text-[18px] py-[24px] font-medium bg-[#003056] hover:bg-[#0c2941] text-[#FAFAFA] w-full"
+             >
+               Verify
+             </Button>
+           </CardFooter>
+         </Card>
+       </div>
+      )}
+     
+      {/* )} */}
+
+      <Link
+        href="/chat"
+        className={`${info?.isVerified && "mt-[60px]"} h-[224px] mb-[24px] rounded-[8px] bg-[#D1DCE5] m[60px] p-4 flex flex-col justify-between`}	
+      >
+        <div className=" h-[48px] rounded-full mt-[35px] flex justify-center items-center">
+          <Image
+            className="w-[68px] h-[68px] -rotate-[35deg]"
+            src="/mic-01.svg"
+            alt="mic"
+            width={32}
+            height={32}
+          />
+          <Image
+            className="w-[68px] h-[68px]"
+            src="/chatting.svg"
+            alt="mic"
+            width={32}
+            height={32}
+          />
         </div>
         {/* {showPopup &&  ( */}
         <div className="mt-[24px] mb-5">
@@ -151,27 +206,48 @@ const Page = () => {
             </CardFooter>
           </Card>
         </div>
-        {/* )} */}
+      </Link>
 
-        <Link
-          href="/chat"
-          className="h-[224px] mb-[24px] rounded-[8px] bg-[#D1DCE5] m[60px] p-4 flex flex-col justify-between"
-        >
-          <div className=" h-[48px] rounded-full mt-[35px] flex justify-center items-center">
-            <Image
-              className="w-[68px] h-[68px] -rotate-[35deg]"
-              src="/mic-01.svg"
-              alt="mic"
-              width={32}
-              height={32}
-            />
-            <Image
-              className="w-[68px] h-[68px]"
-              src="/chatting.svg"
-              alt="mic"
-              width={32}
-              height={32}
-            />
+
+      <nav className={` ${info?.isVerified && "mt-[60px] fixd bottom-0"} mt-[36px]  w-full bg-white border-t border-gray-200 pt-5`}>
+          <div className="flex justify-around">
+  
+            <button
+              onClick={() => {setActiveView("home"); router.push("/dashoard")}}
+              className={`flex flex-col items-center ${
+                activeView === "home" ? "text-[#003056]" : "text-gray-500"
+              }`}
+            >
+              <Home size={24} />
+              <span className="text-xs mt-1">Home</span>
+            </button>
+            <button
+              onClick={() => {setActiveView("transaction"); router.push("/dashboard/transaction")}}
+              className={`flex flex-col items-center ${
+                activeView === "wallet" ? "text-[#003056]" : "text-gray-500"
+              }`}
+            >
+              <Wallet size={24} />
+              <span className="text-xs mt-1">Transaction</span>
+            </button>
+            <button
+              onClick={() => {setActiveView("ai"); router.push("/dashoard/ai")}}
+              className={`flex flex-col items-center ${
+                activeView === "ai" ? "text-[#003056]" : "text-gray-500"
+              }`}
+            >
+              <MessageSquare size={24} />
+              <span className="text-xs mt-1">Ai</span>
+            </button>
+            <button
+              onClick={() => {setActiveView("more"); router.push("/dashoard/more")}}
+              className={`flex flex-col items-center ${
+                activeView === "more" ? "text-[#003056]" : "text-gray-500"
+              }`}
+            >
+              <Menu size={24} />
+              <span className="text-xs mt-1">More</span>
+            </button>
           </div>
           <div className="flex justify-between items-center">
             <p className=" text-[18px] text-[#1A1A1A] font-medium">Echo Ai</p>
