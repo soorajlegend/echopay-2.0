@@ -132,6 +132,8 @@ const ChatPage = () => {
         setNewTransaction(jsonData.newTransaction);
       }
 
+      console.log(jsonData);
+
       if (jsonData.message) {
         const modelMessage: Chat = {
           id: nanoid(),
