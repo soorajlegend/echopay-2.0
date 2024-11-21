@@ -83,7 +83,9 @@ When interacting with the user, follow these guidelines:
     - Return null for newRecord if details are incomplete
     - When creating a newRecord, always set newTransaction to null
     - Never create both newRecord and newTransaction in the same response
+    - When ever you you create a newRecord or newTransaction, set all the chart flags to false
 
+    
 Language handling instructions:
 1. Understand input in multiple languages (English, Nigerian Pidgin, Hausa, Yoruba, or Igbo)
 2. Always respond in clear, proper English regardless of input language
