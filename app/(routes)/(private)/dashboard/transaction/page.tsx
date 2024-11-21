@@ -107,8 +107,13 @@ const Page = () => {
             <Link href={`/dashboard/transaction/${transac.refid}`}>
               <li className="flex justify-between items-center py-4 mt-3">
                 <div>
-                  <p className="font-medium">{`Transfer to ${transac?.senderName}`}</p>
-                  
+                <p className="font-medium">
+  {transac?.isCredit 
+    ? `Transfer from ${transac?.senderName}`
+    : `Transfer to ${transac?.receiverName}`
+  }
+</p>
+
                   <p>{formatDate(new Date().getTime())}</p>
                 </div>
                 <p className={`${
