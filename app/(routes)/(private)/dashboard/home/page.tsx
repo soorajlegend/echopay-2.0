@@ -155,7 +155,7 @@ const Page = () => {
 
         <Link
           href="/chat"
-          className="h-[224px] mb-[24px] rounded-[8px] bg-[#D1DCE5] m[60px] p-4 flex flex-col justify-between"
+          className="h-[224px] my-5 rounded-[8px] bg-[#D1DCE5] m[60px] p-4 flex flex-col justify-between"
         >
           <div className=" h-[48px] rounded-full mt-[35px] flex justify-center items-center">
             <Image
