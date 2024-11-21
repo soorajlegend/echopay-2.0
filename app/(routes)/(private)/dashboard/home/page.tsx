@@ -54,7 +54,7 @@ const Page = () => {
 
   return (
     <div className="min-h-screen flex flex-col overflow-y-auto ">
-      <div className="flex-grow px-4 py-4">
+      <div className="flex-grow px-4 pt-4 pb-20">
         <div className="flex mt-[20px] justify-between items-center">
           <div className="flex md:w-1/2 gap-[16px] items-center">
             <div className="bg-[#003056] rounded-full w-[40px] cursor-pointer h-[40px] flex items-center justify-center text-white font-medium text-lg">
