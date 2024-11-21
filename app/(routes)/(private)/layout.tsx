@@ -13,17 +13,14 @@ export default function RoutesLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const { newTransaction, setNewTransaction } = useNewTransaction();
+  const { newTransaction } = useNewTransaction();
   const { openEcho } = useEcho();
   const { showChart } = useShowChart();
   return (
     <>
       {children}
       {/* <EchoListener /> */}
-      <ConfirmTransaction
-        data={newTransaction}
-        setNewTransaction={setNewTransaction}
-      />
+      {newTransaction && <ConfirmTransaction data={newTransaction} />}
 
       {openEcho && <Echo />}
 
