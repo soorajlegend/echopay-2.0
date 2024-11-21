@@ -150,7 +150,6 @@ const ChatPage = () => {
           narration: jsonData.newRecord.narration,
           date: new Date().toISOString(),
         };
-        console.log(record);
         addRecord(record);
       }
 

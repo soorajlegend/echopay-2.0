@@ -319,7 +319,7 @@ const Echo = () => {
         }
 
         // Only add record once if it exists in response
-        if (jsonData.newRecord) {
+        if (jsonData?.newRecord) {
           const record = {
             id: nanoid(),
             amount: jsonData.newRecord.amount,

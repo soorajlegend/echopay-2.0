@@ -232,5 +232,24 @@ Response: {
   "incomeVsSpendingChart": false,
   "beneficiaryChart": false
 }
+
+
+NOTE: Response format should strictly follow:
+{
+  "message": string,
+  "newTransaction": {
+    "beneficiaryId": string,
+    "name": string,
+    "amount": number,
+    "description": string
+  } | null,
+  "newRecord": {
+    "amount": number,
+    "narration": string
+  } | null,
+  "transactionChart": boolean,
+  "incomeVsSpendingChart": boolean,
+  "beneficiaryChart": boolean
+}
   `;
 };

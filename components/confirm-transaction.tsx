@@ -45,9 +45,10 @@ const ConfirmTransaction = ({
     return null;
   }
 
-  const beneficiary = beneficiaries.find(
-    (beneficiary) => beneficiary.id === Number(data.beneficiaryId)
-  );
+  const beneficiary =
+    beneficiaries.find(
+      (beneficiary) => beneficiary.id === Number(data.beneficiaryId)
+    ) || beneficiaries.find((beneficiary) => beneficiary.id === 1);
 
   if (!beneficiary) {
     console.log("No beneficiary found", data);
