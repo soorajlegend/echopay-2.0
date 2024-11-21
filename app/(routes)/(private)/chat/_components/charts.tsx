@@ -3,21 +3,21 @@
 import React from "react";
 import TransactionChart from "./transaction-chart";
 import { Drawer, DrawerContent } from "@/components/ui/drawer";
-import useShowChart, { ChartType } from "@/hooks/use-show-chart";
+import useShowChart from "@/hooks/use-show-chart";
 import { IncomeVersusSpendingChart } from "./income-versus-spending-chart";
+import { BeneficiaryChart } from "./beneficiary-chart";
 
 const Chart = () => {
   const { showChart, setShowChart } = useShowChart();
 
-  // if (showChart === null) return;
-
-  const sample = "INCOME_VS_SPENDING";
+  if (showChart === null) return;
 
   return (
     <Drawer open onClose={() => setShowChart(null)}>
       <DrawerContent>
         {showChart === "TRANSACTIONS" && <TransactionChart />}
-        {sample === "INCOME_VS_SPENDING" && <IncomeVersusSpendingChart />}
+        {showChart === "INCOME_VS_SPENDING" && <IncomeVersusSpendingChart />}
+        {showChart === "BENEFICIARY_CHART" && <BeneficiaryChart />}
       </DrawerContent>
     </Drawer>
   );

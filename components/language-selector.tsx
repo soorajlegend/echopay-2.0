@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 import { Button } from "./ui/button";
+import { speak } from "@/lib/utils";
 
 interface LanguageSelectorProps {
   selectedLanguage: string;
@@ -37,6 +38,10 @@ const LanguageSelector = ({
     setSelectedLanguage(value);
     setIsOpen(false); // Close the Select popover
   };
+
+  useEffect(() => {
+    speak("Please select your prepared language");
+  }, []);
 
   return (
     <div className="text-center relative w-full h-screen">

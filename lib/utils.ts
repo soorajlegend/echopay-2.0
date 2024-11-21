@@ -1,5 +1,6 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { TTS } from "@/actions/voice";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -9,6 +10,15 @@ export function cx(...args: ClassValue[]) {
   return twMerge(clsx(...args));
 }
 
+// Tremor Raw focusRing [v0.0.1]
+
+export const focusRing = [
+  // base
+  "outline outline-offset-2 outline-0 focus-visible:outline-2",
+  // outline color
+  "outline-blue-500 dark:outline-blue-500",
+];
+
 function countDoubleQuotes(str: string) {
   // Use a regular expression to find all occurrences of double quotes
   const matches = str.match(/"/g);
@@ -16,6 +26,54 @@ function countDoubleQuotes(str: string) {
   // If matches exist, return the length of the matches array, otherwise return 0
   return matches ? matches.length : 0;
 }
+
+export const speak = async (text: string) => {
+  try {
+    const audioSource = await TTS(text);
+    const audio = new Audio(audioSource);
+
+    // Set audio output to use bluetooth/headphones if available
+    if (audio.setSinkId && typeof audio.setSinkId === "function") {
+      try {
+        const devices = await navigator.mediaDevices.enumerateDevices();
+        const audioOutputs = devices.filter(
+          (device) => device.kind === "audiooutput"
+        );
+
+        // Find bluetooth/headphone device
+        const bluetoothDevice = audioOutputs.find(
+          (device) =>
+            device.label.toLowerCase().includes("bluetooth") ||
+            device.label.toLowerCase().includes("headphone")
+        );
+
+        if (bluetoothDevice) {
+          await audio.setSinkId(bluetoothDevice.deviceId);
+        }
+      } catch (err) {
+        console.warn("Unable to set audio output device:", err);
+      }
+    }
+
+    return new Promise<void>((resolve) => {
+      audio.onended = () => {
+        resolve();
+      };
+
+      audio.onerror = (error) => {
+        console.error("Error playing audio:", error);
+        resolve();
+      };
+
+      audio.play().catch((error) => {
+        console.error("Error playing audio:", error);
+        resolve();
+      });
+    });
+  } catch (error) {
+    console.error("Error in text-to-speech:", error);
+  }
+};
 
 export function completeJsonStructure(jsonString: string) {
   // Initialize arrays to store opening and closing characters
