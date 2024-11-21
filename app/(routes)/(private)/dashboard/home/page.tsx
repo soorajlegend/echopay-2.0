@@ -224,7 +224,7 @@ const Page = () => {
               }`}
             >
               <MessageSquare size={24} />
-              <span className="text-xs mt-1">Ai</span>
+              <span className="text-xs mt-1">Chat</span>
             </button>
             <button
               onClick={() => {
