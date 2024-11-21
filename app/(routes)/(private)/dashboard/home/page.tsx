@@ -125,33 +125,33 @@ const Page = () => {
             </div>
           ))}
         </div>
-        {/* {showPopup &&  ( */}
-        <div className="mt-[24px] mb-5">
-          <Card className=" shadow-none">
-            <CardHeader>
-              <CardTitle className="border-b pb-[10px]">
-                Verify Account
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p>
-                To ensure the security of your account and enable full access to
-                EchoPay&apos;s features, please complete the verification
-                process
-              </p>
-            </CardContent>
-            <CardFooter>
-              <Button
-                onClick={navigateToKyc}
-                size="lg"
-                className="text-[18px] py-[24px] font-medium bg-[#003056] hover:bg-[#0c2941] text-[#FAFAFA] w-full"
-              >
-                Verify
-              </Button>
-            </CardFooter>
-          </Card>
-        </div>
-        {/* )} */}
+        {!info?.isVerified && (
+          <div className="mt-[24px] mb-5">
+            <Card className=" shadow-none">
+              <CardHeader>
+                <CardTitle className="border-b pb-[10px]">
+                  Verify Account
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p>
+                  To ensure the security of your account and enable full access
+                  to EchoPay&apos;s features, please complete the verification
+                  process
+                </p>
+              </CardContent>
+              <CardFooter>
+                <Button
+                  onClick={navigateToKyc}
+                  size="lg"
+                  className="text-[18px] py-[24px] font-medium bg-[#003056] hover:bg-[#0c2941] text-[#FAFAFA] w-full"
+                >
+                  Verify
+                </Button>
+              </CardFooter>
+            </Card>
+          </div>
+        )}
 
         <Link
           href="/chat"
