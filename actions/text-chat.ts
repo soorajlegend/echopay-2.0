@@ -11,7 +11,17 @@ const openai = new OpenAI({
   baseURL: "https://api.groq.com/openai/v1",
 });
 
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+const apiKey1 = process.env.GROQ_API_KEY;
+const apiKey2 = process.env.GROQ_API_KEY_I;
+const apiKey3 = process.env.GROQ_API_KEY_II;
+const apiKey4 = process.env.GROQ_API_KEY_III;
+const apiKey5 = process.env.GROQ_API_KEY_IV;
+
+const apiKeys = [apiKey1, apiKey2, apiKey3, apiKey4, apiKey5];
+
+const randomApiKey = apiKeys[Math.floor(Math.random() * apiKeys.length)];
+
+const groq = new Groq({ apiKey: randomApiKey });
 
 export type ChatStructure = {
   role: "user" | "assistant";
