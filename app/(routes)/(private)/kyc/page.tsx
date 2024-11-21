@@ -276,9 +276,9 @@ export default function KYCProcess() {
                   ))}
                 </form>
               </div>
-              <div className="mt-auto">
+              <div className="mt-auton">
                 <Button
-                  className="w-full py-6 bg-[#003056]"
+                  className="w-full py-6 mt-5 bg-[#003056]"
                   onClick={handleContinue}
                 >
                   Continue
