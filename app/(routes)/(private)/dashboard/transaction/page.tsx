@@ -35,7 +35,6 @@ const Page = () => {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const { info } = useUserInfo();
-  console.log(info);
 
   useEffect(() => {
     const fetchTransactions = async () => {
