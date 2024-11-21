@@ -314,7 +314,6 @@ const Echo = () => {
         }
 
         if (jsonData.newTransaction) {
-          console.log("newTransaction", jsonData.newTransaction);
           setNewTransaction(jsonData.newTransaction);
         }
 
@@ -354,6 +353,25 @@ const Echo = () => {
 
         if (jsonData.transactionChart) {
           setShowChart("TRANSACTIONS");
+        }
+
+        // Only add record once if it exists in response
+        if (jsonData?.newRecord) {
+          const record = {
+            id: nanoid(),
+            amount: jsonData.newRecord.amount,
+            narration: jsonData.newRecord.narration,
+            date: new Date().toISOString(),
+          };
+          addRecord(record);
+        }
+
+        if (jsonData?.incomeVsSpendingChart) {
+          setShowChart("INCOME_VS_SPENDING");
+        }
+
+        if (jsonData?.beneficiaryChart) {
+          setShowChart("BENEFICIARY_CHART");
         }
       } catch (error) {
         console.log(`Error processing response: ${error}`);

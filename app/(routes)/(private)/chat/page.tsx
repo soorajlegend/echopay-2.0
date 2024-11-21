@@ -132,8 +132,6 @@ const ChatPage = () => {
         setNewTransaction(jsonData.newTransaction);
       }
 
-      console.log(jsonData);
-
       if (jsonData.message) {
         const modelMessage: Chat = {
           id: nanoid(),
@@ -142,6 +140,10 @@ const ChatPage = () => {
           createdAt: new Date(),
         };
         addChat(modelMessage);
+      }
+
+      if (jsonData?.transactionChart) {
+        setShowChart("TRANSACTIONS");
       }
 
       // Only add record once if it exists in response
@@ -153,10 +155,6 @@ const ChatPage = () => {
           date: new Date().toISOString(),
         };
         addRecord(record);
-      }
-
-      if (jsonData?.transactionChart) {
-        setShowChart("TRANSACTIONS");
       }
 
       if (jsonData?.incomeVsSpendingChart) {

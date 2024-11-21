@@ -251,5 +251,8 @@ NOTE: Response format should strictly follow:
   "incomeVsSpendingChart": boolean,
   "beneficiaryChart": boolean
 }
+
+Only return newTransaction to initiate a new transaction, the data would be used to send to an api, avoid repeating newTransaction unless the user ask you to.
+
   `;
 };
