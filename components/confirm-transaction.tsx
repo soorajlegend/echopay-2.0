@@ -21,25 +21,22 @@ import { Card } from "./ui/card";
 import { Avatar } from "@radix-ui/react-avatar";
 import { AvatarFallback, AvatarImage } from "./ui/avatar";
 import PasswordInput from "./password-input";
+import useNewTransaction from "@/hooks/use-new-transaction";
 
 interface ConfirmTransactionProps {
   data: NewTransactionType | null;
-  setNewTransaction: (value: NewTransactionType | null) => void;
 }
 
-const ConfirmTransaction = ({
-  data,
-  setNewTransaction,
-}: ConfirmTransactionProps) => {
+const ConfirmTransaction = ({ data }: ConfirmTransactionProps) => {
   const { beneficiaries } = useBeneficiary();
   const { addTransaction } = useTransaction();
   const { info, setInfo } = useUserInfo();
 
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [showPinInput, setShowPinInput] = useState(false);
 
   const closeRef = useRef<HTMLButtonElement>(null);
+  const { setNewTransaction } = useNewTransaction();
 
   if (!data) {
     return null;
@@ -98,17 +95,16 @@ const ConfirmTransaction = ({
           });
         }
 
+        setNewTransaction(null);
+
         if (closeRef.current) {
           closeRef.current.click();
         }
-        setNewTransaction(null);
       } else {
         toast.error(response.data.message || "Something went wrong");
-        setShowPinInput(false);
       }
     } catch (error) {
       toast.error("Failed to complete transaction");
-      setShowPinInput(false);
     } finally {
       setIsLoading(false);
     }
@@ -163,7 +159,7 @@ const ConfirmTransaction = ({
               Cancel
             </Button>
           </DrawerClose>
-          <Button onClick={() => setShowPinInput(true)} disabled={isLoading}>
+          <Button disabled={isLoading}>
             {isLoading ? "Loading..." : "Cornfirm"}
             {isLoading && <Loader className="w-6 h-6 animate-spin ml-2" />}
           </Button>
