@@ -12,7 +12,7 @@ export default function UserMiddleware() {
     if (!info) {
       router.push("/");
     }
-  }, [router]);
+  }, [info]);
 
   return null;
 }
