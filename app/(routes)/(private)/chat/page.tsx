@@ -63,7 +63,6 @@ const ChatPage = () => {
 
     const history = [...chats];
     setIsLoading(true);
-    setShowRetry(false);
     setLastAttemptedMessage(messageToSend);
 
     const userMessage: Chat = {
@@ -73,8 +72,12 @@ const ChatPage = () => {
       createdAt: new Date(),
     };
 
-    addChat(userMessage);
+    if (!showRetry) {
+      addChat(userMessage);
+    }
+
     setNewMessage("");
+    setShowRetry(false);
 
     const messages: ChatStructure[] = [
       ...history.map((chat) => ({
