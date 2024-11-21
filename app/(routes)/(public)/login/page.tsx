@@ -7,6 +7,7 @@ import { InputWithIcon } from "@/components/ui/input-with-icon";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import { speak } from "@/lib/utils";
 
 // routes can not have props except for params which are passed through the url
 
@@ -68,6 +69,9 @@ const LoginPage = () => {
           placeholder="Enter your phone number"
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
+          onFocus={() =>
+            speak("Please enter your mobile number or email address")
+          }
         />
       </div>
 
@@ -81,6 +85,7 @@ const LoginPage = () => {
           placeholder="Enter your password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          onFocus={() => speak("Please enter your password")}
         />
       </div>
 
@@ -99,7 +104,7 @@ const LoginPage = () => {
           </div>
           <Button
             variant="link"
-            onClick={() => {}} 
+            onClick={() => {}}
             className="text-[18px] font-medium py-[24px]"
           >
             Sign Up
