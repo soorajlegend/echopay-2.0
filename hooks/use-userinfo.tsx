@@ -4,7 +4,7 @@ import { UserType } from "@/types";
 
 interface UserInfo {
   info: UserType | null;
-  setInfo: (data: UserType) => void;
+  setInfo: (data: UserType | null) => void;
   clearInfo: () => void;
   verified: boolean;
   setVerified: (newValue: boolean) => void;
@@ -19,7 +19,7 @@ const useUserInfo = create(
   persist<UserInfo>(
     (set, get) => ({
       info: null,
-      setInfo: (data: UserType) => {
+      setInfo: (data: UserType | null) => {
         set({ info: data });
       },
       clearInfo: () => {
