@@ -63,8 +63,8 @@ const Page = () => {
 
             <div>
               <p className="text-[#434343]">Good morning</p>
-              <p className="text-[#1A1A1A] font-medium text-[20px]">
-                {info?.phone}
+              <p className="text-[#1A1A1A] capitalize font-medium text-[20px]">
+                {info?.fullname}
               </p>
             </div>
           </div>
@@ -217,7 +217,7 @@ const Page = () => {
             <button
               onClick={() => {
                 setActiveView("ai");
-                router.push("/dashoard/ai");
+                router.push("/chat");
               }}
               className={`flex flex-col items-center ${
                 activeView === "ai" ? "text-[#003056]" : "text-gray-500"
