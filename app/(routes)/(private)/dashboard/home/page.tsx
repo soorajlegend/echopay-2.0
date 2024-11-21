@@ -52,10 +52,12 @@ useEffect(() => {
     router.push("/kyc");
     console.log("navigate to kyc");
   };
+
+  console.log(info)
   return (
     <div className="min-h-screen flex flex-col overflow-y-auto ">
 
-        <div className="flex-grow px-4 py-4">
+        <div className="flex-grow px-4 py-4 relative">
           <div className="flex mt-[20px] justify-between items-center">
             <div className="flex md:w-1/2 gap-[16px] items-center">
             <div 
@@ -130,33 +132,36 @@ useEffect(() => {
             ))}
           </div>
       {/* {showPopup &&  ( */}
-      <div className="mt-[24px] mb-5">
-        <Card className=" shadow-none">
-          <CardHeader>
-            <CardTitle className="border-b pb-[10px]">Verify Account</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p>
-              To ensure the security of your account and enable full access to
-              EchoPay&apos;s features, please complete the verification process
-            </p>
-          </CardContent>
-          <CardFooter>
-            <Button
-              onClick={navigateToKyc}
-              size="lg"
-              className="text-[18px] py-[24px] font-medium bg-[#003056] hover:bg-[#0c2941] text-[#FAFAFA] w-full"
-            >
-              Verify
-            </Button>
-          </CardFooter>
-        </Card>
-      </div>
+      {info?.isVerified === false && (
+         <div className="mt-[24px] mb-5">
+         <Card className=" shadow-none">
+           <CardHeader>
+             <CardTitle className="border-b pb-[10px]">Verify Account</CardTitle>
+           </CardHeader>
+           <CardContent>
+             <p>
+               To ensure the security of your account and enable full access to
+               EchoPay&apos;s features, please complete the verification process
+             </p>
+           </CardContent>
+           <CardFooter>
+             <Button
+               onClick={navigateToKyc}
+               size="lg"
+               className="text-[18px] py-[24px] font-medium bg-[#003056] hover:bg-[#0c2941] text-[#FAFAFA] w-full"
+             >
+               Verify
+             </Button>
+           </CardFooter>
+         </Card>
+       </div>
+      )}
+     
       {/* )} */}
 
       <Link
         href="/chat"
-        className="h-[224px] mb-[24px] rounded-[8px] bg-[#D1DCE5] m[60px] p-4 flex flex-col justify-between"
+        className={`${info?.isVerified && "mt-[60px]"} h-[224px] mb-[24px] rounded-[8px] bg-[#D1DCE5] m[60px] p-4 flex flex-col justify-between`}	
       >
         <div className=" h-[48px] rounded-full mt-[35px] flex justify-center items-center">
           <Image
@@ -187,7 +192,7 @@ useEffect(() => {
       </Link>
 
 
-      <nav className="mt-[36px]  w-full bg-white border-t border-gray-200 pt-5">
+      <nav className={` ${info?.isVerified && "mt-[60px] fixd bottom-0"} mt-[36px]  w-full bg-white border-t border-gray-200 pt-5`}>
           <div className="flex justify-around">
   
             <button
