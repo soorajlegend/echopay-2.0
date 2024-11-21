@@ -50,8 +50,8 @@ const Page = () => {
   }, [activeView, router]);
   const navigateToKyc = () => {
     router.push("/kyc");
-    console.log("navigate to kyc");
   };
+
   return (
     <div className="min-h-screen flex flex-col overflow-y-auto ">
       <div className="flex-grow px-4 py-4">
@@ -187,9 +187,9 @@ const Page = () => {
       </div>
 
       {/* start of the navigation division */}
-      <div className="fixed bottom-0 w-full flex justify-center">
-        <nav className="w-full max-w-lg mx-auto bg-white border-t border-gray-200 py-2">
-          <div className="flex justify-around">
+      <div className="fixed inset-0 bottom-0 w-full flex justify-center">
+        <nav className="w-full bg-white border-t border-gray-200 py-2">
+          <div className="flex max-w-lg mx-auto justify-around">
             <button
               onClick={() => {
                 setActiveView("home");
