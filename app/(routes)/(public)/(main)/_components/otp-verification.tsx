@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Label } from "@/components/ui/label";
 import {
   InputOTP,
@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/input-otp";
 import { Button } from "@/components/ui/button";
 import { Edit } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, speak } from "@/lib/utils";
 
 interface OTPVerificationProps {
   mobile: string;
@@ -29,6 +29,10 @@ const OTPVerification = ({
   const handleVerify = () => {
     onVerify(value);
   };
+
+  useEffect(() => {
+    speak("Please enter the OTP sent to your email");
+  }, []);
 
   return (
     <div className="relative text-center w-full h-screen">

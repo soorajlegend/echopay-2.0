@@ -15,6 +15,7 @@ interface PasswordInputProps {
   error?: string;
   onComplete: () => void;
   disabled?: boolean;
+  onFocus?: () => void;
 }
 
 const PasswordInput = ({
@@ -24,6 +25,7 @@ const PasswordInput = ({
   error,
   onComplete,
   disabled,
+  onFocus,
 }: PasswordInputProps) => {
   useEffect(() => {
     if (value.length === 6) {
@@ -44,6 +46,7 @@ const PasswordInput = ({
           maxLength={6}
           value={value}
           onChange={(value) => setValue(value)}
+          onFocus={onFocus}
         >
           <InputOTPGroup className="gap-3">
             <InputOTPSlot index={0} />

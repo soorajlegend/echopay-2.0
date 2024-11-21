@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import PasswordInput from "../password-input";
+import { speak } from "@/lib/utils";
 
 interface UpsetPasswordProps {
   onFinish: (password: string) => void;
@@ -26,6 +27,10 @@ const UpsetPassword = ({ onFinish }: UpsetPasswordProps) => {
     onFinish(pass1);
   };
 
+  const handleFocus = (text: string) => {
+    return speak(text);
+  };
+
   return (
     <div className="relative text-center w-full flex flex-col justify-center h-full gap-5">
       {/* TODO: create back button */}
@@ -39,6 +44,7 @@ const UpsetPassword = ({ onFinish }: UpsetPasswordProps) => {
           onComplete={() => setPassStage(2)}
           setValue={setPass1}
           value={pass1}
+          onFocus={() => handleFocus("Please create 6 digit password")}
         />
       )}
       {/* confirm password */}
@@ -49,6 +55,7 @@ const UpsetPassword = ({ onFinish }: UpsetPasswordProps) => {
           setValue={setPass2}
           value={pass2}
           error={error}
+          onFocus={() => handleFocus("Please confirm your 6 digit password")}
         />
       )}
       {error && <p className="text-red-500 text-sm">{error}</p>}
