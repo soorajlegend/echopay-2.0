@@ -390,10 +390,7 @@ const Echo = () => {
       <DrawerContent className="min-h-[60%] w-full">
         <div className="flex-1 flex flex-col items-center justify-between">
           <div className="flex-1 flex flex-col items-center justify-center w-full max-w-lg mx-auto">
-            <ConfirmTransaction
-              data={newTransaction}
-              setNewTransaction={setNewTransaction}
-            />
+            <ConfirmTransaction data={newTransaction} />
             {isThinking && <FourDotLoader />}
             {isSpeaking && <ThreeDotLoader />}
             {!isThinking && !isSpeaking && (
