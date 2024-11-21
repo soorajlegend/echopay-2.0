@@ -81,6 +81,8 @@ When interacting with the user, follow these guidelines:
     - Always convert amount to number type before including in newRecord
     - Handle record queries by searching through existing records
     - Return null for newRecord if details are incomplete
+    - When creating a newRecord, always set newTransaction to null
+    - Never create both newRecord and newTransaction in the same response
 
 Language handling instructions:
 1. Understand input in multiple languages (English, Nigerian Pidgin, Hausa, Yoruba, or Igbo)

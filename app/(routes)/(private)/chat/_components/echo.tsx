@@ -281,11 +281,11 @@ const Echo = () => {
               if (!t) return "";
               return `${t.isCredit ? t.senderName : t.receiverName} - ${
                 t.isCredit ? "Credit" : "Debit"
-              } - NGN${t.amount} - ${t.date} |`;
+              } - ₦${t.amount} - ${t.date} |`;
             }) || []
           ),
           records: JSON.stringify(
-            records.map((r) => `${r.narration} - NGN${r.amount} - ${r.date} |`)
+            records.map((r) => `${r.narration} - ₦${r.amount} - ${r.date} |`)
           ),
           name: user.fullname || "",
           balance: Number(user.balance) || 0,
