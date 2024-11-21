@@ -6,7 +6,7 @@ import {
   HelpCircle,
   Share2,
   ChevronRight,
-  PowerCircle,
+  Power,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -72,7 +72,7 @@ const Page = () => {
             <h2>More</h2>
           </div>
           <Button size="icon" variant="destructive" onClick={handleLogOut}>
-            <PowerCircle className="w-8 h-8" />
+            <Power className="w-8 h-8" />
           </Button>
         </div>
 
