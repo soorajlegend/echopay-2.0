@@ -82,7 +82,7 @@ const Page = () => {
           <div className="flex flex-col justify-between">
             <p className="">Balance</p>
             <p className="text-[22px] md:text-[24px] font-semibold">
-              N {info?.balance}
+              ₦ {info?.balance}
             </p>
           </div>
           <div className="relative flex flex-col justify-end w-1/2">
