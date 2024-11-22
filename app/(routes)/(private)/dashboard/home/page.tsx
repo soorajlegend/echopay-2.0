@@ -188,7 +188,7 @@ const Page = () => {
 
       {/* start of the navigation division */}
       <div className="fixed bottom-0 right-0 left-0 h-auto w-full flex justify-center">
-        <nav className="w-full bg-white border-gray-200 py-2">
+        <nav className="w-full bg-white border-gray-200 pt-2 pb-5 lg:pb-2">
           <div className="flex max-w-lg mx-auto justify-around">
             <button
               onClick={() => {
