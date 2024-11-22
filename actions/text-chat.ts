@@ -1,15 +1,10 @@
 "use server";
 
 import { EchopayTextAssistantPrompt } from "@/prompts/echopay-text-assistant";
-import OpenAI from "openai";
+// import OpenAI from "openai";
 import Groq from "groq-sdk";
 
 // const openai = new OpenAI();
-
-const openai = new OpenAI({
-  apiKey: process.env.GROQ_API_KEY,
-  baseURL: "https://api.groq.com/openai/v1",
-});
 
 const apiKey1 = process.env.GROQ_API_KEY;
 const apiKey2 = process.env.GROQ_API_KEY_I;

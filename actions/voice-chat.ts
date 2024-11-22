@@ -1,17 +1,12 @@
 "use server";
 
 import { EchopayVoiceAssistantPrompt } from "@/prompts/echopay-voice-assistant";
-import OpenAI from "openai";
+// import OpenAI from "openai";
 import Groq from "groq-sdk";
 
 // const openai = new OpenAI();
 
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
-
-const openai = new OpenAI({
-  apiKey: process.env.GROQ_API_KEY,
-  baseURL: "https://api.groq.com/openai/v1",
-});
 
 export type ChatStructure = {
   role: "user" | "assistant";
