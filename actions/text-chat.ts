@@ -16,7 +16,7 @@ const apiKeys = [apiKey1, apiKey2, apiKey3, apiKey4, apiKey5];
 
 const randomApiKey = apiKeys[Math.floor(Math.random() * apiKeys.length)];
 
-const groq = new Groq({ apiKey: apiKey3 });
+const groq = new Groq({ apiKey: apiKey2 });
 
 export type ChatStructure = {
   role: "user" | "assistant";
