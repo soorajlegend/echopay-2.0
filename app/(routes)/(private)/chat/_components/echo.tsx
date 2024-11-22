@@ -37,7 +37,8 @@ const Echo = () => {
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [isThinking, setIsThinking] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [silenceTimer, setSilenceTimer] = useState<NodeJS.Timeout | null>(null);
+  const [lastSpeechTime, setLastSpeechTime] = useState<number>(Date.now());
+  const silenceCheckInterval = useRef<NodeJS.Timeout>();
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
@@ -127,8 +128,8 @@ const Echo = () => {
     if (streamRef.current) {
       streamRef.current.getTracks().forEach((track) => track.stop());
     }
-    if (silenceTimer) {
-      clearTimeout(silenceTimer);
+    if (silenceCheckInterval.current) {
+      clearInterval(silenceCheckInterval.current);
     }
   };
 
@@ -147,17 +148,10 @@ const Echo = () => {
           const result = event.results[i][0].transcript;
           if (event.results[i].isFinal) {
             setTranscript((prev) => prev + " " + result);
-            // Reset silence timer when speech is detected
-            if (silenceTimer) clearTimeout(silenceTimer);
-            // Start new silence timer
-            const timer = setTimeout(() => {
-              if (isRecording && !isPaused) {
-                stopAndSendRecording();
-              }
-            }, 2000); // 2 seconds of silence triggers send
-            setSilenceTimer(timer);
+            setLastSpeechTime(Date.now());
           } else {
             currentTranscript += result;
+            setLastSpeechTime(Date.now());
           }
         }
         setTempTranscript(currentTranscript);
@@ -176,6 +170,25 @@ const Echo = () => {
       cleanupAudioResources();
     };
   }, []);
+
+  // Add silence detection
+  useEffect(() => {
+    if (isRecording && !isPaused) {
+      silenceCheckInterval.current = setInterval(() => {
+        const silenceDuration = Date.now() - lastSpeechTime;
+        if (silenceDuration > 2000) {
+          // 2 seconds of silence
+          stopAndSendRecording();
+        }
+      }, 500); // Check every 500ms
+    }
+
+    return () => {
+      if (silenceCheckInterval.current) {
+        clearInterval(silenceCheckInterval.current);
+      }
+    };
+  }, [isRecording, isPaused, lastSpeechTime]);
 
   const startRecording = async () => {
     try {
@@ -198,6 +211,7 @@ const Echo = () => {
       setIsRecording(true);
       setTranscript("");
       setTempTranscript("");
+      setLastSpeechTime(Date.now());
       visualize();
     } catch (err) {
       console.error("Error accessing microphone:", err);
@@ -226,8 +240,8 @@ const Echo = () => {
     if (recognitionRef.current && isRecording) {
       recognitionRef.current.stop();
       setIsPaused(true);
-      if (silenceTimer) {
-        clearTimeout(silenceTimer);
+      if (silenceCheckInterval.current) {
+        clearInterval(silenceCheckInterval.current);
       }
     }
   };
@@ -236,6 +250,7 @@ const Echo = () => {
     if (recognitionRef.current && isRecording) {
       recognitionRef.current.start();
       setIsPaused(false);
+      setLastSpeechTime(Date.now());
     }
   };
 
@@ -420,7 +435,7 @@ const Echo = () => {
   };
 
   return (
-    <Drawer open={openEcho} onClose={() => setOpenEcho(false)}>
+    <Drawer open={openEcho} onClose={cancelRecording}>
       <DrawerContent className="min-h-[60%] w-full">
         <div className="flex-1 flex flex-col items-center justify-between">
           <div className="flex-1 flex flex-col items-center justify-center w-full max-w-lg mx-auto">
