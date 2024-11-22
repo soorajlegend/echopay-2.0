@@ -37,6 +37,7 @@ const Echo = () => {
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [isThinking, setIsThinking] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [silenceTimer, setSilenceTimer] = useState<NodeJS.Timeout | null>(null);
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
@@ -126,6 +127,9 @@ const Echo = () => {
     if (streamRef.current) {
       streamRef.current.getTracks().forEach((track) => track.stop());
     }
+    if (silenceTimer) {
+      clearTimeout(silenceTimer);
+    }
   };
 
   useEffect(() => {
@@ -143,11 +147,20 @@ const Echo = () => {
           const result = event.results[i][0].transcript;
           if (event.results[i].isFinal) {
             setTranscript((prev) => prev + " " + result);
+            // Reset silence timer when speech is detected
+            if (silenceTimer) clearTimeout(silenceTimer);
+            // Start new silence timer
+            const timer = setTimeout(() => {
+              if (isRecording && !isPaused) {
+                stopAndSendRecording();
+              }
+            }, 2000); // 2 seconds of silence triggers send
+            setSilenceTimer(timer);
           } else {
             currentTranscript += result;
           }
         }
-        setTempTranscript(currentTranscript); // Update temporary transcript
+        setTempTranscript(currentTranscript);
       };
 
       recognitionRef.current.onerror = (event: any) => {
@@ -184,7 +197,7 @@ const Echo = () => {
 
       setIsRecording(true);
       setTranscript("");
-      setTempTranscript(""); // Reset temporary transcript
+      setTempTranscript("");
       visualize();
     } catch (err) {
       console.error("Error accessing microphone:", err);
@@ -213,6 +226,9 @@ const Echo = () => {
     if (recognitionRef.current && isRecording) {
       recognitionRef.current.stop();
       setIsPaused(true);
+      if (silenceTimer) {
+        clearTimeout(silenceTimer);
+      }
     }
   };
 
@@ -233,7 +249,7 @@ const Echo = () => {
         recognitionRef.current.stop();
       }
 
-      const finalTranscript = transcript + " " + tempTranscript; // Combine both transcripts
+      const finalTranscript = transcript + " " + tempTranscript;
       if (!finalTranscript.trim()) {
         toast.error("Please say something");
         setIsRecording(false);
@@ -380,7 +396,7 @@ const Echo = () => {
       } finally {
         setVisualizerData([]);
         setTranscript("");
-        setTempTranscript(""); // Reset temporary transcript
+        setTempTranscript("");
         setIsProcessing(false);
         setIsThinking(false);
       }
@@ -397,7 +413,7 @@ const Echo = () => {
     cleanupAudioResources();
     setVisualizerData([]);
     setTranscript("");
-    setTempTranscript(""); // Reset temporary transcript
+    setTempTranscript("");
     setIsRecording(false);
     setIsPaused(false);
     setOpenEcho(false);
@@ -465,7 +481,6 @@ const Echo = () => {
 
                 <button
                   onClick={stopAndSendRecording}
-                  // disabled={isProcessing}
                   className={`w-16 h-16 rounded-full ${
                     isProcessing ? "opacity-100" : "hover:opacity-90"
                   } bg-theme-primary flex items-center justify-center aspect-square`}
