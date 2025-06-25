@@ -324,8 +324,6 @@ const Echo = () => {
 
         const response = await EchoVoiceChat(data);
 
-        console.log(data, response);
-
         if (!response) {
           setIsRecording(false);
           setIsPaused(false);
