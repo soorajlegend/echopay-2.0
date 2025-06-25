@@ -19,6 +19,7 @@ import { owner } from "@/store";
 import useNewTransaction from "@/hooks/use-new-transaction";
 import useShowChart from "@/hooks/use-show-chart";
 import useBookKeeping from "@/hooks/use-book-keeping";
+import axios from "axios";
 
 const ChatPage = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -112,13 +113,15 @@ const ChatPage = () => {
         balance: Number(user.balance) || 0,
       };
 
-      const response = await EchoTextChat(data);
+      const response = await axios.post("/api/granite/text");
 
-      if (!response) {
+      if (response.status !== 200) {
         throw new Error("No response from server");
       }
 
-      const jsonData = JSON.parse(response);
+      const jsonData = JSON.parse(response.data);
+
+      console.log(jsonData);
 
       if (
         !jsonData.message &&
@@ -128,42 +131,42 @@ const ChatPage = () => {
         throw new Error("Invalid response format");
       }
 
-      if (jsonData.newTransaction) {
-        setNewTransaction(jsonData.newTransaction);
-      }
+      // if (jsonData.newTransaction) {
+      //   setNewTransaction(jsonData.newTransaction);
+      // }
 
-      if (jsonData.message) {
-        const modelMessage: Chat = {
-          id: nanoid(),
-          role: "assistant",
-          content: jsonData.message,
-          createdAt: new Date(),
-        };
-        addChat(modelMessage);
-      }
+      // if (jsonData.message) {
+      //   const modelMessage: Chat = {
+      //     id: nanoid(),
+      //     role: "assistant",
+      //     content: jsonData.message,
+      //     createdAt: new Date(),
+      //   };
+      //   addChat(modelMessage);
+      // }
 
-      if (jsonData?.transactionChart) {
-        setShowChart("TRANSACTIONS");
-      }
+      // if (jsonData?.transactionChart) {
+      //   setShowChart("TRANSACTIONS");
+      // }
 
       // Only add record once if it exists in response
-      if (jsonData?.newRecord) {
-        const record = {
-          id: nanoid(),
-          amount: jsonData.newRecord.amount,
-          narration: jsonData.newRecord.narration,
-          date: new Date().toISOString(),
-        };
-        addRecord(record);
-      }
+      // if (jsonData?.newRecord) {
+      //   const record = {
+      //     id: nanoid(),
+      //     amount: jsonData.newRecord.amount,
+      //     narration: jsonData.newRecord.narration,
+      //     date: new Date().toISOString(),
+      //   };
+      //   addRecord(record);
+      // }
 
-      if (jsonData?.incomeVsSpendingChart) {
-        setShowChart("INCOME_VS_SPENDING");
-      }
+      // if (jsonData?.incomeVsSpendingChart) {
+      //   setShowChart("INCOME_VS_SPENDING");
+      // }
 
-      if (jsonData?.beneficiaryChart) {
-        setShowChart("BENEFICIARY_CHART");
-      }
+      // if (jsonData?.beneficiaryChart) {
+      //   setShowChart("BENEFICIARY_CHART");
+      // }
     } catch (error) {
       console.error("API request failed:", error);
       setShowRetry(true);
