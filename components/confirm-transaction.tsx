@@ -160,7 +160,7 @@ const ConfirmTransaction = ({ data }: ConfirmTransactionProps) => {
             </Button>
           </DrawerClose>
           <Button disabled={isLoading}>
-            {isLoading ? "Loading..." : "Cornfirm"}
+            {isLoading ? "Loading..." : "Confirm"}
             {isLoading && <Loader className="w-6 h-6 animate-spin ml-2" />}
           </Button>
         </div>

@@ -45,7 +45,7 @@ const ChatItem = ({ data, isLast }: Chatcontent) => {
   return (
     <div
       className={cn(
-        " top-0 w-full h-auto  flex  bg-transparent p-0 overflows-y-scroll hidden-scrollbar rounded-custom cursor-pointer "
+        " top-0 w-full h-auto  flex  bg-transparent p-0 overflow-y-scroll hidden-scrollbar rounded-custom cursor-pointer "
       )}
     >
       <motion.div

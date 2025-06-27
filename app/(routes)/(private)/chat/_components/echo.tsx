@@ -56,7 +56,7 @@ const Echo = () => {
   const { setShowChart } = useShowChart();
   const { addRecord, records } = useBookKeeping();
 
-  const speak = async (text: string) => {
+  async function speak(text: string) {
     try {
       const audioSource = await TTS(text);
       const audio = new Audio(audioSource);
@@ -106,7 +106,7 @@ const Echo = () => {
       console.error("Error in text-to-speech:", error);
       startRecording();
     }
-  };
+  }
 
   useEffect(() => {
     if (openEcho) {
