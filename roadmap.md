@@ -3,9 +3,11 @@
 This roadmap outlines the steps to implement a real-time voice interaction system that mirrors the current text-based features of EchoPay.
 
 ## 1. Research & Planning
-- Evaluate available Speech-to-Text (STT) solutions (e.g., Web Speech API, Google Cloud Speech, Whisper) for accuracy and latency.
-- Choose a Text-to-Speech (TTS) service with natural-sounding voices.
+- Evaluate available Speech-to-Text (STT) solutions.
+- Decide on a Text-to-Speech (TTS) service with natural-sounding voices.
 - Identify browser and device requirements for microphone access and audio playback.
+- **Outcome:** Adopt **OpenAI Whisper** for speech recognition and **OpenAI TTS** for voice responses. See `voice-research.md` for details.
+- **Status:** Complete.
 
 ## 2. Core Voice Pipeline
 - **Capture Audio**: Use the MediaRecorder API to stream microphone input.
