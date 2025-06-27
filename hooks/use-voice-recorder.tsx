@@ -16,6 +16,8 @@ import { speak } from "@/lib/utils";
 
 export default function useVoiceRecorder() {
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const stopTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const startRef = useRef<() => void>(() => {});
   const [recording, setRecording] = useState(false);
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
 
@@ -61,20 +63,30 @@ export default function useVoiceRecorder() {
         if (!user) throw new Error("Unauthorized");
 
         const messages = chats.map((chat) => ({
-          role: chat.role === "user" ? "user" : ("assistant" as "user" | "assistant"),
+          role:
+            chat.role === "user"
+              ? "user"
+              : ("assistant" as "user" | "assistant"),
           content: chat.content,
         }));
 
         const data = {
           audio: base64,
           messages,
-          beneficiaries: JSON.stringify(beneficiaries.map((b) => `${b.acc_name} - ${b.id} |`)),
+          beneficiaries: JSON.stringify(
+            beneficiaries.map((b) => `${b.acc_name} - ${b.id} |`)
+          ),
           transactions: JSON.stringify(
             transactions.map(
-              (t) => `${t.isCredit ? t.senderName : t.receiverName} - ${t.isCredit ? "Credit" : "Debit"} - ₦${t.amount} - ${t.date} |`
+              (t) =>
+                `${t.isCredit ? t.senderName : t.receiverName} - ${
+                  t.isCredit ? "Credit" : "Debit"
+                } - ₦${t.amount} - ${t.date} |`
             )
           ),
-          records: JSON.stringify(records.map((r) => `${r.narration} - ₦${r.amount} - ${r.date} |`)),
+          records: JSON.stringify(
+            records.map((r) => `${r.narration} - ₦${r.amount} - ${r.date} |`)
+          ),
           name: user.fullname || "",
           balance: Number(user.balance) || 0,
         };
@@ -123,16 +135,24 @@ export default function useVoiceRecorder() {
         toast.error("Failed to process voice message. Please try again.");
       } finally {
         useVoice.getState().setStatus("idle");
+        if (useVoice.getState().active) {
+          startRef.current();
+        }
       }
     };
 
     recorder.start();
     setRecording(true);
     useVoice.getState().startRecording();
+    stopTimeoutRef.current = setTimeout(() => {
+      stop();
+    }, 5000);
   }, [recording]);
+  startRef.current = start;
 
   const stop = useCallback(() => {
     if (!recording) return;
+    if (stopTimeoutRef.current) clearTimeout(stopTimeoutRef.current);
     mediaRecorderRef.current?.stop();
   }, [recording]);
 

@@ -20,6 +20,7 @@ import useNewTransaction from "@/hooks/use-new-transaction";
 import useShowChart from "@/hooks/use-show-chart";
 import useBookKeeping from "@/hooks/use-book-keeping";
 import axios from "axios";
+import useVoice from "@/hooks/use-voice";
 
 const ChatPage = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -36,6 +37,7 @@ const ChatPage = () => {
   const { setNewTransaction } = useNewTransaction();
   const { setShowChart } = useShowChart();
   const { records, addRecord } = useBookKeeping();
+  const { active } = useVoice();
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -168,6 +170,14 @@ const ChatPage = () => {
       setIsLoading(false);
     }
   };
+
+  if (active) {
+    return (
+      <div className="flex items-center justify-center h-screen p-4">
+        <VoiceUI />
+      </div>
+    );
+  }
 
   return (
     <div className="relative flex flex-col w-full h-screen p-4 pt-0">

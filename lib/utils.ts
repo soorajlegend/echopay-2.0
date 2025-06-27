@@ -26,10 +26,46 @@ function countDoubleQuotes(str: string) {
   return matches ? matches.length : 0;
 }
 
+import { TTS } from "@/actions/voice";
+
 export const speak = async (text: string) => {
+<<<<<<< HEAD
   if (typeof window === "undefined" || !("speechSynthesis" in window)) {
     console.log(text);
     return;
+=======
+  try {
+    const audioSource = await TTS(text);
+    const audio = new Audio(audioSource);
+
+    if (audio.setSinkId && typeof audio.setSinkId === "function") {
+      try {
+        const devices = await navigator.mediaDevices.enumerateDevices();
+        const outputs = devices.filter((d) => d.kind === "audiooutput");
+        const bluetooth = outputs.find(
+          (d) =>
+            d.label.toLowerCase().includes("bluetooth") ||
+            d.label.toLowerCase().includes("headphone")
+        );
+        if (bluetooth) {
+          await (audio as any).setSinkId(bluetooth.deviceId);
+        }
+      } catch (err) {
+        console.warn("Unable to set audio output device:", err);
+      }
+    }
+
+    return new Promise<void>((resolve) => {
+      audio.onended = () => resolve();
+      audio.onerror = () => resolve();
+      audio.play().catch((error) => {
+        console.error("Error playing audio:", error);
+        resolve();
+      });
+    });
+  } catch (error) {
+    console.error("Error in text-to-speech:", error);
+>>>>>>> 484672d (Revamp voice mode)
   }
 
   return new Promise<void>((resolve) => {

@@ -6,17 +6,21 @@ export type VoiceStatus = "idle" | "recording" | "processing" | "speaking";
 
 interface VoiceState {
   status: VoiceStatus;
+  active: boolean;
   startRecording: () => void;
   stopRecording: () => void;
   setStatus: (value: VoiceStatus) => void;
+  setActive: (value: boolean) => void;
   addTranscript: (text: string) => void;
 }
 
 const useVoice = create<VoiceState>((set, get) => ({
   status: "idle",
+  active: false,
   startRecording: () => set({ status: "recording" }),
   stopRecording: () => set({ status: "processing" }),
   setStatus: (value: VoiceStatus) => set({ status: value }),
+  setActive: (value: boolean) => set({ active: value }),
   addTranscript: (text: string) => {
     const transcript: Chat = {
       id: crypto.randomUUID(),
