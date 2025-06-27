@@ -20,6 +20,9 @@ export default function VoiceUI() {
   const repeatLast = async () => {
     const last = [...chats].reverse().find((c) => c.role === "assistant");
     if (last) {
+      if (status === "recording") {
+        stop();
+      }
       setStatus("speaking");
       await speak(last.content);
       setStatus("idle");
