@@ -17,12 +17,16 @@ import { speak } from "@/lib/utils";
 export default function useVoiceRecorder() {
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const stopTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const silenceIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const audioContextRef = useRef<AudioContext | null>(null);
+  const analyserRef = useRef<AnalyserNode | null>(null);
   const startRef = useRef<() => void>(() => {});
   const [recording, setRecording] = useState(false);
+  const recordingRef = useRef(false);
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
 
   const start = useCallback(async () => {
-    if (recording) return;
+    if (recordingRef.current) return;
     let stream: MediaStream;
     try {
       stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -34,6 +38,26 @@ export default function useVoiceRecorder() {
     mediaRecorderRef.current = recorder;
     const chunks: Blob[] = [];
 
+    // setup audio context for silence detection
+    audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
+    const source = audioContextRef.current.createMediaStreamSource(stream);
+    const analyser = audioContextRef.current.createAnalyser();
+    analyser.fftSize = 2048;
+    source.connect(analyser);
+    analyserRef.current = analyser;
+    let silenceStart = Date.now();
+    silenceIntervalRef.current = setInterval(() => {
+      if (!analyserRef.current || !recordingRef.current) return;
+      const data = new Uint8Array(analyserRef.current.fftSize);
+      analyserRef.current.getByteTimeDomainData(data);
+      const avg = data.reduce((sum, v) => sum + Math.abs(v - 128), 0) / data.length;
+      if (avg > 5) {
+        silenceStart = Date.now();
+      } else if (Date.now() - silenceStart > 1500) {
+        stop();
+      }
+    }, 200);
+
     recorder.ondataavailable = (e: BlobEvent) => {
       if (e.data.size > 0) {
         chunks.push(e.data);
@@ -44,8 +68,15 @@ export default function useVoiceRecorder() {
       const blob = new Blob(chunks, { type: "audio/webm" });
       setAudioUrl(URL.createObjectURL(blob));
       setRecording(false);
+      recordingRef.current = false;
       useVoice.getState().stopRecording();
       stream.getTracks().forEach((t) => t.stop());
+      if (silenceIntervalRef.current) clearInterval(silenceIntervalRef.current);
+      silenceIntervalRef.current = null;
+      if (audioContextRef.current) {
+        audioContextRef.current.close();
+        audioContextRef.current = null;
+      }
 
       try {
         const buffer = await blob.arrayBuffer();
@@ -143,18 +174,26 @@ export default function useVoiceRecorder() {
 
     recorder.start();
     setRecording(true);
+    recordingRef.current = true;
     useVoice.getState().startRecording();
     stopTimeoutRef.current = setTimeout(() => {
       stop();
-    }, 5000);
-  }, [recording]);
+    }, 10000);
+  }, []);
   startRef.current = start;
 
   const stop = useCallback(() => {
-    if (!recording) return;
+    if (!recordingRef.current) return;
     if (stopTimeoutRef.current) clearTimeout(stopTimeoutRef.current);
+    if (silenceIntervalRef.current) clearInterval(silenceIntervalRef.current);
+    silenceIntervalRef.current = null;
+    if (audioContextRef.current) {
+      audioContextRef.current.close();
+      audioContextRef.current = null;
+    }
     mediaRecorderRef.current?.stop();
-  }, [recording]);
+    recordingRef.current = false;
+  }, []);
 
   return {
     start,
