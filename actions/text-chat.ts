@@ -6,17 +6,7 @@ import Groq from "groq-sdk";
 
 // const openai = new OpenAI();
 
-const apiKey1 = process.env.GROQ_API_KEY;
-const apiKey2 = process.env.GROQ_API_KEY_I;
-const apiKey3 = process.env.GROQ_API_KEY_II;
-const apiKey4 = process.env.GROQ_API_KEY_III;
-const apiKey5 = process.env.GROQ_API_KEY_IV;
-
-const apiKeys = [apiKey1, apiKey2, apiKey3, apiKey4, apiKey5];
-
-const randomApiKey = apiKeys[Math.floor(Math.random() * apiKeys.length)];
-
-const groq = new Groq({ apiKey: apiKey2 });
+const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
 export type ChatStructure = {
   role: "user" | "assistant";
@@ -56,7 +46,7 @@ export async function EchoTextChat(data: ChatData) {
         },
         ...messages,
       ],
-      model: "llama-3.1-70b-versatile",
+      model: "llama-3.3-70b-versatile",
       temperature: 1,
       top_p: 1,
       stream: false,

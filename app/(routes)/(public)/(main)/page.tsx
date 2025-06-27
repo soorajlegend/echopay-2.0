@@ -73,7 +73,7 @@ const OnboardingPage = () => {
       clearTimeout(timer1);
       clearTimeout(timer2);
     };
-  }, [isMounted]);
+  }, [isMounted, info, router, hasVisited, setVisit]);
 
   const handleContinue = async () => {
     console.log("handleContinue called", stage);

@@ -40,7 +40,7 @@ const LanguageSelector = ({
   };
 
   useEffect(() => {
-    speak("Please select your prepared language");
+    speak("Please select your preferred language");
   }, []);
 
   return (

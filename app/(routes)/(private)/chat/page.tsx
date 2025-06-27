@@ -19,6 +19,7 @@ import { owner } from "@/store";
 import useNewTransaction from "@/hooks/use-new-transaction";
 import useShowChart from "@/hooks/use-show-chart";
 import useBookKeeping from "@/hooks/use-book-keeping";
+import axios from "axios";
 
 const ChatPage = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -114,11 +115,7 @@ const ChatPage = () => {
 
       const response = await EchoTextChat(data);
 
-      if (!response) {
-        throw new Error("No response from server");
-      }
-
-      const jsonData = JSON.parse(response);
+      const jsonData = JSON.parse(response || "{}");
 
       if (
         !jsonData.message &&
