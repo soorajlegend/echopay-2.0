@@ -12,7 +12,7 @@ import { owner } from "@/store";
 import { nanoid } from "nanoid";
 import { Chat } from "@/types";
 import { toast } from "sonner";
-import { speak } from "@/lib/utils";
+import { speak, stopSpeaking } from "@/lib/utils";
 
 export default function useVoiceRecorder() {
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -27,6 +27,7 @@ export default function useVoiceRecorder() {
 
   const start = useCallback(async () => {
     if (recordingRef.current) return;
+    stopSpeaking();
     let stream: MediaStream;
     try {
       stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -39,7 +40,8 @@ export default function useVoiceRecorder() {
     const chunks: Blob[] = [];
 
     // setup audio context for silence detection
-    audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
+    audioContextRef.current = new (window.AudioContext ||
+      (window as any).webkitAudioContext)();
     const source = audioContextRef.current.createMediaStreamSource(stream);
     const analyser = audioContextRef.current.createAnalyser();
     analyser.fftSize = 2048;
@@ -51,10 +53,11 @@ export default function useVoiceRecorder() {
 
       const data = new Uint8Array(analyserRef.current.fftSize);
       analyserRef.current.getByteTimeDomainData(data);
-      const avg = data.reduce((sum, v) => sum + Math.abs(v - 128), 0) / data.length;
+      const avg =
+        data.reduce((sum, v) => sum + Math.abs(v - 128), 0) / data.length;
       if (avg > 5) {
         silenceStart = Date.now();
-      } else if (Date.now() - silenceStart > 1500) {
+      } else if (Date.now() - silenceStart > 2500) {
         stop();
       }
     }, 200);
@@ -106,18 +109,18 @@ export default function useVoiceRecorder() {
           audio: base64,
           messages,
           beneficiaries: JSON.stringify(
-            beneficiaries.map((b) => `${b.acc_name} - ${b.id} |`)
+            beneficiaries.map((b) => `${b.acc_name} - ${b.id} |`),
           ),
           transactions: JSON.stringify(
             transactions.map(
               (t) =>
                 `${t.isCredit ? t.senderName : t.receiverName} - ${
                   t.isCredit ? "Credit" : "Debit"
-                } - ₦${t.amount} - ${t.date} |`
-            )
+                } - ₦${t.amount} - ${t.date} |`,
+            ),
           ),
           records: JSON.stringify(
-            records.map((r) => `${r.narration} - ₦${r.amount} - ${r.date} |`)
+            records.map((r) => `${r.narration} - ₦${r.amount} - ${r.date} |`),
           ),
           name: user.fullname || "",
           balance: Number(user.balance) || 0,
@@ -179,8 +182,7 @@ export default function useVoiceRecorder() {
     useVoice.getState().startRecording();
     stopTimeoutRef.current = setTimeout(() => {
       stop();
-    }, 10000);
-
+    }, 30000);
   }, []);
   startRef.current = start;
 

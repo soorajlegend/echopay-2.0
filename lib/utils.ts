@@ -28,10 +28,26 @@ function countDoubleQuotes(str: string) {
 
 import { TTS } from "@/actions/voice";
 
+let currentAudio: HTMLAudioElement | null = null;
+let currentUtterance: SpeechSynthesisUtterance | null = null;
+
+export const stopSpeaking = () => {
+  if (currentAudio) {
+    currentAudio.pause();
+    currentAudio = null;
+  }
+  if (currentUtterance) {
+    window.speechSynthesis.cancel();
+    currentUtterance = null;
+  }
+};
+
 export const speak = async (text: string) => {
+  stopSpeaking();
   try {
     const audioSource = await TTS(text);
     const audio = new Audio(audioSource);
+    currentAudio = audio;
 
     if (audio.setSinkId && typeof audio.setSinkId === "function") {
       try {
@@ -40,7 +56,7 @@ export const speak = async (text: string) => {
         const bluetooth = outputs.find(
           (d) =>
             d.label.toLowerCase().includes("bluetooth") ||
-            d.label.toLowerCase().includes("headphone")
+            d.label.toLowerCase().includes("headphone"),
         );
         if (bluetooth) {
           await (audio as any).setSinkId(bluetooth.deviceId);
@@ -51,10 +67,17 @@ export const speak = async (text: string) => {
     }
 
     return new Promise<void>((resolve) => {
-      audio.onended = () => resolve();
-      audio.onerror = () => resolve();
+      audio.onended = () => {
+        currentAudio = null;
+        resolve();
+      };
+      audio.onerror = () => {
+        currentAudio = null;
+        resolve();
+      };
       audio.play().catch((error) => {
         console.error("Error playing audio:", error);
+        currentAudio = null;
         resolve();
       });
     });
@@ -64,8 +87,15 @@ export const speak = async (text: string) => {
 
   return new Promise<void>((resolve) => {
     const utterance = new SpeechSynthesisUtterance(text);
-    utterance.onend = () => resolve();
-    utterance.onerror = () => resolve();
+    currentUtterance = utterance;
+    utterance.onend = () => {
+      currentUtterance = null;
+      resolve();
+    };
+    utterance.onerror = () => {
+      currentUtterance = null;
+      resolve();
+    };
     window.speechSynthesis.speak(utterance);
   });
 };
