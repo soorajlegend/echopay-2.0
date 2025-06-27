@@ -3,18 +3,17 @@
 This roadmap outlines the steps to implement a real-time voice interaction system that mirrors the current text-based features of EchoPay.
 
 ## 1. Research & Planning ✅
-- Evaluate available Speech-to-Text (STT) solutions.
-- Decide on a Text-to-Speech (TTS) service with natural-sounding voices.
+- Explore unified models capable of direct audio input and output.
 - Identify browser and device requirements for microphone access and audio playback.
-- **Outcome:** Adopt **OpenAI Whisper** for speech recognition and **OpenAI TTS** for voice responses. See `voice-research.md` for details.
+- **Outcome:** Use **GPT-4o** to handle transcription and speech synthesis in a single step. Details are documented in `advanced-voice-plan.md`.
 - **Status:** Complete.
 
 ## 2. Core Voice Pipeline
 - **Remove Existing Voice Feature** ✅: Delete the prototype that used the browser's `SpeechRecognition` API so the new pipeline can start from a clean slate.
 - **Capture Audio** ✅: Use the MediaRecorder API to stream microphone input.
-- **Speech Recognition** ✅: Send audio to the chosen STT service and stream transcription results in real time.
-- **Intent Handling** ✅: Reuse existing chat/transaction logic to process transcribed text.
-- **Voice Responses** ✅: Convert assistant replies to speech using the TTS service and play them back to the user.
+- **Speech Processing** ✅: Stream microphone data directly to GPT-4o for transcription and response generation.
+- **Intent Handling** ✅: Reuse existing chat/transaction logic to process the model's reply.
+- **Voice Responses** ✅: Stream GPT-4o's synthesized speech back to the user in real time.
 
 ## 3. UI/UX ✅
 - Design a dedicated voice UI with clear states: idle, listening, processing, and speaking.

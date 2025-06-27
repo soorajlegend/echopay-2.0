@@ -100,6 +100,50 @@ export const speak = async (text: string) => {
   });
 };
 
+export const playAudio = async (audioSource: string) => {
+  stopSpeaking();
+  try {
+    const audio = new Audio(audioSource);
+    currentAudio = audio;
+
+    if (audio.setSinkId && typeof audio.setSinkId === "function") {
+      try {
+        const devices = await navigator.mediaDevices.enumerateDevices();
+        const outputs = devices.filter((d) => d.kind === "audiooutput");
+        const bluetooth = outputs.find(
+          (d) =>
+            d.label.toLowerCase().includes("bluetooth") ||
+            d.label.toLowerCase().includes("headphone")
+        );
+        if (bluetooth) {
+          await (audio as any).setSinkId(bluetooth.deviceId);
+        }
+      } catch (err) {
+        console.warn("Unable to set audio output device:", err);
+      }
+    }
+
+    return new Promise<void>((resolve) => {
+      audio.onended = () => {
+        currentAudio = null;
+        resolve();
+      };
+      audio.onerror = () => {
+        currentAudio = null;
+        resolve();
+      };
+      audio.play().catch((error) => {
+        console.error("Error playing audio:", error);
+        currentAudio = null;
+        resolve();
+      });
+    });
+  } catch (error) {
+    console.error("Error playing audio:", error);
+  }
+  return Promise.resolve();
+};
+
 export function completeJsonStructure(jsonString: string) {
   // Initialize arrays to store opening and closing characters
   const closers = [];
