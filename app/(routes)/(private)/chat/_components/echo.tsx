@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import { Mic, Pause, Play, X, SendHorizonal } from "lucide-react";
 import { Drawer, DrawerContent } from "@/components/ui/drawer";
 import useEcho from "@/hooks/use-echo";
@@ -37,6 +37,9 @@ const Echo = () => {
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [isThinking, setIsThinking] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [voiceStatus, setVoiceStatus] = useState<
+    "idle" | "listening" | "processing" | "speaking"
+  >("idle");
   const [lastSpeechTime, setLastSpeechTime] = useState<number>(Date.now());
   const silenceCheckInterval = useRef<NodeJS.Timeout>();
 
@@ -56,7 +59,7 @@ const Echo = () => {
   const { setShowChart } = useShowChart();
   const { addRecord, records } = useBookKeeping();
 
-  const speak = async (text: string) => {
+  const speak = useCallback(async (text: string) => {
     try {
       const audioSource = await TTS(text);
       const audio = new Audio(audioSource);
@@ -85,19 +88,23 @@ const Echo = () => {
       }
 
       return new Promise<void>((resolve) => {
+        setVoiceStatus("speaking");
         audio.onended = () => {
+          setVoiceStatus("listening");
           startRecording();
           resolve();
         };
 
         audio.onerror = (error) => {
           console.error("Error playing audio:", error);
+          setVoiceStatus("listening");
           startRecording();
           resolve();
         };
 
         audio.play().catch((error) => {
           console.error("Error playing audio:", error);
+          setVoiceStatus("listening");
           startRecording();
           resolve();
         });
@@ -106,14 +113,15 @@ const Echo = () => {
       console.error("Error in text-to-speech:", error);
       startRecording();
     }
-  };
+  }, [startRecording]);
 
   useEffect(() => {
     if (openEcho) {
       cleanupAudioResources();
+      setVoiceStatus("listening");
       startRecording();
     }
-  }, [openEcho]);
+  }, [openEcho, startRecording]);
 
   const cleanupAudioResources = () => {
     if (mediaRecorderRef.current) {
@@ -188,9 +196,9 @@ const Echo = () => {
         clearInterval(silenceCheckInterval.current);
       }
     };
-  }, [isRecording, isPaused, lastSpeechTime]);
+  }, [isRecording, isPaused, lastSpeechTime, stopAndSendRecording]);
 
-  const startRecording = async () => {
+  const startRecording = useCallback(async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       streamRef.current = stream;
@@ -209,6 +217,7 @@ const Echo = () => {
       }
 
       setIsRecording(true);
+      setVoiceStatus("listening");
       setTranscript("");
       setTempTranscript("");
       setLastSpeechTime(Date.now());
@@ -216,9 +225,9 @@ const Echo = () => {
     } catch (err) {
       console.error("Error accessing microphone:", err);
     }
-  };
+  }, [visualize]);
 
-  const visualize = () => {
+  const visualize = useCallback(() => {
     if (!analyserRef.current) return;
 
     const dataArray = new Uint8Array(analyserRef.current.frequencyBinCount);
@@ -234,7 +243,7 @@ const Echo = () => {
     };
 
     draw();
-  };
+  }, []);
 
   const pauseRecording = () => {
     if (recognitionRef.current && isRecording) {
@@ -254,11 +263,13 @@ const Echo = () => {
     }
   };
 
-  const stopAndSendRecording = async () => {
+  const stopAndSendRecording = useCallback(
+    async () => {
     if (!isRecording || isProcessing) return;
 
     try {
       setIsProcessing(true);
+      setVoiceStatus("processing");
 
       if (recognitionRef.current) {
         recognitionRef.current.stop();
@@ -346,17 +357,6 @@ const Echo = () => {
           setNewTransaction(jsonData.newTransaction);
         }
 
-        // Only add record once if it exists in response
-        if (jsonData?.newRecord) {
-          const record = {
-            id: nanoid(),
-            amount: jsonData.newRecord.amount,
-            narration: jsonData.newRecord.narration,
-            date: new Date().toISOString(),
-          };
-          addRecord(record);
-        }
-
         if (jsonData.message) {
           setIsThinking(false);
           setIsSpeaking(true);
@@ -412,15 +412,35 @@ const Echo = () => {
         setTempTranscript("");
         setIsProcessing(false);
         setIsThinking(false);
+        setVoiceStatus("listening");
       }
     } catch (error) {
       console.error("Error in stopAndSendRecording:", error);
       toast.error("Something went wrong. Please try again.");
       setIsSpeaking(false);
       setIsProcessing(false);
+      setVoiceStatus("listening");
       startRecording();
     }
-  };
+    },
+    [
+      isRecording,
+      isProcessing,
+      transcript,
+      tempTranscript,
+      info,
+      transactions,
+      beneficiaries,
+      records,
+      startRecording,
+      chats,
+      addChat,
+      addRecord,
+      setNewTransaction,
+      setShowChart,
+      speak,
+    ]
+  );
 
   const cancelRecording = () => {
     cleanupAudioResources();
@@ -429,6 +449,7 @@ const Echo = () => {
     setTempTranscript("");
     setIsRecording(false);
     setIsPaused(false);
+    setVoiceStatus("idle");
     setOpenEcho(false);
   };
 

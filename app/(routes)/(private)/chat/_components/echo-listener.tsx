@@ -69,7 +69,7 @@ const EchoListener = () => {
         stream.getTracks().forEach((track) => track.stop());
       }
     };
-  }, [openEcho]);
+  }, [openEcho, setOpenEcho]);
 
   return <Echo />;
 };
