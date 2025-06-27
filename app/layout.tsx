@@ -1,9 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { Montserrat } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
-
-const montserrat = Montserrat({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "EchoPay",
@@ -17,9 +14,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${montserrat.className}  antialiased bg-white dark:bg-gray-900`}
-      >
+      <body className="antialiased bg-white dark:bg-gray-900">
         {children}
         <Toaster position="top-center" />
       </body>
