@@ -35,7 +35,7 @@ export async function EchoVoiceChat(data: VoiceChatData): Promise<VoiceChatResul
       return { transcript: "", reply: "" };
     }
 
-    const reply = await EchoTextChat({
+    const replyRaw = await EchoTextChat({
       messages: [...messages, { role: "user", content: transcript }],
       beneficiaries,
       transactions,
@@ -43,6 +43,7 @@ export async function EchoVoiceChat(data: VoiceChatData): Promise<VoiceChatResul
       balance,
       records,
     });
+    const reply = replyRaw || "";
 
     return { transcript, reply };
   } catch (error) {

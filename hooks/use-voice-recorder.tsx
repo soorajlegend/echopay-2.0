@@ -47,7 +47,8 @@ export default function useVoiceRecorder() {
 
       try {
         const buffer = await blob.arrayBuffer();
-        const base64 = btoa(String.fromCharCode(...new Uint8Array(buffer)));
+        const bytes = Array.from(new Uint8Array(buffer));
+        const base64 = btoa(String.fromCharCode(...bytes));
 
         const { chats } = useChat.getState();
         const { beneficiaries } = useBeneficiary.getState();
