@@ -3,7 +3,7 @@ import { Mic, X, RotateCcw } from "lucide-react";
 import useVoiceRecorder from "@/hooks/use-voice-recorder";
 import useVoice from "@/hooks/use-voice";
 import useChat from "@/hooks/use-chat";
-import { speak } from "@/lib/utils";
+import { speak, stopSpeaking } from "@/lib/utils";
 import ThreeDotLoader from "@/components/ui/three-dot-loader";
 
 export default function VoiceUI() {
@@ -23,6 +23,7 @@ export default function VoiceUI() {
       if (status === "recording") {
         stop();
       }
+      stopSpeaking();
       setStatus("speaking");
       await speak(last.content);
       setStatus("idle");
@@ -31,10 +32,21 @@ export default function VoiceUI() {
 
   const cancel = () => {
     if (status === "recording") {
-      stop();
+      stop(true);
+    }
+    if (status === "speaking") {
+      stopSpeaking();
     }
     setStatus("idle");
     if (active) setActive(false);
+  };
+
+  const interrupt = () => {
+    if (status === "speaking") {
+      stopSpeaking();
+      setStatus("idle");
+      start();
+    }
   };
 
   if (!active) return null;
@@ -70,6 +82,13 @@ export default function VoiceUI() {
         <div className="flex flex-col items-center">
           <ThreeDotLoader />
           <p className="mt-4 text-sm">Speaking...</p>
+          <button
+            onClick={interrupt}
+            aria-label="Interrupt speech"
+            className="mt-4 p-2 bg-black/50 rounded-full"
+          >
+            <Mic className="w-6 h-6" />
+          </button>
         </div>
       )}
 
