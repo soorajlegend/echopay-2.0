@@ -37,65 +37,48 @@ export default function VoiceUI() {
     if (active) setActive(false);
   };
 
+  if (!active) return null;
+
   return (
-    <div className="flex flex-col items-center gap-2 p-4 border rounded-md">
-      {!active && (
-        <button
-          onClick={() => setActive(true)}
-          className="flex items-center gap-1 px-3 py-2 text-sm border rounded-md"
-        >
-          <Mic className="w-4 h-4" /> Voice Mode
-        </button>
-      )}
-      {active && status === "recording" && (
-        <div className="flex flex-col items-center gap-2">
-          <div className="loader">
-            <div className="circle" />
-            <div className="circle" />
-            <div className="circle" />
-            <div className="circle" />
+    <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black/70 text-white">
+      <button
+        aria-label="Close voice mode"
+        onClick={cancel}
+        className="absolute top-4 right-4 p-2 bg-black/50 rounded-full"
+      >
+        <X className="w-4 h-4" />
+      </button>
+
+      {status === "recording" && (
+        <>
+          <div className="relative flex flex-col items-center">
+            <div className="absolute -inset-4 rounded-full border border-white/40 animate-ping" />
+            <Mic className="w-20 h-20" />
           </div>
-          <p className="text-xs text-gray-500">Listening...</p>
-          <button
-            onClick={cancel}
-            className="flex items-center gap-1 px-3 py-1 text-xs text-red-600"
-          >
-            <X className="w-3 h-3" /> End
-          </button>
-        </div>
+          <p className="mt-4 text-sm">Listening...</p>
+        </>
       )}
-      {active && status === "processing" && (
-        <div className="flex flex-col items-center gap-2">
+
+      {status === "processing" && (
+        <div className="flex flex-col items-center">
           <ThreeDotLoader />
-          <p className="text-xs text-gray-500">Processing...</p>
-          <button
-            onClick={cancel}
-            className="flex items-center gap-1 px-3 py-1 text-xs text-red-600"
-          >
-            <X className="w-3 h-3" /> Cancel
-          </button>
+          <p className="mt-4 text-sm">Processing...</p>
         </div>
       )}
-      {active && status === "speaking" && (
-        <div className="flex flex-col items-center gap-2">
+
+      {status === "speaking" && (
+        <div className="flex flex-col items-center">
           <ThreeDotLoader />
-          <p className="text-xs text-gray-500">Speaking...</p>
-          <button
-            onClick={cancel}
-            className="flex items-center gap-1 px-3 py-1 text-xs text-red-600"
-          >
-            <X className="w-3 h-3" /> Cancel
-          </button>
+          <p className="mt-4 text-sm">Speaking...</p>
         </div>
       )}
-      {active && (
-        <button
-          onClick={repeatLast}
-          className="flex items-center gap-1 px-2 py-1 text-xs border rounded-md"
-        >
-          <RotateCcw className="w-3 h-3" /> Repeat last reply
-        </button>
-      )}
+
+      <button
+        onClick={repeatLast}
+        className="mt-6 flex items-center gap-1 text-sm opacity-80 hover:opacity-100"
+      >
+        <RotateCcw className="w-4 h-4" /> Repeat last reply
+      </button>
     </div>
   );
 }

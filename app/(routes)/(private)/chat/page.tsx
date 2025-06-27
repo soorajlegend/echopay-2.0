@@ -2,6 +2,7 @@
 
 import CustomTextareaForm from "@/components/ui/custom-textarea";
 import VoiceUI from "@/components/voice-ui";
+import VoiceToggleButton from "@/components/voice-toggle-button";
 import { Chat, NewTransactionType } from "@/types";
 import React, { useEffect, useState, useRef } from "react";
 import { nanoid } from "nanoid";
@@ -169,13 +170,6 @@ const ChatPage = () => {
     }
   };
 
-  if (active) {
-    return (
-      <div className="flex items-center justify-center h-screen p-4">
-        <VoiceUI />
-      </div>
-    );
-  }
 
   return (
     <div className="relative flex flex-col w-full h-screen p-4 pt-0">
@@ -184,6 +178,7 @@ const ChatPage = () => {
           <ChevronLeft className="w-10 h-10 p-1.5" />
           <h2 className="text-base lg:text-lg font-semibold">Chat</h2>
         </Link>
+        <VoiceToggleButton />
       </div>
       <div className="flex-1 overflow-y-auto mb-4 space-y-4">
         {chats.map((chat, index) => (
@@ -227,9 +222,7 @@ const ChatPage = () => {
         disabled={isLoading}
         autoFocus={!isLoading}
       />
-      <div className="mt-2">
-        <VoiceUI />
-      </div>
+      <VoiceUI />
     </div>
   );
 };

@@ -22,10 +22,11 @@ export default function useVoiceRecorder() {
   const analyserRef = useRef<AnalyserNode | null>(null);
   const startRef = useRef<() => void>(() => {});
   const [recording, setRecording] = useState(false);
+  const recordingRef = useRef(false);
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
 
   const start = useCallback(async () => {
-    if (recording) return;
+    if (recordingRef.current) return;
     let stream: MediaStream;
     try {
       stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -46,13 +47,14 @@ export default function useVoiceRecorder() {
     analyserRef.current = analyser;
     let silenceStart = Date.now();
     silenceIntervalRef.current = setInterval(() => {
-      if (!analyserRef.current || !recording) return;
+      if (!analyserRef.current || !recordingRef.current) return;
+
       const data = new Uint8Array(analyserRef.current.fftSize);
       analyserRef.current.getByteTimeDomainData(data);
       const avg = data.reduce((sum, v) => sum + Math.abs(v - 128), 0) / data.length;
       if (avg > 5) {
         silenceStart = Date.now();
-      } else if (Date.now() - silenceStart > 1000) {
+      } else if (Date.now() - silenceStart > 1500) {
         stop();
       }
     }, 200);
@@ -67,6 +69,7 @@ export default function useVoiceRecorder() {
       const blob = new Blob(chunks, { type: "audio/webm" });
       setAudioUrl(URL.createObjectURL(blob));
       setRecording(false);
+      recordingRef.current = false;
       useVoice.getState().stopRecording();
       stream.getTracks().forEach((t) => t.stop());
       if (silenceIntervalRef.current) clearInterval(silenceIntervalRef.current);
@@ -172,15 +175,17 @@ export default function useVoiceRecorder() {
 
     recorder.start();
     setRecording(true);
+    recordingRef.current = true;
     useVoice.getState().startRecording();
     stopTimeoutRef.current = setTimeout(() => {
       stop();
     }, 10000);
-  }, [recording]);
+
+  }, []);
   startRef.current = start;
 
   const stop = useCallback(() => {
-    if (!recording) return;
+    if (!recordingRef.current) return;
     if (stopTimeoutRef.current) clearTimeout(stopTimeoutRef.current);
     if (silenceIntervalRef.current) clearInterval(silenceIntervalRef.current);
     silenceIntervalRef.current = null;
@@ -189,7 +194,8 @@ export default function useVoiceRecorder() {
       audioContextRef.current = null;
     }
     mediaRecorderRef.current?.stop();
-  }, [recording]);
+    recordingRef.current = false;
+  }, []);
 
   return {
     start,
