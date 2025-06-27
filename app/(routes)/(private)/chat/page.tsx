@@ -1,25 +1,26 @@
 "use client";
 
 import CustomTextareaForm from "@/components/ui/custom-textarea";
+import VoiceUI from "@/components/voice-ui";
 import { Chat, NewTransactionType } from "@/types";
 import React, { useEffect, useState, useRef } from "react";
 import { nanoid } from "nanoid";
 import ChatItem from "@/components/chat-item";
 import useChat from "@/hooks/use-chat";
 import useBeneficiary from "@/hooks/use-beneficiary";
-import { AudioLines, ChevronLeft, RefreshCw } from "lucide-react";
+import { ChevronLeft, RefreshCw } from "lucide-react";
 import Link from "next/link";
 import useTransaction from "@/hooks/use-transaction";
-import useEcho from "@/hooks/use-echo";
 import useUserInfo from "@/hooks/use-userinfo";
 import { EchoTextChat } from "@/actions/text-chat";
-import { ChatStructure } from "@/actions/voice-chat";
+import { ChatStructure } from "@/actions/text-chat";
 import { toast } from "sonner";
 import { owner } from "@/store";
 import useNewTransaction from "@/hooks/use-new-transaction";
 import useShowChart from "@/hooks/use-show-chart";
 import useBookKeeping from "@/hooks/use-book-keeping";
 import axios from "axios";
+import useVoice from "@/hooks/use-voice";
 
 const ChatPage = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -30,13 +31,13 @@ const ChatPage = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const { info } = useUserInfo();
-  const { setOpenEcho } = useEcho();
   const { chats, addChat } = useChat();
   const { beneficiaries } = useBeneficiary();
   const { transactions } = useTransaction();
   const { setNewTransaction } = useNewTransaction();
   const { setShowChart } = useShowChart();
   const { records, addRecord } = useBookKeeping();
+  const { active } = useVoice();
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -170,6 +171,14 @@ const ChatPage = () => {
     }
   };
 
+  if (active) {
+    return (
+      <div className="flex items-center justify-center h-screen p-4">
+        <VoiceUI />
+      </div>
+    );
+  }
+
   return (
     <div className="relative flex flex-col w-full h-screen p-4 pt-0">
       <div className="flex items-center justify-between sticky top-0 z-50 bg-white py-2">
@@ -177,9 +186,6 @@ const ChatPage = () => {
           <ChevronLeft className="w-10 h-10 p-1.5" />
           <h2 className="text-base lg:text-lg font-semibold">Chat</h2>
         </Link>
-        <button onClick={() => setOpenEcho(true)}>
-          <AudioLines className="w-10 h-10 p-1.5" />
-        </button>
       </div>
       <div className="flex-1 overflow-y-auto mb-4 space-y-4">
         {chats.map((chat, index) => (
@@ -223,6 +229,9 @@ const ChatPage = () => {
         disabled={isLoading}
         autoFocus={!isLoading}
       />
+      <div className="mt-2">
+        <VoiceUI />
+      </div>
     </div>
   );
 };

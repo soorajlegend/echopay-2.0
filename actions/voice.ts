@@ -11,10 +11,8 @@ export async function TTS(text: string) {
     input: text,
   });
 
-  // Convert to base64 string that can be used directly in an audio element
   const buffer = Buffer.from(await mp3.arrayBuffer());
   const base64Audio = buffer.toString("base64");
 
-  // Return data URL that can be used as audio source
   return `data:audio/mpeg;base64,${base64Audio}`;
 }
