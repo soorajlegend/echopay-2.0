@@ -36,6 +36,7 @@ export default function useVoiceRecorder() {
     }
     abortRef.current = false;
     speechDetectedRef.current = false;
+
     let stream: MediaStream;
     try {
       stream = await navigator.mediaDevices.getUserMedia({ audio: true });
