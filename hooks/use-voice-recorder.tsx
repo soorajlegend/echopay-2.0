@@ -174,7 +174,10 @@ export default function useVoiceRecorder() {
               createdAt: new Date(),
             };
             useChat.getState().addChat(modelMessage);
-            await speak(jsonData.message);
+            if (useVoice.getState().active) {
+              useVoice.getState().setStatus("speaking");
+              await speak(jsonData.message);
+            }
           }
           if (jsonData?.transactionChart) {
             setShowChart("TRANSACTIONS");

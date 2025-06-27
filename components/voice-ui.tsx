@@ -36,10 +36,6 @@ export default function VoiceUI() {
     }
     if (status === "speaking") {
       stopSpeaking();
-    }
-    if (status === "speaking") {
-      stopSpeaking();
-    }
     setStatus("idle");
     if (active) setActive(false);
   };
