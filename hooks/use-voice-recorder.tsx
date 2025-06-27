@@ -48,6 +48,7 @@ export default function useVoiceRecorder() {
     let silenceStart = Date.now();
     silenceIntervalRef.current = setInterval(() => {
       if (!analyserRef.current || !recordingRef.current) return;
+
       const data = new Uint8Array(analyserRef.current.fftSize);
       analyserRef.current.getByteTimeDomainData(data);
       const avg = data.reduce((sum, v) => sum + Math.abs(v - 128), 0) / data.length;
@@ -179,6 +180,7 @@ export default function useVoiceRecorder() {
     stopTimeoutRef.current = setTimeout(() => {
       stop();
     }, 10000);
+
   }, []);
   startRef.current = start;
 
