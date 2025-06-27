@@ -12,14 +12,12 @@ import { ChevronLeft, RefreshCw } from "lucide-react";
 import Link from "next/link";
 import useTransaction from "@/hooks/use-transaction";
 import useUserInfo from "@/hooks/use-userinfo";
-import { EchoTextChat } from "@/actions/text-chat";
-import { ChatStructure } from "@/actions/text-chat";
+import { EchoTextChat, ChatStructure } from "@/actions/text-chat";
 import { toast } from "sonner";
 import { owner } from "@/store";
 import useNewTransaction from "@/hooks/use-new-transaction";
 import useShowChart from "@/hooks/use-show-chart";
 import useBookKeeping from "@/hooks/use-book-keeping";
-import axios from "axios";
 import useVoice from "@/hooks/use-voice";
 
 const ChatPage = () => {
