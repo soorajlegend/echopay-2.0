@@ -12,7 +12,7 @@ import { owner } from "@/store";
 import { nanoid } from "nanoid";
 import { Chat } from "@/types";
 import { toast } from "sonner";
-import { speak, stopSpeaking } from "@/lib/utils";
+import { speak, stopSpeaking, playAudio } from "@/lib/utils";
 
 export default function useVoiceRecorder() {
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -161,8 +161,8 @@ export default function useVoiceRecorder() {
           useVoice.getState().addTranscript(result.transcript);
         }
 
-        if (result.reply) {
-          const jsonData = JSON.parse(result.reply || "{}");
+        if (result.replyText) {
+          const jsonData = JSON.parse(result.replyText || "{}");
           if (jsonData.newTransaction) {
             setNewTransaction(jsonData.newTransaction);
           }
@@ -176,7 +176,11 @@ export default function useVoiceRecorder() {
             useChat.getState().addChat(modelMessage);
             if (useVoice.getState().active) {
               useVoice.getState().setStatus("speaking");
-              await speak(jsonData.message);
+              if (result.replyAudio) {
+                await playAudio(result.replyAudio);
+              } else {
+                await speak(jsonData.message);
+              }
             }
           }
           if (jsonData?.transactionChart) {
