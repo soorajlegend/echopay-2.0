@@ -24,10 +24,19 @@ export default function useVoiceRecorder() {
   const [recording, setRecording] = useState(false);
   const recordingRef = useRef(false);
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
+  const speechDetectedRef = useRef(false);
+  const abortRef = useRef(false);
 
   const start = useCallback(async () => {
     if (recordingRef.current) return;
     stopSpeaking();
+    if (audioUrl) {
+      URL.revokeObjectURL(audioUrl);
+      setAudioUrl(null);
+    }
+    abortRef.current = false;
+    speechDetectedRef.current = false;
+
     let stream: MediaStream;
     try {
       stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -56,6 +65,7 @@ export default function useVoiceRecorder() {
       const avg =
         data.reduce((sum, v) => sum + Math.abs(v - 128), 0) / data.length;
       if (avg > 5) {
+        speechDetectedRef.current = true;
         silenceStart = Date.now();
       } else if (Date.now() - silenceStart > 2500) {
         stop();
@@ -70,7 +80,7 @@ export default function useVoiceRecorder() {
 
     recorder.onstop = async () => {
       const blob = new Blob(chunks, { type: "audio/webm" });
-      setAudioUrl(URL.createObjectURL(blob));
+      let objectUrl: string | null = null;
       setRecording(false);
       recordingRef.current = false;
       useVoice.getState().stopRecording();
@@ -81,6 +91,26 @@ export default function useVoiceRecorder() {
         audioContextRef.current.close();
         audioContextRef.current = null;
       }
+
+      if (abortRef.current) {
+        abortRef.current = false;
+        useVoice.getState().setStatus("idle");
+        if (useVoice.getState().active) {
+          startRef.current();
+        }
+        return;
+      }
+
+      if (!speechDetectedRef.current || blob.size === 0) {
+        useVoice.getState().setStatus("idle");
+        if (useVoice.getState().active) {
+          startRef.current();
+        }
+        return;
+      }
+
+      objectUrl = URL.createObjectURL(blob);
+      setAudioUrl(objectUrl);
 
       try {
         const buffer = await blob.arrayBuffer();
@@ -169,6 +199,14 @@ export default function useVoiceRecorder() {
         console.error("voice pipeline error", err);
         toast.error("Failed to process voice message. Please try again.");
       } finally {
+        if (objectUrl) {
+          URL.revokeObjectURL(objectUrl);
+          objectUrl = null;
+          setAudioUrl(null);
+        } else if (audioUrl) {
+          URL.revokeObjectURL(audioUrl);
+          setAudioUrl(null);
+        }
         useVoice.getState().setStatus("idle");
         if (useVoice.getState().active) {
           startRef.current();
@@ -186,7 +224,8 @@ export default function useVoiceRecorder() {
   }, []);
   startRef.current = start;
 
-  const stop = useCallback(() => {
+  const stop = useCallback((abort = false) => {
+    abortRef.current = abort;
     if (!recordingRef.current) return;
     if (stopTimeoutRef.current) clearTimeout(stopTimeoutRef.current);
     if (silenceIntervalRef.current) clearInterval(silenceIntervalRef.current);

@@ -32,7 +32,10 @@ export default function VoiceUI() {
 
   const cancel = () => {
     if (status === "recording") {
-      stop();
+      stop(true);
+    }
+    if (status === "speaking") {
+      stopSpeaking();
     }
     if (status === "speaking") {
       stopSpeaking();
