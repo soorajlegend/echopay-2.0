@@ -29,11 +29,6 @@ function countDoubleQuotes(str: string) {
 import { TTS } from "@/actions/voice";
 
 export const speak = async (text: string) => {
-<<<<<<< HEAD
-  if (typeof window === "undefined" || !("speechSynthesis" in window)) {
-    console.log(text);
-    return;
-=======
   try {
     const audioSource = await TTS(text);
     const audio = new Audio(audioSource);
@@ -65,7 +60,6 @@ export const speak = async (text: string) => {
     });
   } catch (error) {
     console.error("Error in text-to-speech:", error);
->>>>>>> 484672d (Revamp voice mode)
   }
 
   return new Promise<void>((resolve) => {
