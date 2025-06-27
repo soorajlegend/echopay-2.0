@@ -28,7 +28,14 @@ export async function EchoVoiceChat(data: VoiceChatData): Promise<VoiceChatResul
   try {
     const file = await toFile(Buffer.from(audio, "base64"), "audio.webm");
 
-    const completion = await openai.audio.chat.completions.create({
+    const transcription = await openai.audio.transcriptions.create({
+      file,
+      model: "whisper-1",
+    });
+
+    const transcript = transcription.text || "";
+
+    const completion = await openai.chat.completions.create({
       model: "gpt-4o",
       messages: [
         {
@@ -42,15 +49,21 @@ export async function EchoVoiceChat(data: VoiceChatData): Promise<VoiceChatResul
           }),
         },
         ...messages,
+        { role: "user", content: transcript },
       ],
-      input: file,
-      response_format: "mp3",
-      voice: "nova",
     });
 
-    const transcript = completion.transcript || "";
-    const replyText = completion.text || "";
-    const buffer = Buffer.from(await completion.audio.arrayBuffer());
+    const replyText =
+      completion.choices?.[0]?.message?.content || "";
+
+    const speech = await openai.audio.speech.create({
+      model: "tts-1-hd",
+      voice: "nova",
+      input: replyText,
+      response_format: "mp3",
+    });
+
+    const buffer = Buffer.from(await speech.arrayBuffer());
     const replyAudio = `data:audio/mpeg;base64,${buffer.toString("base64")}`;
 
     return { transcript, replyText, replyAudio };
