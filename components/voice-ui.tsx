@@ -39,6 +39,7 @@ export default function VoiceUI() {
     setStatus("idle");
     if (active) setActive(false);
   };
+}
 
   const interrupt = () => {
     if (status === "speaking") {
