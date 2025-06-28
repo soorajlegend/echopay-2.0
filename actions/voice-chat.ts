@@ -51,6 +51,8 @@ export async function EchoVoiceChat(data: VoiceChatData): Promise<VoiceChatResul
         ...messages,
         { role: "user", content: transcript },
       ],
+      response_format: { type: "json_object" },
+
     });
 
     const replyText =
